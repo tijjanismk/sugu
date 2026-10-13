@@ -17,7 +17,7 @@ Critères d'acceptation :
 - pre-commit installé et fonctionnel
 - README à jour
 
-## #2 — Intégration continue
+## #2 — Intégration continue ✅ (fait le 2026-10-13)
 
 Ajouter `ci.yml`, un premier test factice, le modèle de PR, protéger `main`.
 
