@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  DJANGO_SETTINGS_MODULE: config.settings.test
+  DATABASE_URL: postgres://sugu:sugu@localhost:5432/sugu_test
+  SECRET_KEY: ci-only-not-secret
+  UV_VERSION: "0.13.0"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: sugu
+          POSTGRES_PASSWORD: sugu
+          POSTGRES_DB: sugu_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U sugu"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: uv run python manage.py makemigrations --check --dry-run
+      - run: uv run pytest --ignore=tests/e2e --cov=apps --cov-report=term-missing
+
+  e2e:
+    if: github.ref == 'refs/heads/main'
+    needs: [lint, tests]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: sugu
+          POSTGRES_PASSWORD: sugu
+          POSTGRES_DB: sugu_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U sugu"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: uv run playwright install --with-deps chromium
+      - run: uv run python manage.py migrate
+      - run: uv run python manage.py seed
+      - run: uv run python manage.py runserver 8000 &
+      - run: uv run pytest tests/e2e -o addopts="" --base-url http://localhost:8000
