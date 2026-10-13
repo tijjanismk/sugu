@@ -1,0 +1,8 @@
+{% comment %}
+  État vide (design/components/EmptyState). Paramètres : icon, title, body, action_href, action_label.
+{% endcomment %}<div class="sg-empty">
+  <div class="sg-empty__mark">{% include "components/icon.html" with name=icon %}</div>
+  <h2>{{ title }}</h2>
+  {% if body %}<p>{{ body }}</p>{% endif %}
+  {% if action_href %}<a class="sg-btn sg-btn--primary" href="{{ action_href }}">{{ action_label }}</a>{% endif %}
+</div>

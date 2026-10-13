@@ -1,10 +1,128 @@
-/* Tailwind CSS v4 : plus de tailwind.config.js, tout se configure ici. */
+/* Tailwind CSS v4 : plus de tailwind.config.js, tout se configure ici (docs/design-system.md).
+   Compilation : ./tailwindcss -i static/css/input.css -o static/css/app.css --minify */
 @import "tailwindcss";
+
+/* Charte Sugu : tokens et composants recopiés de design/. Rangés dans des couches pour qu'une
+   classe utilitaire (mt-6, hidden…) l'emporte sur le style d'un composant. */
+@import "./tokens.css" layer(base);
+@import "./components.css" layer(components);
 
 /* Dossiers à scanner pour trouver les classes utilisées */
 @source "../../templates";
 @source "../../apps";
 
-@theme {
-  /* Palette et typographie du projet : à définir au ticket #4 */
+/* Figtree, police variable, sous-ensemble latin, servie par le site (pas de Google Fonts). */
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url("../fonts/figtree-latin-wght-normal.woff2") format("woff2");
+}
+
+/* Les tokens deviennent des classes Tailwind : bg-indigo, text-ink-muted, rounded-md,
+   max-w-content… « inline » garde la référence à la variable, donc le thème sombre suit. */
+@theme inline {
+  --font-sans: var(--font-sans);
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-indigo: var(--indigo);
+  --color-indigo-soft: var(--indigo-soft);
+  --color-on-indigo: var(--on-indigo);
+  --color-sun: var(--sun);
+  --color-sun-soft: var(--sun-soft);
+  --color-on-sun: var(--on-sun);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-heart: var(--heart);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-full: var(--radius-full);
+
+  --container-content: var(--content-max);
+  --container-page: var(--page-max);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+  }
+  body {
+    min-height: 100dvh;
+  }
+  /* La barre basse est fixe : on réserve sa hauteur pour ne rien masquer. */
+  body.has-bottomnav {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}
+
+@layer components {
+  .sg-skip {
+    position: absolute;
+    left: var(--space-4);
+    top: -100px;
+    z-index: 50;
+  }
+  .sg-skip:focus {
+    top: var(--space-2);
+  }
+
+  .sg-bottomnav {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 40;
+    padding-bottom: calc(var(--space-2) + env(safe-area-inset-bottom));
+  }
+
+  /* À partir de 1024 px, la barre basse devient une barre haute (design/components/BottomNav). */
+  .sg-topnav {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    body.has-bottomnav {
+      padding-bottom: 0;
+    }
+    .sg-bottomnav {
+      display: none;
+    }
+    .sg-topnav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      margin-left: var(--space-6);
+    }
+    .sg-topnav__item {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-height: var(--touch-min);
+      padding: 0 var(--space-3);
+      border-radius: var(--radius-md);
+      color: var(--ink-muted);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .sg-topnav__item[aria-current="page"] {
+      color: var(--indigo);
+    }
+    .sg-topnav__item:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+  }
 }

@@ -5,13 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}Sugu{% endblock %}</title>
   <meta name="description" content="Petites annonces entre particuliers, près de chez vous.">
+  {# Thème : réglage du téléphone, ou choix enregistré (profil, ticket #13). Avant le CSS, pour éviter un flash. #}
+  <script>(function(){var t;try{t=localStorage.getItem("sugu-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+  <link rel="preload" href="{% static 'fonts/figtree-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   {% block head %}{% endblock %}
 </head>
-<body>
-  {% block body %}
-  <main id="main">{% block content %}{% endblock %}</main>
-  {% endblock %}
+<body class="{% block body_class %}has-bottomnav{% endblock %}" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <a class="sg-btn sg-skip" href="#main">Aller au contenu</a>
+  {% block topbar %}{% include "components/top_bar.html" %}{% endblock %}
+  <main id="main" class="{% block main_class %}mx-auto max-w-page{% endblock %}">
+    {% include "components/messages.html" %}
+    {% block content %}{% endblock %}
+  </main>
+  {% block bottomnav %}{% include "components/bottom_nav.html" %}{% endblock %}
   <script src="{% static 'js/htmx.min.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

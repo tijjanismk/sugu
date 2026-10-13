@@ -1,0 +1,22 @@
+{% load static %}<!doctype html>
+{% comment %}
+  Page d'erreur 500 autonome : rendue sans contexte (ni utilisateur, ni messages, ni base de
+  données), elle n'hérite pas de base.html et n'appelle aucun context processor.
+{% endcomment %}
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Erreur · Sugu</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <main class="mx-auto max-w-content">
+    <div class="sg-empty">
+      <h1 class="title">Le site a un souci</h1>
+      <p>Ce n'est pas de votre faute. Réessayez dans quelques minutes ; si le problème continue, nous sommes déjà prévenus.</p>
+      <a class="sg-btn sg-btn--primary" href="/">Retour à l'accueil</a>
+    </div>
+  </main>
+</body>
+</html>

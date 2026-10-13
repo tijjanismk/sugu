@@ -1,6 +1,24 @@
 {% extends "base.html" %}
 {% block title %}Sugu — le marché du quartier, dans la poche{% endblock %}
 {% block content %}
-<h1>Sugu</h1>
-<p>Le marché du quartier, dans la poche. Squelette en place : la vraie page d'accueil arrive au ticket #8.</p>
+  <section class="px-4 pt-6 pb-2">
+    <h1 class="display text-ink">Le marché du quartier, dans la poche</h1>
+    <p class="body mt-2 text-ink-muted">Achetez et vendez entre particuliers, près de chez vous.</p>
+  </section>
+
+  {% comment %}
+    Exemple de partial htmx (ticket #4) : « Actualiser » ne recharge que cette section, que la vue
+    renvoie seule quand la requête vient de htmx. Le ticket #8 y met les dernières annonces.
+  {% endcomment %}
+  {% partialdef recent inline %}
+    <section id="recent" class="mt-4" aria-labelledby="recent-title">
+      <div class="flex items-center justify-between px-4">
+        <h2 id="recent-title" class="heading text-ink">Dernières annonces</h2>
+        <button class="sg-btn sg-btn--quiet" type="button"
+                hx-get="{% url 'core:home' %}" hx-target="#recent" hx-swap="outerHTML">Actualiser</button>
+      </div>
+      {% include "components/empty_state.html" with icon="compass" title="Aucune annonce pour l'instant" body="Les premières annonces arrivent bientôt. Revenez vite, ou déposez la vôtre." %}
+      <p class="caption px-4 text-ink-muted">Mis à jour à {% now "H:i:s" %}</p>
+    </section>
+  {% endpartialdef %}
 {% endblock %}

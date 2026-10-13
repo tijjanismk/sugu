@@ -1,0 +1,6 @@
+{% comment %}
+  Alerte (design/components/Alert). Paramètres : variant (success | danger | info), title, body.
+{% endcomment %}<div class="sg-alert sg-alert--{{ variant|default:'info' }}" role="{% if variant == 'danger' %}alert{% else %}status{% endif %}">
+  {% if variant == "success" %}{% include "components/icon.html" with name="check" %}{% elif variant == "danger" %}{% include "components/icon.html" with name="alert" %}{% else %}{% include "components/icon.html" with name="info" %}{% endif %}
+  <div>{% if title %}<strong>{{ title }}</strong>{% endif %}{{ body }}</div>
+</div>
