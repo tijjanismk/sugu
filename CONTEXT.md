@@ -72,12 +72,13 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #3 Modèle utilisateur et authentification (User sans username,
-  email + display_name + phone ; allauth sous `/comptes/` en français ; vérification d'email
-  optionnelle ; limitation de débit intégrée d'allauth dans un DatabaseCache ; gabarits allauth
-  aux classes `sg-…` en attendant la mise en forme du ticket #4)
-- Tâche en cours : aucune ; prochaine : #4 Base HTML, Tailwind et htmx
+- Dernière tâche terminée : #4 Base HTML, Tailwind et htmx (tokens et composants du design dans
+  `static/css/`, Figtree et htmx servis localement, `base.html` avec barre du haut, barre basse
+  et messages, navigation par context processor, pages 404 / 500 / 429, exemple de partial
+  htmx `core/home.html#recent` ; accueil à 45 Ko compressés)
+- Tâche en cours : aucune ; prochaine : #5 Catégories, villes et données de démo
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; la commande `seed` est un stub (ticket #5) ; le job `e2e` n'a pas encore
   tourné sur `main` (ticket #16) ; sur le poste de dev, un PostgreSQL Windows occupe déjà le
-  port 5432 (lancer la base Docker sur un autre port) ; `city` du User arrive avec `City` (#5)
+  port 5432 (lancer la base Docker sur un autre port) ; `city` du User arrive avec `City` (#5) ;
+  les liens Recherche, Déposer, Favoris et Messages mènent à la 404 jusqu'aux tickets #7 à #12

@@ -1,2 +1,2 @@
 {% load allauth %}
-<div class="sg-alert sg-alert--info" role="status"><div>{% slot message %}{% endslot %}</div></div>
+<div class="sg-alert sg-alert--info" role="status">{% include "components/icon.html" with name="info" %}<div>{% slot message %}{% endslot %}</div></div>

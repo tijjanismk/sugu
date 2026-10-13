@@ -26,7 +26,8 @@ Voir `docs/design.md` et `docs/adr/` pour les décisions d'architecture.
 
 - Docker et Docker Compose
 - [uv](https://docs.astral.sh/uv/) (gestion des dépendances Python)
-- Le binaire Tailwind CSS : `scripts/install-tailwind.sh`
+- Le binaire Tailwind CSS : `scripts/install-tailwind.sh` (`./tailwindcss`, ou `./tailwindcss.exe`
+  sous Windows avec Git Bash)
 
 ## Installation
 

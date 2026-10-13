@@ -12,3 +12,4 @@ tailwindcss
 .coverage
 htmlcov/
 test-results/
+tailwindcss.exe

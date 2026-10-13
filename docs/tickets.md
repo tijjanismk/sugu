@@ -37,7 +37,7 @@ Critères d'acceptation :
 - `AUTH_USER_MODEL` fixé dès la première migration
 - Limitation de débit sur connexion et inscription (voir `docs/security.md`)
 
-## #4 — Base HTML, Tailwind et htmx
+## #4 — Base HTML, Tailwind et htmx ✅ (fait le 2026-10-13)
 
 `base.html` mobile-first, navigation, messages flash, htmx servi localement,
 binaire Tailwind, `input.css`, pages 404 et 500.

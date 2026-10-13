@@ -1,0 +1,10 @@
+{% comment %}Messages Django en tête de page, sous la barre du haut (design/components/Alert).{% endcomment %}
+{% for message in messages %}
+  {% if message.level_tag == "error" %}
+    {% include "components/alert.html" with variant="danger" body=message %}
+  {% elif message.level_tag == "success" %}
+    {% include "components/alert.html" with variant="success" body=message %}
+  {% else %}
+    {% include "components/alert.html" with variant="info" body=message %}
+  {% endif %}
+{% endfor %}

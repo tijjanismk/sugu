@@ -26,6 +26,13 @@ recopiée dans `design/` dans la même PR que le code qui l'utilise. Le fichier
 
 ## Traduction en code (ticket #4)
 
+Fait au ticket #4 : `static/css/tokens.css`, `static/css/components.css` (rangés dans les
+couches `base` et `components` de Tailwind, pour qu'une classe utilitaire l'emporte),
+`@theme inline` dans `input.css`, Figtree servie localement, barre haute à partir de 1024 px
+(`sg-topnav`). Gabarits créés : `top_bar`, `bottom_nav`, `alert`, `messages`,
+`empty_state` et `icon` (tracés Lucide) ; les autres composants arrivent avec le ticket qui
+les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
+
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.
 2. `static/css/input.css` : `@import "tailwindcss";` puis un bloc `@theme` qui
    expose les tokens à Tailwind 4 (`--color-indigo: var(--indigo);`,

@@ -1,10 +1,5 @@
 {% extends "base.html" %}
 {% block title %}Trop de tentatives · Sugu{% endblock %}
 {% block content %}
-  <div class="sg-alert sg-alert--danger" role="alert">
-    <div>
-      <strong>Trop de tentatives</strong>
-      Pour protéger les comptes, cette action est bloquée un moment. Réessayez plus tard.
-    </div>
-  </div>
+  {% include "components/alert.html" with variant="danger" title="Trop de tentatives" body="Pour protéger les comptes, cette action est bloquée un moment. Réessayez plus tard." %}
 {% endblock %}

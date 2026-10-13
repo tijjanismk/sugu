@@ -1,0 +1,29 @@
+{% comment %}
+  Barre du haut (design/components/TopBar), variante accueil. À partir de 1024 px, elle porte
+  aussi les liens de navigation et « Déposer une annonce » (sg-topnav, static/css/input.css).
+  Paramètre : hide_nav (vrai dans un flux, où seule la marque reste).
+{% endcomment %}<header class="sg-topbar sg-topbar--raised">
+  <a class="sg-topbar__brand" href="{% url 'core:home' %}">Sugu</a>
+  {% if not hide_nav %}
+    <nav class="sg-topnav" aria-label="Navigation principale (grand écran)">
+      {% for item in nav_items %}{% if item.key != "post" %}
+        <a class="sg-topnav__item" href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}>{% include "components/icon.html" with name=item.key %}{{ item.label }}</a>
+      {% endif %}{% endfor %}
+    </nav>
+  {% endif %}
+  <span class="sg-topbar__spacer"></span>
+  {% if not hide_nav %}
+    {% for item in nav_items %}{% if item.key == "post" %}
+      <a class="sg-btn sg-btn--sun hidden lg:inline-flex" href="{{ item.href }}">{% include "components/icon.html" with name="post" %}Déposer une annonce</a>
+    {% endif %}{% endfor %}
+  {% endif %}
+  {% if hide_nav %}
+  {% elif user.is_authenticated %}
+    <form method="post" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      <button class="sg-btn sg-btn--quiet" type="submit">Se déconnecter</button>
+    </form>
+  {% else %}
+    <a class="sg-btn sg-btn--quiet" href="{% url 'account_login' %}">Se connecter</a>
+  {% endif %}
+</header>

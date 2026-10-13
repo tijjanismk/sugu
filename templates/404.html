@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Page introuvable · Sugu{% endblock %}
+{% block content %}
+  {% url "core:home" as home_url %}
+  {% include "components/empty_state.html" with icon="compass" title="Cette page n'existe pas (ou plus)" body="L'annonce a peut-être été vendue ou retirée. Repartez de l'accueil pour chercher autre chose." action_href=home_url action_label="Retour à l'accueil" %}
+{% endblock %}

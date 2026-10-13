@@ -4,8 +4,12 @@ from django.shortcuts import render
 
 
 def home(request: HttpRequest) -> HttpResponse:
-    """Page d'accueil provisoire ; le ticket #8 y met la grille d'annonces."""
-    return render(request, "core/home.html")
+    """Page d'accueil provisoire ; le ticket #8 y met la grille d'annonces.
+
+    Requête htmx (en-tête HX-Request) : seul le partial « recent » est renvoyé.
+    """
+    template = "core/home.html#recent" if request.htmx else "core/home.html"
+    return render(request, template)
 
 
 def health(request: HttpRequest) -> JsonResponse:
