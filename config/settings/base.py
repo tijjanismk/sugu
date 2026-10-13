@@ -23,6 +23,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",
     "django_htmx",
+    "allauth",
+    "allauth.account",
     "apps.core",
     "apps.accounts",
 ]
@@ -37,6 +39,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -89,8 +92,43 @@ STORAGES = {
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
-LOGIN_URL = "/comptes/connexion/"
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "/"
+
+# Comptes (django-allauth) : connexion par email, pas de nom d'utilisateur (ticket #3).
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*"]
+ACCOUNT_SIGNUP_FORM_CLASS = "apps.accounts.forms.SignupForm"
+# Vérification « optionnelle » : l'email de confirmation part, le compte sert tout de suite.
+# À passer en "mandatory" si les faux comptes arrivent (docs/security.md).
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Sugu] "
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"
+# Sur un téléphone personnel, on reste connecté : pas de case « Se souvenir de moi ».
+ACCOUNT_SESSION_REMEMBER = True
+# Lien de réinitialisation du mot de passe valable une heure.
+PASSWORD_RESET_TIMEOUT = 60 * 60
+# Limitation de débit (docs/security.md) : 5 connexions ratées par compte et par IP sur
+# 15 min, 3 inscriptions par IP et par heure. Les compteurs vivent dans le cache Django.
+ACCOUNT_RATE_LIMITS = {
+    "login_failed": "5/15m/ip,5/15m/key",
+    "signup": "3/h/ip",
+}
+
+# Cache partagé entre les processus Gunicorn, sans Redis (ADR 0001) : table créée par la
+# migration core 0001. Dev et test le remplacent par un cache en mémoire.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+    }
+}
 
 # Django 6.1 : les emails se configurent par MAILERS (le dict), plus par EMAIL_BACKEND.
 # Chaque environnement définit le sien ; le défaut ci-dessous ne doit jamais servir.
