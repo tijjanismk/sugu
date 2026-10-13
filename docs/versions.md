@@ -15,6 +15,7 @@ humaine et trace les choix.
 | uv              | 0.13.0          | 0.13.0 (2026-10-09) | `Dockerfile`, `ci.yml`           | Version récente : si problème, revenir à 0.12.x |
 | Tailwind CSS    | 4.3.3           | 4.3.3           | `Dockerfile`, `scripts/install-tailwind.sh` | v4 : configuration en CSS, pas de `tailwind.config.js` |
 | htmx            | 2.0.11          | 2.0.11          | `static/js/htmx.min.js` (vendu)    | Mettre à jour à la main, fichier commité |
+| Figtree (police) | 5.2.10 (`@fontsource-variable/figtree`) | 5.2.10 | `static/fonts/figtree-latin-wght-normal.woff2` (vendu) | Variable, sous-ensemble latin, licence OFL ; 20 Ko |
 
 ## Dépendances Python (`pyproject.toml`)
 
