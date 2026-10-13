@@ -1,0 +1,17 @@
+# Développement local : seule la base tourne dans Docker,
+# Django tourne avec `uv run python manage.py runserver`.
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: sugu
+      POSTGRES_USER: sugu
+      POSTGRES_PASSWORD: sugu
+    ports: ["5432:5432"]
+    volumes:
+      # PostgreSQL 18+ : le volume se monte sur /var/lib/postgresql
+      # (et non plus /var/lib/postgresql/data comme pour les versions <= 17)
+      - pgdata_dev:/var/lib/postgresql
+
+volumes:
+  pgdata_dev:

@@ -1,0 +1,10 @@
+/* Tailwind CSS v4 : plus de tailwind.config.js, tout se configure ici. */
+@import "tailwindcss";
+
+/* Dossiers à scanner pour trouver les classes utilisées */
+@source "../../templates";
+@source "../../apps";
+
+@theme {
+  /* Palette et typographie du projet : à définir au ticket #4 */
+}

@@ -1,0 +1,49 @@
+[project]
+name = "sugu"
+version = "0.1.0"
+description = "Site de petites annonces entre particuliers, léger et mobile-first"
+requires-python = ">=3.14"
+# Bornes basses = versions vérifiées sur PyPI le 2026-10-11.
+# Les versions exactes sont figées dans uv.lock (généré par `uv sync`).
+dependencies = [
+  "django>=6.1,<6.2",
+  "django-allauth>=65.19",
+  "django-environ>=0.14",
+  "django-storages[s3]>=1.14.6",
+  "django-htmx>=1.29",
+  "whitenoise>=6.12",
+  "psycopg[binary]>=3.3",
+  "pillow>=12.3",
+  "gunicorn>=26.2",
+  "argon2-cffi>=25.1",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=9.1",
+  "pytest-django>=4.14",
+  "pytest-cov>=7.1",
+  "factory-boy>=3.3.3",
+  "playwright>=1.63",
+  "pytest-playwright>=0.10",
+  "ruff==0.17.0",
+  "pre-commit>=4.6",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "DJ", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+testpaths = ["apps", "tests"]
+markers = ["e2e: parcours Playwright, lancés sur main"]
+addopts = "--ignore=tests/e2e"

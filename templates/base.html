@@ -1,0 +1,17 @@
+{% load static %}<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}Sugu{% endblock %}</title>
+  <meta name="description" content="Petites annonces entre particuliers, près de chez vous.">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% block body %}
+  <main id="main">{% block content %}{% endblock %}</main>
+  {% endblock %}
+  <script src="{% static 'js/htmx.min.js' %}" defer></script>
+</body>
+</html>

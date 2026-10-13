@@ -1,0 +1,38 @@
+<!-- @dsCard group="Formulaires" height=640 -->
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>FormField — aperçu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..900&display=swap">
+<style></style>
+</head>
+<body>
+
+<div class="sg-phone">
+<form class="sg-form">
+  <div class="sg-field">
+    <label class="sg-field__label" for="t">Titre de l'annonce</label>
+    <input class="sg-input" id="t" type="text" placeholder="Ex. : Vélo de course Peugeot" maxlength="80">
+    <span class="sg-field__help">80 caractères au plus. Dites ce que c'est, pas « à vendre ».</span>
+  </div>
+  <div class="sg-field">
+    <label class="sg-field__label" for="c">Catégorie</label>
+    <div class="sg-select"><select class="sg-input" id="c"><option>Véhicules</option><option>Téléphones</option></select><svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true" ><path d="m6 9 6 6 6-6"/></svg></div>
+  </div>
+  <div class="sg-field sg-field--error">
+    <label class="sg-field__label" for="p">Prix <small>(facultatif)</small></label>
+    <div class="sg-input sg-input--prefix" style="border-color:var(--danger)"><input id="p" inputmode="numeric" value="-500" aria-describedby="p-err"><span class="sg-input__unit">FCFA</span></div>
+    <span class="sg-field__error" id="p-err"><svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>Indiquez un prix positif, ou laissez vide pour « À débattre ».</span>
+  </div>
+  <div class="sg-field">
+    <label class="sg-field__label" for="d">Description</label>
+    <textarea class="sg-input" id="d" placeholder="État, âge, accessoires, lieu de remise…"></textarea>
+  </div>
+  <label class="sg-check"><input type="checkbox" checked> Paiement à la livraison</label>
+  <label class="sg-check"><input type="checkbox"> Mobile money accepté</label>
+  <div class="sg-sticky"><button class="sg-btn sg-btn--primary sg-btn--lg sg-btn--block" type="submit">Publier l'annonce</button></div>
+</form>
+</div>
+</body>
+</html>

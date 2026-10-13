@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+static/css/app.css
+staticfiles/
+media/
+tailwindcss
+.pytest_cache/
+.coverage
+htmlcov/
+test-results/

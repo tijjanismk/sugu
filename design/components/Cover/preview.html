@@ -1,0 +1,57 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Sugu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..900&display=swap">
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--surface); color: var(--ink); font-family: var(--font-sans); overflow: hidden; }
+  .cover { position: relative; height: 288px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
+  .art svg { display: block; width: 480px; height: 288px; }
+  .brand { fill: var(--indigo); }
+  .sun { fill: var(--sun); }
+  .deep { fill: var(--ink); }
+  .tint { fill: var(--indigo-soft); }
+  .weft { fill: var(--indigo-soft); }
+  .blk { rx: var(--radius-lg); }
+  .words { position: absolute; left: var(--space-6); bottom: var(--space-6); max-width: 440px; }
+  .name { margin: 0; font-size: 120px; line-height: .92; font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
+  .tag { margin: var(--space-2) 0 0 6px; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      indigo 176×312 bled off the top (the dyed cloth, the brand's one hue) · sun 128×168 (the single warm action) · ink 160×216 bleeding off the right edge · indigo-soft 128×56 once, for relief — ≈38 % of 960×288
+  arrangement a strip of unequal vertical bands, like strip-woven cloth sewn side by side: three bands, bottoms on one line space-6 above the edge, gutters space-6
+  pattern     weft lines, from "chaleureuse par ses matières (papier, indigo, ocre)": space-1-tall bands of indigo-soft across the indigo slab at a space-6 pitch, lengths alternating like a loose weave — ten units
+  scales      sides in space-2 multiples (176 = 22×8, 128 = 16×8, 160 = 20×8); gutters space-6; pitch space-6; weft height space-1; corners radius-lg
+-->
+<rect class="brand blk" x="0" y="-24" width="176" height="312" rx="16"/>
+<rect class="weft" x="16" y="48" width="144" height="4"/>
+<rect class="weft" x="16" y="72" width="112" height="4"/>
+<rect class="weft" x="16" y="96" width="144" height="4"/>
+<rect class="weft" x="16" y="120" width="120" height="4"/>
+<rect class="weft" x="16" y="144" width="144" height="4"/>
+<rect class="weft" x="16" y="168" width="104" height="4"/>
+<rect class="weft" x="16" y="192" width="144" height="4"/>
+<rect class="weft" x="16" y="216" width="128" height="4"/>
+<rect class="weft" x="16" y="240" width="144" height="4"/>
+<rect class="weft" x="16" y="264" width="112" height="4"/>
+<rect class="tint blk" x="200" y="24" width="128" height="56" rx="16"/>
+<rect class="sun blk" x="200" y="96" width="128" height="168" rx="16"/>
+<rect class="deep blk" x="352" y="48" width="160" height="216" rx="16"/>
+</svg>
+</div>
+<div class="words">
+  <h1 class="name">Sugu</h1>
+  <p class="tag">Le marché du quartier, dans la poche.</p>
+</div>
+</div>
+</body>
+</html>
