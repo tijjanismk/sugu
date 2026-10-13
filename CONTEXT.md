@@ -72,11 +72,12 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #2 Intégration continue (CI verte sur PR, setup-uv épinglé en
-  v10.3.0 ; `main` protégée : PR obligatoire, jobs `lint` et `tests` requis, squash uniquement ;
-  dépôt public https://github.com/tijjanismk/sugu)
-- Tâche en cours : aucune ; prochaine : #3 Modèle utilisateur et authentification
+- Dernière tâche terminée : #3 Modèle utilisateur et authentification (User sans username,
+  email + display_name + phone ; allauth sous `/comptes/` en français ; vérification d'email
+  optionnelle ; limitation de débit intégrée d'allauth dans un DatabaseCache ; gabarits allauth
+  aux classes `sg-…` en attendant la mise en forme du ticket #4)
+- Tâche en cours : aucune ; prochaine : #4 Base HTML, Tailwind et htmx
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; la commande `seed` est un stub (ticket #5) ; le job `e2e` n'a pas encore
   tourné sur `main` (ticket #16) ; sur le poste de dev, un PostgreSQL Windows occupe déjà le
-  port 5432 (lancer la base Docker sur un autre port)
+  port 5432 (lancer la base Docker sur un autre port) ; `city` du User arrive avec `City` (#5)

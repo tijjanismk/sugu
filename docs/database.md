@@ -4,15 +4,25 @@ Toutes les tables ont `id` (clé primaire), `created_at`, `updated_at`.
 
 ## accounts_user (modèle utilisateur personnalisé, dès la première migration)
 
-| Champ               | Type            | Notes                                 |
-|---------------------|-----------------|---------------------------------------|
-| email               | varchar, unique | identifiant de connexion              |
-| password            | varchar         | haché par Django                      |
-| display_name        | varchar(50)     | nom affiché sur les annonces          |
-| phone               | varchar(20)     | contact, visible aux connectés        |
-| phone_verified      | bool            | réservé à une future vérification OTP |
-| city_id             | FK → city       | optionnel                             |
-| is_active, is_staff | bool            | Django                                |
+Pas de `username` ni de `first_name` / `last_name` : l'email est l'identifiant (ticket #3,
+migration `accounts.0002`). Les tables `account_emailaddress` et
+`account_emailconfirmation` d'allauth suivent les adresses et leur confirmation.
+
+| Champ               | Type            | Notes                                       |
+|---------------------|-----------------|---------------------------------------------|
+| email               | varchar, unique | identifiant de connexion                    |
+| password            | varchar         | haché par Django (Argon2)                   |
+| display_name        | varchar(50)     | nom affiché sur les annonces, obligatoire   |
+| phone               | varchar(20)     | contact facultatif, visible aux connectés   |
+| phone_verified      | bool            | réservé à une future vérification OTP       |
+| city_id             | FK → city       | optionnel ; ajouté avec `City` (ticket #5)  |
+| is_active, is_staff | bool            | Django                                      |
+
+## django_cache
+
+Table du cache Django (`DatabaseCache`), créée par la migration `core.0001` : compteurs de
+la limitation de débit d'allauth, partagés entre les processus Gunicorn (pas de Redis en V1).
+Dev et tests utilisent un cache en mémoire à la place.
 
 ## listings_category
 
