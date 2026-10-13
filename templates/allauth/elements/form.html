@@ -1,0 +1,7 @@
+{% load allauth %}
+<form class="sg-form" method="{{ attrs.method }}"{% if attrs.action %} action="{{ attrs.action }}"{% endif %} novalidate>
+  {% slot body %}{% endslot %}
+  {% if slots.actions %}
+    <div class="sg-sticky">{% slot actions %}{% endslot %}</div>
+  {% endif %}
+</form>

@@ -57,3 +57,10 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "root": {"handlers": ["console"], "level": env("LOG_LEVEL", default="INFO")},
 }
+
+# Comptes : liens des emails (confirmation, mot de passe oublié) en HTTPS.
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+# Limitation de débit par IP : derrière Cloudflare puis Caddy, REMOTE_ADDR est celle de Caddy.
+# Cloudflare fournit l'IP du visiteur dans CF-Connecting-IP. Ne se fier à cet en-tête que si
+# le serveur n'accepte le trafic web que depuis Cloudflare (ticket #15, docs/security.md).
+ALLAUTH_TRUSTED_CLIENT_IP_HEADER = "CF-Connecting-IP"

@@ -13,3 +13,6 @@ MAILERS = {"default": {"BACKEND": "django.core.mail.backends.console.EmailBacken
 
 # Pas de manifeste statique en dev : les fichiers se servent tels quels.
 STORAGES["staticfiles"] = {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}  # noqa: F405
+
+# Un seul processus runserver : un cache en mémoire suffit (pas besoin de createcachetable).
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}

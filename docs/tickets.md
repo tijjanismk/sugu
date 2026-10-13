@@ -26,7 +26,7 @@ Critères d'acceptation :
 - Un push direct sur `main` est refusé
 - `makemigrations --check` est dans la CI
 
-## #3 — Modèle utilisateur et authentification
+## #3 — Modèle utilisateur et authentification ✅ (fait le 2026-10-13)
 
 Créer `accounts.User` (email, display_name, phone, city), configurer allauth
 (inscription, connexion, déconnexion, mot de passe oublié par email).

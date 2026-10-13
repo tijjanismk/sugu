@@ -1,0 +1,21 @@
+{% load sugu_forms %}
+{% for error in attrs.form.non_field_errors %}
+  <div class="sg-alert sg-alert--danger" role="alert"><div>{{ error }}</div></div>
+{% endfor %}
+{% for field in attrs.form.hidden_fields %}{{ field }}{% endfor %}
+{% for field in attrs.form.visible_fields %}
+  {% if field.widget_type == "checkbox" %}
+    <label class="sg-check">{{ field|sg_widget }} {{ field.label }}</label>
+  {% else %}
+    <div class="sg-field{% if field.errors %} sg-field--error{% endif %}">
+      <label class="sg-field__label" for="{{ field.id_for_label }}">{{ field.label }}{% if not field.field.required %} <small>(facultatif)</small>{% endif %}</label>
+      {{ field|sg_widget }}
+      {% if field.errors %}
+        <span class="sg-field__error" id="{{ field.auto_id }}_error">{{ field.errors|join:" " }}</span>
+      {% endif %}
+      {% if field.help_text %}
+        <div class="sg-field__help" id="{{ field.auto_id }}_help">{{ field.help_text }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endfor %}

@@ -45,8 +45,18 @@ Par ordre de probabilité pour un site d'annonces :
 - Mots de passe hachés en Argon2 (`PASSWORD_HASHERS`), longueur minimale et liste
   des mots de passe courants (`AUTH_PASSWORD_VALIDATORS`).
 - Limitation des tentatives : 5 connexions ratées par compte et par IP sur 15 min,
-  3 inscriptions par IP par heure (ticket #3, `django-ratelimit` ou équivalent).
-- Réinitialisation par email avec lien à durée limitée (allauth, ticket #3).
+  3 inscriptions par IP par heure. Mis en œuvre par la limitation intégrée d'allauth
+  (`ACCOUNT_RATE_LIMITS`), compteurs dans le cache en base (`django_cache`). En production,
+  l'IP du visiteur est lue dans `CF-Connecting-IP` (`ALLAUTH_TRUSTED_CLIENT_IP_HEADER`) :
+  cet en-tête n'est fiable que si le serveur refuse le trafic web qui ne vient pas de
+  Cloudflare (ticket #15). Point à surveiller : les opérateurs mobiles partagent souvent une
+  même IP entre de nombreux abonnés ; relever la limite par IP si des inscriptions
+  légitimes sont bloquées.
+- Réinitialisation par email avec lien valable une heure (`PASSWORD_RESET_TIMEOUT`), sans
+  révéler si l'adresse a un compte.
+- Vérification de l'email « optionnelle » (l'email de confirmation part, le compte sert
+  tout de suite) ; à passer en « obligatoire » si les faux comptes arrivent.
+- Déconnexion uniquement par POST : un lien piégé ne déconnecte pas.
 - La session expire après 30 jours d'inactivité ; déconnexion possible de tous les
   appareils depuis le profil (ticket #13).
 - Numéro de téléphone visible uniquement aux utilisateurs connectés (ticket #13) ;
@@ -83,7 +93,7 @@ Par ordre de probabilité pour un site d'annonces :
 ### Débit et robots
 
 - Limitation de débit sur inscription, connexion, dépôt d'annonce, envoi de message
-  et signalement (ticket #3, #7, #12).
+  et signalement (inscription et connexion faites au ticket #3 ; #7, #12 à venir).
 - Cloudflare devant le site : absorption des attaques par saturation, filtrage des
   robots, cache des fichiers statiques.
 - Si le spam d'inscriptions arrive : défi Turnstile (Cloudflare) sur le formulaire

@@ -18,3 +18,6 @@ MAILERS = {"default": {"BACKEND": "django.core.mail.backends.locmem.EmailBackend
 MEDIA_ROOT = tempfile.mkdtemp(prefix="sugu-test-media-")
 STORAGES["staticfiles"] = {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}  # noqa: F405
 WHITENOISE_AUTOREFRESH = True
+
+# Cache en mémoire, vidé avant chaque test (conftest.py) pour isoler les limites de débit.
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}

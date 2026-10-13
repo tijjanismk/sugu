@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% comment %}
+  Pages de comptes (allauth) dans la mise en page du site. La barre du haut et la navigation
+  arrivent au ticket #4 ; les messages Django s'affichent ici en attendant base.html.
+{% endcomment %}
+{% block title %}{% block head_title %}{% endblock head_title %} · Sugu{% endblock title %}
+{% block head %}{% block extra_head %}{% endblock extra_head %}{% endblock head %}
+{% block body %}
+  <main id="main" class="sg-account">
+    {% for message in messages %}
+      {% include "allauth/elements/_message.html" %}
+    {% endfor %}
+    {% block content %}{% endblock content %}
+  </main>
+  {% block extra_body %}{% endblock extra_body %}
+{% endblock body %}
