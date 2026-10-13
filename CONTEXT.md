@@ -72,8 +72,11 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #1 Squelette du projet (settings dev/test/prod, apps core et accounts
-  avec User personnalisé, sonde /sante/, premier test, pre-commit, CI)
-- Tâche en cours : #2 Intégration continue (vérifier la CI sur GitHub, protéger main)
+- Dernière tâche terminée : #2 Intégration continue (CI verte sur PR, setup-uv épinglé en
+  v10.3.0 ; `main` protégée : PR obligatoire, jobs `lint` et `tests` requis, squash uniquement ;
+  dépôt public https://github.com/tijjanismk/sugu)
+- Tâche en cours : aucune ; prochaine : #3 Modèle utilisateur et authentification
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
-  (ticket #15) ; la commande `seed` est un stub (ticket #5)
+  (ticket #15) ; la commande `seed` est un stub (ticket #5) ; le job `e2e` n'a pas encore
+  tourné sur `main` (ticket #16) ; sur le poste de dev, un PostgreSQL Windows occupe déjà le
+  port 5432 (lancer la base Docker sur un autre port)
