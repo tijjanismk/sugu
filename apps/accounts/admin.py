@@ -22,11 +22,20 @@ class UserAdmin(DjangoUserAdmin):
     form = SuguUserChangeForm
     add_form = SuguUserCreationForm
     ordering = ("email",)
-    list_display = ("email", "display_name", "phone", "is_staff", "is_active", "date_joined")
+    list_display = (
+        "email",
+        "display_name",
+        "phone",
+        "city",
+        "is_staff",
+        "is_active",
+        "date_joined",
+    )
+    list_select_related = ("city",)
     search_fields = ("email", "display_name", "phone")
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        ("Profil", {"fields": ("display_name", "phone", "phone_verified")}),
+        ("Profil", {"fields": ("display_name", "phone", "phone_verified", "city")}),
         (
             "Permissions",
             {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")},

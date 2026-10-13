@@ -30,10 +30,7 @@ class UserManager(DjangoUserManager):
 
 
 class User(AbstractUser):
-    """Utilisateur Sugu, identifié par son email.
-
-    Le champ `city` (FK vers City) arrive avec le modèle City au ticket #5.
-    """
+    """Utilisateur Sugu, identifié par son email."""
 
     username = None
     first_name = None
@@ -42,6 +39,14 @@ class User(AbstractUser):
     display_name = models.CharField("nom affiché", max_length=50)
     phone = models.CharField("téléphone", max_length=20, blank=True)
     phone_verified = models.BooleanField("téléphone vérifié", default=False)
+    city = models.ForeignKey(
+        "listings.City",
+        verbose_name="ville",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["display_name"]

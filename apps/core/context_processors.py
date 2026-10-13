@@ -20,10 +20,11 @@ def _href(url_name: str, fallback: str) -> str:
 
 
 def navigation(request: HttpRequest) -> dict:
-    """Liens de la barre de navigation, avec la page courante marquée `current`."""
+    """Liens de la barre de navigation (page courante marquée `current`) et URL de recherche."""
     items = []
     for key, label, url_name, fallback in NAV_ITEMS:
         href = _href(url_name, fallback)
         current = request.path == href if href == "/" else request.path.startswith(href)
         items.append({"key": key, "label": label, "href": href, "current": current})
-    return {"nav_items": items}
+    search_url = next(item["href"] for item in items if item["key"] == "search")
+    return {"nav_items": items, "search_url": search_url}
