@@ -47,7 +47,7 @@ Critères d'acceptation :
 - Tailwind compilé sans Node
 - `django-htmx` installé et un exemple de partial fonctionnel
 
-## #5 — Catégories, villes et données de démo
+## #5 — Catégories, villes et données de démo ✅ (fait le 2026-10-13)
 
 Modèles `Category` (deux niveaux) et `City`, admin, commande `seed` avec
 ~20 catégories et les principales villes.

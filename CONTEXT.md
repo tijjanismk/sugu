@@ -72,13 +72,12 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #4 Base HTML, Tailwind et htmx (tokens et composants du design dans
-  `static/css/`, Figtree et htmx servis localement, `base.html` avec barre du haut, barre basse
-  et messages, navigation par context processor, pages 404 / 500 / 429, exemple de partial
-  htmx `core/home.html#recent` ; accueil à 45 Ko compressés)
-- Tâche en cours : aucune ; prochaine : #5 Catégories, villes et données de démo
+- Dernière tâche terminée : #5 Catégories, villes et données de démo (app `listings` avec
+  `Category` sur deux niveaux et `City`, modèle abstrait `core.TimeStampedModel`, `User.city`,
+  `manage.py seed` idempotent : 30 catégories et 10 villes du Mali, tuiles sur l'accueil)
+- Tâche en cours : aucune ; prochaine : #6 Modèles Listing et Photo
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
-  (ticket #15) ; la commande `seed` est un stub (ticket #5) ; le job `e2e` n'a pas encore
-  tourné sur `main` (ticket #16) ; sur le poste de dev, un PostgreSQL Windows occupe déjà le
-  port 5432 (lancer la base Docker sur un autre port) ; `city` du User arrive avec `City` (#5) ;
-  les liens Recherche, Déposer, Favoris et Messages mènent à la 404 jusqu'aux tickets #7 à #12
+  (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
+  dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
+  port) ; les liens Recherche, Déposer, Favoris et Messages, et les tuiles de catégories,
+  mènent à la 404 jusqu'aux tickets #7 à #12 ; `seed` ne crée pas encore d'annonces (#6)
