@@ -77,12 +77,15 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   `scripts/make_icons.py` ; test hors-ligne dans `tests/e2e/test_pwa.py`)
 - Aussi fait : #16 Tests de bout en bout (trois parcours dans `tests/e2e`, verts sur `main` ;
   pas encore lancés sur le poste : Chromium de Playwright non téléchargé)
+- Ajout au #12 : email de nouveau message (`apps/messaging/notifications.py`), au premier
+  non lu d'une conversation, pas pendant un échange en direct, sans le texte du message,
+  désactivable au profil ; envoi dans la requête (pas de file en V1)
 - Tâche en cours : aucune ; prochaine : #15 Mise en production (serveur, DNS, R2 :
   décisions et accès du propriétaire nécessaires)
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
-  port) ; pas encore d'avertissement par email d'un nouveau message ;
+  port) ; `EMAIL_URL` obligatoire en production (#15) pour les emails ;
   installation PWA à confirmer sur un vrai téléphone en HTTPS (#15) ; le navigateur intégré
   de Claude refuse les service workers (vérifier dans Chrome) ; ajouts de design des #8 à
   #14 (dont l'icône d'application) à reporter dans l'artefact de design ; pas de synonymes dans la

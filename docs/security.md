@@ -90,6 +90,11 @@ Par ordre de probabilité pour un site d'annonces :
   l'original n'est jamais écrit ni servi. L'orientation EXIF est appliquée puis toutes les
   métadonnées (dont la position GPS) disparaissent au réencodage. La réduction faite dans le
   navigateur avant l'envoi (`photo-picker.js`) n'est qu'un confort : le serveur revérifie tout.
+- Email de nouveau message (ticket #12) : l'auteur, l'annonce et le lien, jamais le texte
+  du message (vie privée ; un lien d'arnaque ne part pas depuis l'adresse de Sugu). Nom
+  ramené sur une ligne dans le sujet (pas d'en-tête injecté). Un email par conversation tant
+  qu'elle n'est pas ouverte, rien pendant un échange en direct, désactivable au profil ;
+  une panne d'envoi est journalisée sans l'adresse et n'empêche pas le message.
 - Les messages sont du texte brut : liens cliquables (`urlize`, `rel="nofollow"`), rien
   d'autre interprété ; le HTML saisi est échappé (testé). 1 000 caractères au plus.
 - Messagerie (ticket #12) : une conversation n'est lue, écrite ou rafraîchie que par ses deux

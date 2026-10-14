@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import partial
 
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -8,6 +9,7 @@ from django.utils import timezone
 
 from apps.listings.models import Listing, ListingStatus
 
+from . import notifications
 from .models import Conversation, Message
 
 # Une nouvelle conversation ne s'ouvre que sur une annonce encore disponible ; une conversation
@@ -35,7 +37,9 @@ def find_conversation(listing: Listing, buyer) -> Conversation | None:
     return Conversation.objects.filter(listing=listing, buyer=buyer).first()
 
 
-def start_conversation(buyer, listing: Listing, body: str) -> Conversation:
+def start_conversation(
+    buyer, listing: Listing, body: str, *, base_url: str | None = None
+) -> Conversation:
     """Premier message d'un acheteur : la conversation n'est créée qu'avec lui (pas de
     conversation vide). Si elle existe déjà, le message s'y ajoute."""
     if listing.user_id == buyer.pk:
@@ -44,11 +48,16 @@ def start_conversation(buyer, listing: Listing, body: str) -> Conversation:
         conversation, _ = Conversation.objects.get_or_create(
             listing=listing, buyer=buyer, defaults={"seller_id": listing.user_id}
         )
-        send_message(conversation, buyer, body)
+        send_message(conversation, buyer, body, base_url=base_url)
     return conversation
 
 
-def send_message(conversation: Conversation, sender, body: str) -> Message:
+def send_message(
+    conversation: Conversation, sender, body: str, *, base_url: str | None = None
+) -> Message:
+    """`base_url` (« https://sugu.ml ») : adresse du site pour les liens de l'email de nouveau
+    message, envoyé après validation si c'est le premier non lu (notifications.py). Sans
+    adresse (scripts, données de démo) : pas d'email."""
     if sender.pk not in (conversation.buyer_id, conversation.seller_id):
         raise PermissionDenied("Vous ne participez pas à cette conversation.")
     if conversation.other_party(sender).is_deleted:
@@ -57,6 +66,8 @@ def send_message(conversation: Conversation, sender, body: str) -> Message:
     Conversation.objects.filter(pk=conversation.pk).update(
         last_message_at=message.created_at, updated_at=message.created_at
     )
+    if base_url and notifications.should_notify(message):
+        transaction.on_commit(partial(notifications.send_new_message_email, message, base_url))
     return message
 
 

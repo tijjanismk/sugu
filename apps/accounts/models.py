@@ -48,6 +48,10 @@ class User(AbstractUser):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    # Email au premier message non lu d'une conversation (ticket #12), désactivable au profil.
+    notify_messages = models.BooleanField(
+        "me prévenir par email des nouveaux messages", default=True
+    )
     # Augmenter ce nombre déconnecte toutes les sessions sans toucher au mot de passe
     # (« Déconnecter mes autres appareils », ticket #13).
     session_version = models.PositiveIntegerField("version de session", default=0)
