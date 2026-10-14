@@ -6,6 +6,14 @@
     <p class="body mt-2 text-ink-muted">Achetez et vendez entre particuliers, près de chez vous.</p>
   </section>
 
+  {% if categories %}
+    <section class="mt-4" aria-labelledby="categories-title">
+      <h2 id="categories-title" class="heading px-4 text-ink">Catégories</h2>
+      {% include "components/category_tiles.html" %}
+      <div class="px-1"><a class="sg-btn sg-btn--quiet" href="{{ search_url }}">Toutes les catégories</a></div>
+    </section>
+  {% endif %}
+
   {% comment %}
     Exemple de partial htmx (ticket #4) : « Actualiser » ne recharge que cette section, que la vue
     renvoie seule quand la requête vient de htmx. Le ticket #8 y met les dernières annonces.

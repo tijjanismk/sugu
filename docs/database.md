@@ -15,7 +15,7 @@ migration `accounts.0002`). Les tables `account_emailaddress` et
 | display_name        | varchar(50)     | nom affiché sur les annonces, obligatoire   |
 | phone               | varchar(20)     | contact facultatif, visible aux connectés   |
 | phone_verified      | bool            | réservé à une future vérification OTP       |
-| city_id             | FK → city       | optionnel ; ajouté avec `City` (ticket #5)  |
+| city_id             | FK → city       | optionnel, SET NULL si la ville disparaît   |
 | is_active, is_staff | bool            | Django                                      |
 
 ## django_cache
@@ -26,21 +26,28 @@ Dev et tests utilisent un cache en mémoire à la place.
 
 ## listings_category
 
-| Champ     | Type                    | Notes                 |
-|-----------|-------------------------|-----------------------|
-| name      | varchar(60)             |                       |
-| slug      | varchar, unique         |                       |
-| parent_id | FK → category, nullable | deux niveaux maximum  |
-| icon      | varchar(40)             | nom d'icône           |
-| order     | int                     | ordre d'affichage     |
+Données de référence chargées par `manage.py seed` (`apps/listings/seed_data.py`, idempotent,
+clé = slug) : 10 catégories principales et 20 sous-catégories.
+
+| Champ     | Type                    | Notes                                                  |
+|-----------|-------------------------|--------------------------------------------------------|
+| name      | varchar(60)             |                                                        |
+| slug      | varchar(80), unique     | tiré du nom sans accents ; préfixé du parent si pris   |
+| parent_id | FK → category, nullable | PROTECT ; deux niveaux maximum (vérifié à `save()`)    |
+| icon      | varchar(40)             | nom d'icône Lucide (catégories principales)            |
+| order     | int                     | ordre d'affichage                                      |
+
+Contrainte `category_not_its_own_parent` : CHECK `parent_id <> id`.
 
 ## listings_city
 
-| Champ  | Type            | Notes |
-|--------|-----------------|-------|
-| name   | varchar(80)     |       |
-| region | varchar(80)     |       |
-| slug   | varchar, unique |       |
+Principales villes du Mali chargées par `manage.py seed` (régions du découpage de 2023).
+
+| Champ  | Type                | Notes                       |
+|--------|---------------------|-----------------------------|
+| name   | varchar(80)         |                             |
+| region | varchar(80)         | facultatif                  |
+| slug   | varchar(80), unique | tiré du nom sans accents    |
 
 ## listings_listing
 
