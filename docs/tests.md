@@ -43,12 +43,22 @@ Trois parcours seulement, les plus critiques pour « tester l'idée » :
 Ils tournent contre un serveur local avec les données de `seed`. En CI,
 uniquement sur `main` (trop lents pour chaque push).
 
+Fichiers (ticket #16) : `test_depot.py`, `test_messagerie.py`, `test_favoris.py`, plus
+`test_pwa.py` (page hors-ligne, critère du ticket #14) et `test_smoke.py`. Les parcours
+partagent un vendeur et un acheteur inscrits une fois par session (`conftest.py`) :
+l'inscription est limitée à 3 par heure et par IP, et le cache de développement est en
+mémoire. Pour relancer plusieurs fois en moins d'une heure, redémarrer le serveur. Chaque
+compte a son propre navigateur, au format téléphone (375 × 812).
+
+Première fois sur un poste : `uv run playwright install chromium` (environ 170 Mo).
+
 ## Ce qu'il n'est PAS utile de tester
 
 - Le fonctionnement interne de Django, allauth ou l'admin
 - Le HTML exact ou les classes Tailwind : on teste la présence de contenu et
   les codes HTTP, pas la mise en page
-- Le service worker en V1
+- Le service worker en V1, sauf le critère du ticket #14 : la page hors-ligne s'affiche
+  sans réseau (`tests/e2e/test_pwa.py`)
 - La connexion réelle à R2 : un seul test manuel après le premier déploiement
 - Les getters triviaux et les `__str__`
 

@@ -204,9 +204,12 @@ Critères d'acceptation :
 - Un dépôt d'annonce avec photo fonctionne en prod
 - Tag `v0.1.0`
 
-## #16 — Tests de bout en bout
+## #16 — Tests de bout en bout ✅ (fait le 2026-10-14, sur `main`)
 
 Les trois parcours Playwright et le job `e2e` dans la CI.
+Le parcours messagerie vérifie aussi la pastille de non-lus et l'arrivée de la réponse sans
+recharger ; le parcours favoris, la bascule sans rechargement. Lancement local à faire une
+première fois après `uv run playwright install chromium`.
 
 Critères d'acceptation :
 - Les trois tests passent localement et sur `main`

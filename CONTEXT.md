@@ -75,7 +75,10 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 - Dernière tâche terminée : #14 PWA (`apps/core/pwa.py` : manifeste, `/sw.js` à la racine
   qui ne met jamais une page en cache, page `/hors-ligne/` identique pour tous, icônes par
   `scripts/make_icons.py` ; test hors-ligne dans `tests/e2e/test_pwa.py`)
-- Tâche en cours : aucune ; prochaine : #15 Mise en production
+- Aussi fait : #16 Tests de bout en bout (trois parcours dans `tests/e2e`, verts sur `main` ;
+  pas encore lancés sur le poste : Chromium de Playwright non téléchargé)
+- Tâche en cours : aucune ; prochaine : #15 Mise en production (serveur, DNS, R2 :
+  décisions et accès du propriétaire nécessaires)
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
