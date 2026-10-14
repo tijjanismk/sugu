@@ -6,6 +6,7 @@
   <header class="sg-topbar sg-topbar--raised">
     <a class="sg-btn sg-btn--icon" href="{% url 'core:home' %}" aria-label="Retour à l'accueil">{% include "components/icon.html" with name="back" %}</a>
     <p class="sg-topbar__title">{{ listing.title }}</p>
+    {% include "favorites/button.html" with variant="bar" %}
   </header>
 {% endblock %}
 {% block main_class %}mx-auto max-w-content{% endblock %}

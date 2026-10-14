@@ -140,12 +140,15 @@ Index : (conversation_id, created_at)
 
 ## favorites_favorite
 
-| Champ      | Type         |
-|------------|--------------|
-| user_id    | FK → user    |
-| listing_id | FK → listing |
+| Champ      | Type                                 |
+|------------|--------------------------------------|
+| user_id    | FK → user, suppression en cascade    |
+| listing_id | FK → listing, suppression en cascade |
+| created_at | timestamp                            |
 
-Contrainte unique : (user_id, listing_id)
+Contrainte unique : (user_id, listing_id). « Mes favoris » trie par `created_at`
+décroissant. Les cœurs d'une page sont lus en une requête (identifiants des favoris de
+l'utilisateur, processeur de contexte paresseux), quel que soit le nombre de cartes.
 
 ## Évolutions prévues (hors V1)
 

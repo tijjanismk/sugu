@@ -40,6 +40,12 @@ Par ordre de probabilité pour un site d'annonces :
   propriétaire (`services.check_owner`). Les actions définitives (vendre, supprimer) passent
   par une page de confirmation puis un POST ; un GET ne modifie jamais rien. Une contre-épreuve
   (vérification retirée → les 5 tests « autre utilisateur » échouent) a été faite.
+- Favoris (ticket #11) : un favori ne se lit et ne s'écrit que pour `request.user` (pas
+  d'identifiant d'utilisateur dans l'URL), en POST avec jeton CSRF. L'adresse de retour
+  (`next`, ou l'en-tête `HX-Current-URL` en htmx) est validée par
+  `url_has_allowed_host_and_scheme` : une adresse d'un autre site est ignorée, pas de
+  redirection ouverte. Contre-épreuves faites (contrôle de connexion ou d'adresse retiré → les
+  tests échouent).
 - Les requêtes de lecture filtrent par utilisateur dans l'ORM
   (`Conversation.objects.filter(Q(buyer=user) | Q(seller=user))`), jamais après coup.
 - L'admin Django n'est accessible qu'aux comptes `is_staff`, protégé par un mot de

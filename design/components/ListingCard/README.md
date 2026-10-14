@@ -4,7 +4,8 @@ La carte annonce montre une photo 4:3, le prix en premier, un titre sur deux lig
 
 ## Structure
 
-- La carte entière est un lien `<a class="sg-card">` vers l'annonce. Le bouton favori est un `<button>` frère, positionné dans le coin, jamais imbriqué dans le lien.
+- La carte entière est un lien `<a class="sg-card">` vers l'annonce. Le bouton favori est un `<button>` frère, positionné dans le coin, jamais imbriqué dans le lien. Les deux sont dans un conteneur `sg-card-slot` (position relative ; la carte y garde la hauteur de la rangée de la grille).
+- Libellé du bouton : « Ajouter aux favoris : » suivi du titre, pour distinguer les cartes à la lecture d'écran. Pas de cœur sur les annonces de l'utilisateur connecté.
 - `sg-card__media` : `<img>` WebP 400 px, `width="400" height="300"`, `alt` = titre de l'annonce ; sans photo, un `<div>` avec l'icône appareil photo.
 - `sg-card__price` : style `price`, couleur `indigo`, « 45 000 FCFA » ; prix absent : `sg-card__price--open` et « À débattre ».
 - `sg-card__title` : style `small`, deux lignes au plus, coupé par `line-clamp`.
@@ -12,7 +13,7 @@ La carte annonce montre une photo 4:3, le prix en premier, un titre sur deux lig
 
 ## États
 
-- Favori actif : `aria-pressed="true"` sur le bouton, cœur plein en `heart`. La bascule se fait en htmx sur le bouton seul.
+- Favori actif : `aria-pressed="true"` sur le bouton, cœur plein en `heart`. La bascule se fait en htmx sur le bouton seul. Sur la page de l'annonce, le même cœur est un `sg-btn sg-btn--icon sg-fav` à droite de la barre du haut.
 - Vendue : `sg-card--sold`, photo atténuée, prix barré en `ink-muted`, badge « Vendu ». La carte reste visible sur la page du vendeur, disparaît de la recherche.
 - Nouvelle (moins de 24 h) : badge `sg-badge--new` en haut à gauche.
 - Prix en baisse (moins de 14 jours) : badge `sg-badge--drop` et ancien prix barré `<s class="sg-was">` dans `sg-card__price`, sur sa propre ligne (une carte fait 160 px de large sur mobile). Un seul badge par carte : Vendu, sinon Prix en baisse, sinon Nouveau.

@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.accounts",
     "apps.listings",
+    "apps.favorites",
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.navigation",
+                "apps.favorites.context_processors.favorites",
             ],
         },
     },

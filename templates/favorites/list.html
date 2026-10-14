@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Mes favoris · Sugu{% endblock %}
+{% block content %}
+  <section class="pt-4" aria-labelledby="favorites-title">
+    <h1 id="favorites-title" class="title px-4 text-ink">Mes favoris</h1>
+    {% if page_obj.object_list %}
+      <div class="sg-grid">
+        {% partialdef listing_page inline %}
+          {% for listing in page_obj %}
+            {% if page_obj.number > 1 or forloop.counter > 4 %}
+              {% include "components/listing_card.html" with lazy=True %}
+            {% else %}
+              {% include "components/listing_card.html" %}
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <div class="col-span-full" id="more">
+              <a class="sg-btn sg-btn--block" href="?page={{ page_obj.next_page_number }}"
+                 hx-get="?page={{ page_obj.next_page_number }}" hx-target="#more" hx-swap="outerHTML"
+                 hx-disabled-elt="this">Voir plus</a>
+            </div>
+          {% endif %}
+        {% endpartialdef %}
+      </div>
+    {% else %}
+      {% url "core:home" as home_url %}
+      {% include "components/empty_state.html" with icon="favorites" title="Aucun favori pour l'instant" body="Touchez le cœur d'une annonce pour la retrouver ici." action_href=home_url action_label="Voir les annonces" %}
+    {% endif %}
+  </section>
+{% endblock %}

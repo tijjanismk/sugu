@@ -1,0 +1,16 @@
+{% comment %}
+  Bouton favori (design/components/ListingCard) : un <button> à côté du lien de la carte, jamais
+  dedans. Paramètres : listing, variant (« card » dans le coin d'une carte, « bar » dans la barre
+  du haut de la page annonce). Le formulaire envoie l'état voulu (on=1 ou 0) : en htmx, la
+  réponse remplace ce formulaire seul ; sans JavaScript, la page se recharge.
+  Pas de cœur sur ses propres annonces.
+{% endcomment %}{% if listing.user_id != user.pk %}{% url "favorites:set" listing.pk as set_url %}
+<form method="post" action="{{ set_url }}" hx-post="{{ set_url }}" hx-swap="outerHTML" hx-disabled-elt="find button">
+  {% csrf_token %}
+  <input type="hidden" name="on" value="{% if listing.pk in favorite_ids %}0{% else %}1{% endif %}">
+  <input type="hidden" name="variant" value="{{ variant }}">
+  <input type="hidden" name="next" value="{{ return_url|default:request.path }}">
+  <button class="{% if variant == 'bar' %}sg-btn sg-btn--icon sg-fav{% else %}sg-card__fav{% endif %}" type="submit"
+          aria-pressed="{% if listing.pk in favorite_ids %}true{% else %}false{% endif %}"
+          aria-label="Ajouter aux favoris{% if variant != 'bar' %} : {{ listing.title }}{% endif %}">{% include "components/icon.html" with name="favorites" %}</button>
+</form>{% endif %}

@@ -49,6 +49,12 @@ a { color: var(--indigo); }
 .sg-card__fav[aria-pressed="true"] { color: var(--heart); }
 .sg-card__fav[aria-pressed="true"] .sg-icon { fill: currentColor; }
 .sg-card__fav:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+/* Carte + bouton favori frère : le conteneur porte la position, la carte garde la hauteur de la rangée */
+.sg-card-slot { position: relative; }
+.sg-card-slot > .sg-card { height: 100%; }
+/* Favori dans la barre du haut de la page annonce : cœur plein en heart quand il est actif */
+.sg-fav[aria-pressed="true"] { color: var(--heart); }
+.sg-fav[aria-pressed="true"] .sg-icon { fill: currentColor; }
 .sg-card__badge { position: absolute; top: var(--space-2); left: var(--space-2); }
 .sg-card--sold .sg-card__media { opacity: .5; }
 .sg-card--sold .sg-card__price { color: var(--ink-muted); text-decoration: line-through; }
