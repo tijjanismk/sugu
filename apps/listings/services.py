@@ -1,10 +1,12 @@
+import re
 from dataclasses import dataclass
 from uuid import uuid4
 
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Prefetch
+from django.db.models import F, Prefetch, Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
@@ -12,6 +14,7 @@ from .images import process_photo
 from .models import (
     MAX_PHOTOS,
     PUBLISHED_STATUSES,
+    SEARCH_CONFIG,
     Category,
     City,
     Listing,
@@ -39,6 +42,53 @@ def latest_listings():
     return with_cover(Listing.objects.filter(status=ListingStatus.PUBLISHED)).order_by(
         "-published_at", "-pk"
     )
+
+
+MAX_SEARCH_TERMS = 8
+_WORD = re.compile(r"[^\W_]+")
+
+
+def search_query(text: str) -> SearchQuery | None:
+    """Mots-clés → requête plein texte. Chaque mot est cherché aussi en début de mot (« sams »
+    trouve « Samsung ») et tous doivent être présents. Seuls lettres et chiffres atteignent
+    PostgreSQL : la syntaxe tsquery (& | ! : *) saisie par l'utilisateur est neutralisée."""
+    words = _WORD.findall(text.lower())[:MAX_SEARCH_TERMS]
+    if not words:
+        return None
+    raw = " & ".join(_term(word) for word in words)
+    return SearchQuery(raw, config=SEARCH_CONFIG, search_type="raw")
+
+
+def _term(word: str) -> str:
+    """Le racinisateur français laisse « vélos » intact (il ne retire le pluriel que de certains
+    mots) : un mot en -s ou -x est aussi cherché sans sa dernière lettre (vélos → vélo)."""
+    if len(word) > 3 and word[-1] in "sx":
+        return f"({word}:* | {word[:-1]}:*)"
+    return f"{word}:*"
+
+
+def search_listings(*, q=None, category=None, city=None, price_min=None, price_max=None):
+    """Recherche (ticket #9) parmi les annonces publiées : les vendues et retirées n'y sont
+    jamais. Une catégorie principale inclut ses sous-catégories. Un filtre de prix écarte les
+    annonces « à débattre ». Avec des mots-clés : les plus pertinentes d'abord (mot dans le
+    titre > quartier > description), puis les plus récentes ; sans mot-clé : par date."""
+    listings = Listing.objects.filter(status=ListingStatus.PUBLISHED)
+    if category is not None:
+        listings = listings.filter(Q(category=category) | Q(category__parent=category))
+    if city is not None:
+        listings = listings.filter(city=city)
+    if price_min is not None:
+        listings = listings.filter(price__gte=price_min)
+    if price_max is not None:
+        listings = listings.filter(price__lte=price_max)
+
+    query = search_query(q or "")
+    if query is None:
+        return with_cover(listings).order_by("-published_at", "-pk")
+    listings = listings.filter(search_vector=query).annotate(
+        rank=SearchRank(F("search_vector"), query)
+    )
+    return with_cover(listings).order_by("-rank", "-published_at", "-pk")
 
 
 def get_visible_listing(pk: int) -> Listing:
