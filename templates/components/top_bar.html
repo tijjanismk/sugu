@@ -7,7 +7,7 @@
   {% if not hide_nav %}
     <nav class="sg-topnav" aria-label="Navigation principale (grand écran)">
       {% for item in nav_items %}{% if item.key != "post" %}
-        <a class="sg-topnav__item" href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}>{% include "components/icon.html" with name=item.key %}{{ item.label }}</a>
+        <a class="sg-topnav__item" href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}>{% include "components/icon.html" with name=item.key %}{{ item.label }}{% if item.key == "messages" and unread_messages %} <span class="sg-badge sg-badge--new">{{ unread_messages }}<span class="sr-only"> non lus</span></span>{% endif %}</a>
       {% endif %}{% endfor %}
     </nav>
   {% endif %}

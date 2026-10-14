@@ -119,13 +119,16 @@ devient la couverture) et une annonce garde au moins une photo.
 
 ## messaging_conversation
 
-| Champ      | Type         | Notes                         |
-|------------|--------------|-------------------------------|
-| listing_id | FK → listing |                               |
-| buyer_id   | FK → user    |                               |
-| seller_id  | FK → user    | dénormalisé pour les requêtes |
+| Champ           | Type            | Notes                                            |
+|-----------------|-----------------|--------------------------------------------------|
+| listing_id      | FK → listing    | protégé : une annonce se retire, ne s'efface pas |
+| buyer_id        | FK → user       | protégé : un compte s'anonymise (#13)            |
+| seller_id       | FK → user       | dénormalisé pour les requêtes                    |
+| last_message_at | timestamp, null | tri de la boîte de réception, indexé             |
 
-Contrainte unique : (listing_id, buyer_id)
+Contrainte unique : (listing_id, buyer_id). Contrainte CHECK : buyer_id ≠ seller_id (un
+vendeur ne s'écrit pas à lui-même, vérifié aussi par le service). La conversation n'est
+créée qu'avec son premier message.
 
 ## messaging_message
 
@@ -134,9 +137,12 @@ Contrainte unique : (listing_id, buyer_id)
 | conversation_id | FK → conversation |                      |
 | sender_id       | FK → user         |                      |
 | body            | text              | max 1 000 caractères |
-| read_at         | timestamp, null   |                      |
+| created_at      | timestamp         |                      |
+| read_at         | timestamp, null   | posé à l'ouverture   |
 
-Index : (conversation_id, created_at)
+Index : (conversation_id, created_at). Le compteur de non-lus compte les messages reçus
+sans `read_at` (une requête par page, processeur de contexte paresseux) ; la boîte de
+réception lit dernier message et non-lus de chaque conversation en une requête.
 
 ## favorites_favorite
 

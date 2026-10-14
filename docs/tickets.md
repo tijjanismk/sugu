@@ -145,10 +145,15 @@ Critères d'acceptation :
 - Redirection vers la connexion si non connecté
 - Contrainte d'unicité testée
 
-## #12 — Messagerie
+## #12 — Messagerie ✅ (fait le 2026-10-14)
 
 Conversation par couple (annonce, acheteur), envoi de message, liste des
 conversations, polling htmx 10 s, compteur de non-lus.
+« Écrire au vendeur » collé en bas de la page annonce (à la place de la barre de
+navigation) ; la conversation n'est créée qu'au premier message, avec un premier message
+proposé (« Bonjour, l'objet est-il toujours disponible ? ») et le rappel de prudence. Pas de
+nouvelle conversation sur une annonce vendue ; une conversation commencée continue.
+Rafraîchissement suspendu quand l'onglet est en arrière-plan (économie de données).
 
 Critères d'acceptation :
 - Un vendeur ne peut pas se contacter lui-même

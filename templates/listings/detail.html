@@ -64,7 +64,16 @@
       <p class="body mt-2 text-ink">{{ listing.user.display_name }}</p>
     </div>
 
-    {# Rappel de sécurité sur chaque annonce (docs/security.md). Contact : ticket #12. #}
+    {# Rappel de sécurité sur chaque annonce (docs/security.md). #}
     {% include "components/alert.html" with variant="info" title="Restez prudent" body="Rencontrez le vendeur dans un lieu public et ne payez jamais avant d'avoir vu l'objet." %}
   </article>
+
+  {# Action de la page (ticket #12) : la conversation existante s'ouvre, sinon une nouvelle. #}
+  {% if user.pk != listing.user_id and not listing.is_sold %}
+    <div class="sg-sticky">
+      <a class="sg-btn sg-btn--primary sg-btn--lg sg-btn--block" href="{% url 'messaging:start' listing.pk %}">{% include "components/icon.html" with name="messages" %}Écrire au vendeur</a>
+    </div>
+  {% endif %}
 {% endblock %}
+{% block body_class %}{% endblock %}
+{% block bottomnav %}{% endblock %}

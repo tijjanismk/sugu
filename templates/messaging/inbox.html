@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load sugu_format %}
+{% block title %}Messages · Sugu{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  <h1 class="title px-4 pt-6 pb-2 text-ink">Messages</h1>
+  {% if page_obj.object_list %}
+    {# Liste (design/components/ListItem) : la ligne entière ouvre la conversation. #}
+    <ul class="sg-list">
+      {% for conversation in page_obj %}
+        <li>
+          <a class="sg-list__item{% if conversation.unread %} sg-list__item--unread{% endif %}" href="{{ conversation.get_absolute_url }}">
+            <span class="sg-avatar" aria-hidden="true">{{ conversation.other.display_name|initials }}</span>
+            <div class="sg-list__body">
+              <p class="sg-list__title">{{ conversation.other.display_name }} · {{ conversation.listing.title }}</p>
+              <p class="sg-list__text">{% if conversation.last_sender_id == user.pk %}Vous : {% endif %}{{ conversation.last_body }}</p>
+            </div>
+            <span class="sg-list__time">{{ conversation.last_message_at|relative_date }}</span>
+            {% if conversation.unread %}<span class="sg-dot"></span><span class="sr-only">{{ conversation.unread }} non lu{{ conversation.unread|pluralize }}</span>{% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    {% if page_obj.has_next %}
+      <div class="p-4"><a class="sg-btn sg-btn--block" href="?page={{ page_obj.next_page_number }}">Conversations plus anciennes</a></div>
+    {% endif %}
+  {% else %}
+    {% url "core:home" as home_url %}
+    {% include "components/empty_state.html" with icon="messages" title="Aucun message pour l'instant" body="Écrivez à un vendeur depuis une annonce : la conversation apparaîtra ici." action_href=home_url action_label="Voir les annonces" %}
+  {% endif %}
+{% endblock %}

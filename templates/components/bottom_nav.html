@@ -1,12 +1,13 @@
 {% comment %}
   Barre de navigation basse (design/components/BottomNav) : cinq destinations, « Déposer » en
-  sun au centre. Masquée à partir de 1024 px, où la barre du haut prend le relais.
+  sun au centre. Masquée à partir de 1024 px, où la barre du haut prend le relais. Messages non
+  lus : pastille `sg-bottomnav__count` (`unread_messages`, processeur de contexte, ticket #12).
 {% endcomment %}<nav class="sg-bottomnav" aria-label="Navigation principale">
   {% for item in nav_items %}
     {% if item.key == "post" %}
       <a class="sg-bottomnav__post" href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}><span>{% include "components/icon.html" with name="post" size="lg" %}</span><span>{{ item.label }}</span></a>
     {% else %}
-      <a class="sg-bottomnav__item" href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}>{% include "components/icon.html" with name=item.key size="lg" %}{{ item.label }}</a>
+      <a class="sg-bottomnav__item" href="{{ item.href }}"{% if item.current %} aria-current="page"{% endif %}>{% include "components/icon.html" with name=item.key size="lg" %}{{ item.label }}{% if item.key == "messages" and unread_messages %}<span class="sg-bottomnav__count">{{ unread_messages }}<span class="sr-only"> non lus</span></span>{% endif %}</a>
     {% endif %}
   {% endfor %}
 </nav>

@@ -86,8 +86,12 @@ Par ordre de probabilité pour un site d'annonces :
   l'original n'est jamais écrit ni servi. L'orientation EXIF est appliquée puis toutes les
   métadonnées (dont la position GPS) disparaissent au réencodage. La réduction faite dans le
   navigateur avant l'envoi (`photo-picker.js`) n'est qu'un confort : le serveur revérifie tout.
-- Les messages sont du texte brut : liens cliquables, rien d'autre interprété
-  (ticket #12).
+- Les messages sont du texte brut : liens cliquables (`urlize`, `rel="nofollow"`), rien
+  d'autre interprété ; le HTML saisi est échappé (testé). 1 000 caractères au plus.
+- Messagerie (ticket #12) : une conversation n'est lue, écrite ou rafraîchie que par ses deux
+  participants (`services.get_conversation` filtre dans la requête ; un tiers reçoit 404,
+  testé, contre-épreuve faite) ; `send_message` revérifie l'auteur. Un vendeur ne peut pas
+  s'écrire (403, et contrainte CHECK en base).
 - Les paramètres de recherche sont validés par un `Form` (`SearchForm.valid_filters`) ; une
   valeur inattendue est ignorée, pas renvoyée telle quelle dans la page : les liens (chips,
   « Voir plus ») sont reconstruits à partir des seuls filtres valides. Les mots-clés ne
@@ -114,7 +118,9 @@ Par ordre de probabilité pour un site d'annonces :
 
 - Limitation de débit sur inscription, connexion, dépôt d'annonce, envoi de message
   et signalement (inscription et connexion : ticket #3 ; dépôt d'annonce : 5 par heure et
-  20 par jour par utilisateur, ticket #7, via `apps/core/ratelimit.py` ; #12 à venir).
+  20 par jour par utilisateur, ticket #7, via `apps/core/ratelimit.py` ; messagerie,
+  ticket #12 : 10 nouvelles conversations par heure et 30 par jour, 60 messages par heure et
+  300 par jour).
 - Cloudflare devant le site : absorption des attaques par saturation, filtrage des
   robots, cache des fichiers statiques.
 - Si le spam d'inscriptions arrive : défi Turnstile (Cloudflare) sur le formulaire

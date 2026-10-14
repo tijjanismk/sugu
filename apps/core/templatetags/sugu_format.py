@@ -31,6 +31,29 @@ def fcfa(value) -> str:
 
 
 @register.filter
+def day_label(value: datetime | None, now: datetime | None = None) -> str:
+    """Séparateur de jour d'une conversation : « Aujourd'hui », « Hier », puis « 12 oct. »
+    (avec l'année si ce n'est pas l'année en cours)."""
+    if value is None:
+        return ""
+    today = timezone.localtime(now or timezone.now()).date()
+    day = timezone.localtime(value).date()
+    if day == today:
+        return "Aujourd'hui"
+    if (today - day).days == 1:
+        return "Hier"
+    label = f"{day.day} {MONTHS[day.month - 1]}"
+    return label if day.year == today.year else f"{label} {day.year}"
+
+
+@register.filter
+def initials(name: str | None) -> str:
+    """Avatar (design/components/Avatar) : « Aminata Koné » → « AK », « Moussa » → « M »."""
+    words = (name or "").split()
+    return "".join(word[0] for word in words[:2]).upper()
+
+
+@register.filter
 def relative_date(value: datetime | None, now: datetime | None = None) -> str:
     """Date relative jusqu'à sept jours (« il y a 2 h », « hier », « il y a 3 j »), puis la date
     courte (« 12 oct. », avec l'année si ce n'est pas l'année en cours)."""
