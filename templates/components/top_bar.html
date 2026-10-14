@@ -19,9 +19,10 @@
   {% endif %}
   {% if hide_nav %}
   {% elif user.is_authenticated %}
+    <a class="sg-btn sg-btn--quiet" href="{% url 'listings:mine' %}">Mes annonces</a>
     <form method="post" action="{% url 'account_logout' %}">
       {% csrf_token %}
-      <button class="sg-btn sg-btn--quiet" type="submit">Se déconnecter</button>
+      <button class="sg-btn sg-btn--icon" type="submit" aria-label="Se déconnecter">{% include "components/icon.html" with name="logout" %}</button>
     </form>
   {% else %}
     <a class="sg-btn sg-btn--quiet" href="{% url 'account_login' %}">Se connecter</a>

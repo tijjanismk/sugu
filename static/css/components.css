@@ -204,3 +204,4 @@ textarea.sg-input { min-height: 112px; padding: var(--space-3); resize: vertical
 .sg-list__item--unread .sg-list__text { color: var(--ink); font-weight: 500; }
 .sg-list__time { font-size: 12px; line-height: 16px; color: var(--ink-muted); flex: none; }
 .sg-dot { width: 10px; height: 10px; border-radius: var(--radius-full); background: var(--indigo); flex: none; }
+.sg-list__thumb { width: 56px; height: 56px; flex: none; display: grid; place-items: center; border-radius: var(--radius-md); background: var(--surface-sunken); color: var(--ink-muted); object-fit: cover; }

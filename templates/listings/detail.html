@@ -26,6 +26,13 @@
     {% if listing.is_sold %}
       {% include "components/alert.html" with variant="info" title="Annonce vendue" body="Cet objet a trouvé preneur. L'annonce reste visible pour mémoire." %}
     {% endif %}
+    {% if user.is_authenticated and user.pk == listing.user_id %}
+      <div class="sg-alert sg-alert--info" role="status">
+        {% include "components/icon.html" with name="info" %}
+        <div><strong>C'est votre annonce</strong>
+          <a href="{% url 'listings:edit' listing.pk %}">Gérer l'annonce</a></div>
+      </div>
+    {% endif %}
 
     <div class="px-4 pt-4">
       {% if listing.price is None %}

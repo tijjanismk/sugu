@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load sugu_format %}
+{% block title %}Mes annonces · Sugu{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  <h1 class="title px-4 pt-6 pb-2 text-ink">Mes annonces</h1>
+  {% if listings %}
+    {# Liste (design/components/ListItem) : la ligne entière mène à la gestion de l'annonce. #}
+    <ul class="sg-list">
+      {% for listing in listings %}
+        {% with photo=listing.cover_photos.0 %}
+        <li>
+          <a class="sg-list__item" href="{% url 'listings:edit' listing.pk %}">
+            {% if photo %}
+              <img class="sg-list__thumb" src="{{ photo.thumb.url }}" width="56" height="56" alt="" loading="lazy">
+            {% else %}
+              <span class="sg-list__thumb">{% include "components/icon.html" with name="camera" %}</span>
+            {% endif %}
+            <div class="sg-list__body">
+              <p class="sg-list__title">{{ listing.title }}</p>
+              <p class="sg-list__text">{{ listing.price|fcfa }} · {{ listing.published_at|default:listing.created_at|relative_date }}</p>
+            </div>
+            {% if listing.is_sold %}<span class="sg-badge sg-badge--sold">Vendu</span>
+            {% elif listing.status == "published" %}<span class="sg-badge">En ligne</span>
+            {% else %}<span class="sg-badge">{{ listing.get_status_display }}</span>{% endif %}
+          </a>
+        </li>
+        {% endwith %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    {% url "listings:create" as create_url %}
+    {% include "components/empty_state.html" with icon="list" title="Vous n'avez pas encore d'annonce" body="Une photo, un prix, quelques mots : votre annonce est en ligne en deux minutes." action_href=create_url action_label="Déposer une annonce" %}
+  {% endif %}
+{% endblock %}

@@ -72,14 +72,16 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #9 Recherche et filtres (`/recherche/` en GET partageable : mots-clés
-  sans accents, début de mot et pluriels, quartier inclus ; catégorie, ville, prix ; valeurs
-  invalides ignorées ; tri par pertinence ; chips de filtres actifs, panneau de filtres sans JS,
-  « Voir plus » qui garde les filtres ; barre de recherche sur l'accueil)
-- Tâche en cours : aucune ; prochaine : #10 Gestion de mes annonces
+- Dernière tâche terminée : #10 Gestion de mes annonces (`/mes-annonces/`, page de gestion
+  `/annonce/<id>/modifier/` : contenu, quartier, distance, prix via `update_price`, photos à
+  retirer ou ajouter ; vendre et supprimer avec confirmation ; 403 pour un autre utilisateur,
+  vérifié aussi dans les services ; liens vers d'autres sites refusés dans les annonces)
+- Tâche en cours : aucune ; prochaine : #11 Favoris
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
   port) ; les liens Favoris et Messages mènent à la 404 jusqu'aux tickets #11 et #12 ; ajouts
-  de design des #8 et #9 à reporter dans l'artefact de design ; pas de synonymes dans la
-  recherche (« frigo » ne trouve pas « réfrigérateur ») ; photos HEIC refusées sans JavaScript
+  de design des #8 à #10 à reporter dans l'artefact de design ; pas de synonymes dans la
+  recherche ; photos HEIC refusées sans JavaScript ; idées V2 notées le 2026-10-14 : prix
+  anormaux, annonces recopiées par d'autres sites ; revenus : aucun en V1, « mise en avant »
+  payée par mobile money à étudier une fois le volume atteint (décision en attente)

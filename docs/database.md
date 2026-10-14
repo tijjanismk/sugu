@@ -52,7 +52,9 @@ Principales villes du Mali chargées par `manage.py seed` (régions du découpag
 ## listings_listing
 
 Statut et prix ne s'écrivent que par `apps/listings/services.py` (`change_status`, `publish`,
-`mark_sold`, `remove`, `update_price`) ; l'admin les affiche en lecture seule.
+`mark_sold`, `remove`, `update_price`, et pour le vendeur `update_listing`,
+`seller_mark_sold`, `seller_remove`) ; l'admin les affiche en lecture seule. « Supprimer »
+pour le vendeur = statut `removed` : rien n'est effacé, ni la ligne ni les photos.
 
 | Champ            | Type             | Notes                                                       |
 |------------------|------------------|-------------------------------------------------------------|
@@ -111,7 +113,9 @@ La recherche utilise la même configuration (`models.SEARCH_CONFIG`) ; voir
 
 Contraintes : unique (listing_id, order) `photo_unique_order` ; CHECK order < 6
 `photo_order_max` (6 photos au plus). Supprimer une photo (ou l'annonce, par cascade) efface
-ses deux fichiers après validation de la transaction (`apps/listings/signals.py`).
+ses deux fichiers après validation de la transaction (`apps/listings/signals.py`). Le vendeur
+retire une photo par `services.remove_photo` : les suivantes sont renumérotées (la suivante
+devient la couverture) et une annonce garde au moins une photo.
 
 ## messaging_conversation
 

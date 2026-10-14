@@ -8,12 +8,13 @@
 (function () {
   "use strict";
 
-  var MAX_PHOTOS = 6;
+  var MAX_PHOTOS = 6; // peut être réduit par data-max-photos (photos déjà en ligne)
   var MAX_SIDE = 1600;
   var JPEG_QUALITY = 0.85;
 
   var form = document.querySelector("[data-listing-form]");
   if (!form || !window.DataTransfer || !window.createImageBitmap) return;
+  if (form.dataset.maxPhotos) MAX_PHOTOS = parseInt(form.dataset.maxPhotos, 10) || MAX_PHOTOS;
 
   var input = form.querySelector("[data-photo-input]");
   var grid = form.querySelector("[data-photo-grid]");
