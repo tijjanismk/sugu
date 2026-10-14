@@ -13,9 +13,11 @@ migration `accounts.0002`). Les tables `account_emailaddress` et
 | email               | varchar, unique | identifiant de connexion                    |
 | password            | varchar         | haché par Django (Argon2)                   |
 | display_name        | varchar(50)     | nom affiché sur les annonces, obligatoire   |
-| phone               | varchar(20)     | contact facultatif, visible aux connectés   |
+| phone               | varchar(20)     | facultatif, chiffres seuls (+ indicatif), visible aux connectés |
 | phone_verified      | bool            | réservé à une future vérification OTP       |
 | city_id             | FK → city       | optionnel, SET NULL si la ville disparaît   |
+| session_version     | int, défaut 0   | +1 = toutes les sessions tombent (#13)      |
+| deleted_at          | timestamp, null | compte supprimé (anonymisé) par son titulaire |
 | is_active, is_staff | bool            | Django                                      |
 
 ## django_cache

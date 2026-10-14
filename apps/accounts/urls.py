@@ -7,7 +7,17 @@ de téléphone, confirmation d'email et réinitialisation par lien.
 from allauth.account import views
 from django.urls import path, re_path
 
+from . import views as account_views
+
 urlpatterns = [
+    # Profil (ticket #13). Noms sans espace de noms, comme ceux d'allauth qui partagent ce module.
+    path("profil/", account_views.profile, name="account_profile"),
+    path(
+        "profil/deconnecter-partout/",
+        account_views.sign_out_others,
+        name="account_sign_out_others",
+    ),
+    path("supprimer/", account_views.delete_account, name="account_delete"),
     path("connexion/", views.login, name="account_login"),
     path("deconnexion/", views.logout, name="account_logout"),
     path("inscription/", views.signup, name="account_signup"),

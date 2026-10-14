@@ -51,6 +51,8 @@ def start_conversation(buyer, listing: Listing, body: str) -> Conversation:
 def send_message(conversation: Conversation, sender, body: str) -> Message:
     if sender.pk not in (conversation.buyer_id, conversation.seller_id):
         raise PermissionDenied("Vous ne participez pas à cette conversation.")
+    if conversation.other_party(sender).is_deleted:
+        raise PermissionDenied("Ce compte a été supprimé.")
     message = Message.objects.create(conversation=conversation, sender=sender, body=body)
     Conversation.objects.filter(pk=conversation.pk).update(
         last_message_at=message.created_at, updated_at=message.created_at

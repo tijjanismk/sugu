@@ -52,7 +52,7 @@ def test_inscription_cree_le_compte_et_connecte(client):
     assert response.url == "/"
     user = User.objects.get(email="awa@example.ml")
     assert user.display_name == "Awa Traoré"
-    assert user.phone == "+223 70 00 00 00"
+    assert user.phone == "+22370000000"  # normalisé (ticket #13), affiché groupé
     assert user.check_password(MOT_DE_PASSE)
     assert _est_connecte(client)
     # Vérification « optionnelle » : un email de confirmation part quand même.

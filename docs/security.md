@@ -68,10 +68,14 @@ Par ordre de probabilité pour un site d'annonces :
 - Vérification de l'email « optionnelle » (l'email de confirmation part, le compte sert
   tout de suite) ; à passer en « obligatoire » si les faux comptes arrivent.
 - Déconnexion uniquement par POST : un lien piégé ne déconnecte pas.
-- La session expire après 30 jours d'inactivité ; déconnexion possible de tous les
-  appareils depuis le profil (ticket #13).
-- Numéro de téléphone visible uniquement aux utilisateurs connectés (ticket #13) ;
-  vérification OTP envisagée en V2.
+- La session expire après 30 jours d'inactivité ; « Déconnecter mes autres appareils »
+  depuis le profil (ticket #13) : `User.session_version` entre dans le hachage de session
+  (`_get_session_auth_hash`), l'augmenter invalide toutes les sessions sans changer le mot
+  de passe ; la session courante est gardée (`update_session_auth_hash`). Tant qu'il vaut
+  0, le hachage est celui de Django : la mise en production ne déconnecte personne.
+- Numéro de téléphone visible uniquement aux utilisateurs connectés (ticket #13) : absent
+  du HTML pour un visiteur, sous aucune forme (testé, contre-épreuve faite) ; vérification
+  OTP envisagée en V2.
 
 ### Entrées utilisateur
 
@@ -156,7 +160,12 @@ Par ordre de probabilité pour un site d'annonces :
 - Bouton « Signaler » sur chaque annonce et chaque conversation ; file de modération
   dans l'admin (V2, mais le modèle `moderation_report` est prévu).
 - Suppression de compte : anonymisation plutôt que destruction, pour garder les
-  preuves en cas de litige tout en respectant la vie privée (ticket #13).
+  preuves en cas de litige tout en respectant la vie privée (ticket #13). Confirmée par le
+  mot de passe (5 essais par heure). Annonces retirées, messages gardés et signés
+  « Compte supprimé », email, nom, téléphone et ville effacés, favoris et adresses email
+  supprimés, compte désactivé et sessions invalidées ; plus personne ne peut lui écrire.
+  Les photos des annonces retirées restent sur le disque (noms non devinables) ; leur
+  effacement après un délai est à décider avec les mentions légales (ticket #17).
 
 ### Revue
 

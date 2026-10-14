@@ -47,6 +47,26 @@ def day_label(value: datetime | None, now: datetime | None = None) -> str:
 
 
 @register.filter
+def month_year(value: datetime | None) -> str:
+    """« Membre depuis oct. 2026 »."""
+    if value is None:
+        return ""
+    value = timezone.localtime(value)
+    return f"{MONTHS[value.month - 1]} {value.year}"
+
+
+@register.filter
+def phone(value: str | None) -> str:
+    """Numéro enregistré en chiffres (« +22376123456 ») → lisible, par paires après
+    l'indicatif : « +223 76 12 34 56 », « 76 12 34 56 ». Autre longueur : tel quel."""
+    value = value or ""
+    prefix, digits = ("", value) if not value.startswith("+") else (value[:4] + " ", value[4:])
+    if len(digits) != 8 or not digits.isdigit():
+        return value
+    return prefix + " ".join(digits[i : i + 2] for i in range(0, 8, 2))
+
+
+@register.filter
 def initials(name: str | None) -> str:
     """Avatar (design/components/Avatar) : « Aminata Koné » → « AK », « Moussa » → « M »."""
     words = (name or "").split()

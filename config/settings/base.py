@@ -131,6 +131,8 @@ ACCOUNT_RATE_LIMITS = {
     # messages (une négociation en échange quelques dizaines par heure).
     "conversation_start": "10/h/user,30/d/user",
     "message_send": "60/h/user,300/d/user",
+    # Suppression de compte (ticket #13) : le mot de passe ne se devine pas par essais.
+    "account_delete": "5/h/user",
 }
 
 # Cache partagé entre les processus Gunicorn, sans Redis (ADR 0001) : table créée par la

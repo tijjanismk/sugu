@@ -47,6 +47,9 @@
     {% endif %}
   </div>
 
+  {% if other.is_deleted %}
+    <p class="sg-sticky small text-ink-muted">Ce compte a été supprimé : vous ne pouvez plus lui écrire. La conversation reste visible.</p>
+  {% else %}
   <form class="sg-composer sticky bottom-0 flex-wrap" method="post" novalidate data-composer
         {% if conversation %}action="{% url 'messaging:conversation' conversation.pk %}"
         hx-post="{% url 'messaging:conversation' conversation.pk %}" hx-target="#poll" hx-swap="outerHTML" hx-include="#poll-after"
@@ -56,6 +59,7 @@
     <button class="sg-btn sg-btn--primary sg-btn--icon" type="submit" aria-label="Envoyer">{% include "components/icon.html" with name="send" %}</button>
     {% partialdef composer_error inline %}<p class="sg-field__error basis-full empty:hidden" id="composer-error" role="alert">{% if error %}{{ error }}{% else %}{{ form.body.errors.0|default:'' }}{% endif %}</p>{% endpartialdef %}
   </form>
+  {% endif %}
 {% endblock %}
 {% block bottomnav %}{% endblock %}
 {% block scripts %}<script src="{% static 'js/conversation.js' %}" defer></script>{% endblock %}

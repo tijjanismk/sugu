@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
+from django.utils.crypto import salted_hmac
 
 
 class UserManager(DjangoUserManager):
@@ -47,6 +48,11 @@ class User(AbstractUser):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    # Augmenter ce nombre déconnecte toutes les sessions sans toucher au mot de passe
+    # (« Déconnecter mes autres appareils », ticket #13).
+    session_version = models.PositiveIntegerField("version de session", default=0)
+    # Compte supprimé par son titulaire : anonymisé, pas détruit (docs/security.md).
+    deleted_at = models.DateTimeField("supprimé le", null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["display_name"]
@@ -65,3 +71,20 @@ class User(AbstractUser):
 
     def get_short_name(self):
         return self.display_name
+
+    @property
+    def is_deleted(self) -> bool:
+        return self.deleted_at is not None
+
+    def _get_session_auth_hash(self, secret=None):
+        """Comme Django (HMAC du mot de passe), plus `session_version`. Tant qu'elle vaut 0, le
+        résultat est exactement celui de Django : les sessions déjà ouvertes restent valides."""
+        value = self.password
+        if self.session_version:
+            value = f"{value}:{self.session_version}"
+        return salted_hmac(
+            "django.contrib.auth.models.AbstractBaseUser.get_session_auth_hash",
+            value,
+            secret=secret,
+            algorithm="sha256",
+        ).hexdigest()
