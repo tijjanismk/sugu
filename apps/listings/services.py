@@ -1,11 +1,13 @@
 from dataclasses import dataclass
+from uuid import uuid4
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
 
-from .models import Category, City, Listing, ListingStatus
+from .images import process_photo
+from .models import MAX_PHOTOS, Category, City, Listing, ListingStatus, Photo
 from .seed_data import CATEGORIES, CITIES, DEMO_LISTINGS, DEMO_SELLER
 
 HOME_CATEGORY_COUNT = 8
@@ -86,6 +88,53 @@ def update_price(listing: Listing, new_price: int | None) -> Listing:
         locked.previous_price,
         locked.price_dropped_at,
     )
+    return listing
+
+
+# --- Dépôt d'annonce ---------------------------------------------------------------------
+
+
+def create_listing(user, *, data: dict, photos: list) -> Listing:
+    """Crée et publie une annonce avec ses photos (ticket #7).
+
+    Toutes les photos sont traitées avant la moindre écriture : si l'une est refusée, rien
+    n'est enregistré. Seules les versions WebP sont stockées, jamais l'original.
+    `data` : title, description, category, city, price, payment_methods (formulaire validé).
+    """
+    if not 1 <= len(photos) <= MAX_PHOTOS:
+        raise ValidationError(f"Ajoutez de 1 à {MAX_PHOTOS} photos.")
+    processed = []
+    for index, uploaded in enumerate(photos, start=1):
+        try:
+            processed.append(process_photo(uploaded))
+        except ValidationError as exc:
+            raise ValidationError(f"Photo {index} : {' '.join(exc.messages)}") from exc
+
+    written = []  # fichiers déjà écrits, à effacer si la transaction échoue
+    try:
+        with transaction.atomic():
+            listing = Listing.objects.create(
+                user=user,
+                title=data["title"],
+                description=data["description"],
+                category=data["category"],
+                city=data["city"],
+                price=data.get("price"),
+                payment_methods=list(data.get("payment_methods") or []),
+            )
+            for order, photo in enumerate(processed):
+                name = uuid4().hex
+                item = Photo(listing=listing, order=order, width=photo.width, height=photo.height)
+                item.large.save(f"{name}-1200.webp", photo.large, save=False)
+                written.append(item.large)
+                item.thumb.save(f"{name}-400.webp", photo.thumb, save=False)
+                written.append(item.thumb)
+                item.save()
+            publish(listing)
+    except Exception:
+        for file in written:
+            file.storage.delete(file.name)
+        raise
     return listing
 
 

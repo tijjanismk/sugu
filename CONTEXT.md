@@ -72,14 +72,15 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #6 Modèles Listing et Photo (statuts et transitions dans
-  `services.py`, contraintes CHECK, trigger `search_vector` avec la configuration
-  `french_unaccent`, baisse de prix `previous_price` / `price_dropped_at`, admin de modération,
-  12 annonces de démo dans `seed`)
-- Tâche en cours : aucune ; prochaine : #7 Dépôt d'annonce avec photos
+- Dernière tâche terminée : #7 Dépôt d'annonce avec photos (`/deposer/`, service d'images
+  Pillow → WebP 1200 px + miniature 400×300 sans EXIF, `create_listing` transactionnel,
+  fichiers effacés avec la photo, réduction dans le navigateur par `photo-picker.js`,
+  limitation 5/h et 20/j ; 3 photos traitées en ~2,5 s dans le pire cas)
+- Tâche en cours : aucune ; prochaine : #8 Liste, page annonce et pagination
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
-  port) ; les liens Recherche, Déposer, Favoris et Messages, et les tuiles de catégories,
-  mènent à la 404 jusqu'aux tickets #7 à #12 ; badge « Prix en baisse » à ajouter dans
-  `design/` avant le ticket #8 ; suppression des fichiers photo à faire au ticket #7
+  port) ; les liens Recherche, Favoris et Messages, et les tuiles de catégories, mènent à la
+  404 jusqu'aux tickets #9 à #12 ; badge « Prix en baisse » à ajouter dans `design/` avant
+  le ticket #8 ; après un dépôt, retour à l'accueil faute de page annonce (#8) ; photos HEIC
+  refusées sans JavaScript (le navigateur les convertit en JPEG avec)

@@ -30,7 +30,8 @@ Fait au ticket #4 : `static/css/tokens.css`, `static/css/components.css` (rangé
 couches `base` et `components` de Tailwind, pour qu'une classe utilitaire l'emporte),
 `@theme inline` dans `input.css`, Figtree servie localement, barre haute à partir de 1024 px
 (`sg-topnav`). Gabarits créés : `top_bar`, `bottom_nav`, `alert`, `messages`,
-`empty_state` et `icon` (tracés Lucide) ; les autres composants arrivent avec le ticket qui
+`empty_state`, `icon` (tracés Lucide), puis `category_tiles` (#5) et `field` (#7 : champ,
+liste déroulante, suffixe « FCFA », cases à cocher) ; les autres composants arrivent avec le ticket qui
 les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
 
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.

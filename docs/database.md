@@ -98,13 +98,14 @@ titre en poids A, description en poids B. La recherche utilise la même configur
 | Champ         | Type          | Notes                                              |
 |---------------|---------------|----------------------------------------------------|
 | listing_id    | FK → listing  | suppression en cascade                             |
-| large         | varchar(255)  | fichier de la version 1200 px WebP (R2 en prod)    |
-| thumb         | varchar(255)  | fichier de la miniature 400 px WebP                |
+| large         | varchar(255)  | `listings/<id>/<uuid>-1200.webp` (R2 en prod)       |
+| thumb         | varchar(255)  | `listings/<id>/<uuid>-400.webp`, recadrée 400×300   |
 | order         | smallint 0–5  | la photo 0 est la couverture                       |
 | width, height | smallint      | pour réserver l'espace à l'affichage               |
 
 Contraintes : unique (listing_id, order) `photo_unique_order` ; CHECK order < 6
-`photo_order_max` (6 photos au plus). La suppression des fichiers arrive avec le ticket #7.
+`photo_order_max` (6 photos au plus). Supprimer une photo (ou l'annonce, par cascade) efface
+ses deux fichiers après validation de la transaction (`apps/listings/signals.py`).
 
 ## messaging_conversation
 
