@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}{% if filters.q %}{{ filters.q }} · {% endif %}Recherche · Sugu{% endblock %}
+{% block content %}
+  {% include "components/search_bar.html" with sticky=True %}
+
+  {% if chips %}
+    <div class="sg-chips" aria-label="Filtres actifs">
+      {% for chip in chips %}
+        <a class="sg-chip sg-chip--on" href="{{ chip.remove_url }}" aria-label="Retirer le filtre {{ chip.label }}">{{ chip.label }}{% include "components/icon.html" with name="close" size="sm" %}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# Filtres : panneau dépliable sans JavaScript ; le formulaire GET garde les mots-clés. #}
+  <details class="px-4 py-2" id="filtres">
+    <summary class="sg-btn list-none [&::-webkit-details-marker]:hidden">
+      {% include "components/icon.html" with name="filters" %}Filtres{% if filter_count %} <span class="sg-badge sg-badge--new">{{ filter_count }}</span>{% endif %}
+    </summary>
+    <form class="sg-form -mx-4" method="get" action="{% url 'listings:search' %}">
+      {% if filters.q %}<input type="hidden" name="q" value="{{ filters.q }}">{% endif %}
+      <div class="sg-field">
+        <label class="sg-field__label" for="f-category">Catégorie</label>
+        <div class="sg-select">
+          <select class="sg-input" id="f-category" name="category">
+            <option value="">Toutes les catégories</option>
+            {% for parent in categories %}
+              <optgroup label="{{ parent.name }}">
+                <option value="{{ parent.slug }}"{% if filters.category == parent %} selected{% endif %}>Tout « {{ parent.name }} »</option>
+                {% for child in parent.children.all %}
+                  <option value="{{ child.slug }}"{% if filters.category == child %} selected{% endif %}>{{ child.name }}</option>
+                {% endfor %}
+              </optgroup>
+            {% endfor %}
+          </select>
+          {% include "components/icon.html" with name="chevron" %}
+        </div>
+      </div>
+      <div class="sg-field">
+        <label class="sg-field__label" for="f-city">Ville</label>
+        <div class="sg-select">
+          <select class="sg-input" id="f-city" name="city">
+            <option value="">Toutes les villes</option>
+            {% for city in cities %}
+              <option value="{{ city.slug }}"{% if filters.city == city %} selected{% endif %}>{{ city.name }}</option>
+            {% endfor %}
+          </select>
+          {% include "components/icon.html" with name="chevron" %}
+        </div>
+      </div>
+      <div class="grid grid-cols-2">
+        <div class="sg-field pr-1">
+          <label class="sg-field__label" for="f-price-min">Prix min.</label>
+          <div class="sg-input sg-input--prefix"><input id="f-price-min" name="price_min" inputmode="numeric" value="{{ filters.price_min|default_if_none:'' }}" autocomplete="off"><span class="sg-input__unit">FCFA</span></div>
+        </div>
+        <div class="sg-field pl-1">
+          <label class="sg-field__label" for="f-price-max">Prix max.</label>
+          <div class="sg-input sg-input--prefix"><input id="f-price-max" name="price_max" inputmode="numeric" value="{{ filters.price_max|default_if_none:'' }}" autocomplete="off"><span class="sg-input__unit">FCFA</span></div>
+        </div>
+      </div>
+      <div class="flex gap-2 px-4 pt-2">
+        <button class="sg-btn sg-btn--primary flex-1" type="submit">Voir les annonces</button>
+        <a class="sg-btn sg-btn--quiet" href="{% url 'listings:search' %}">Tout effacer</a>
+      </div>
+    </form>
+  </details>
+
+  <section aria-labelledby="results-title">
+    <h1 id="results-title" class="small px-4 pt-2 text-ink-muted">
+      {% with count=page_obj.paginator.count %}{{ count }} annonce{{ count|pluralize }}{% endwith %}
+    </h1>
+    {% if page_obj.object_list %}
+      <div class="sg-grid">
+        {% partialdef results_page inline %}
+          {% for listing in page_obj %}
+            {% if page_obj.number > 1 or forloop.counter > 4 %}
+              {% include "components/listing_card.html" with lazy=True %}
+            {% else %}
+              {% include "components/listing_card.html" %}
+            {% endif %}
+          {% endfor %}
+          {% if next_url %}
+            <div class="col-span-full" id="more">
+              <a class="sg-btn sg-btn--block" href="{{ next_url }}" hx-get="{{ next_url }}"
+                 hx-target="#more" hx-swap="outerHTML" hx-disabled-elt="this">Voir plus</a>
+            </div>
+          {% endif %}
+        {% endpartialdef %}
+      </div>
+    {% else %}
+      {% url "listings:search" as search_home %}
+      {% include "components/empty_state.html" with icon="search" title="Aucune annonce ne correspond" body="Essayez un mot plus court, une autre orthographe, ou retirez un filtre." action_href=search_home action_label="Voir toutes les annonces" %}
+    {% endif %}
+  </section>
+{% endblock %}

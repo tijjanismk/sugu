@@ -92,11 +92,12 @@ Transitions de statut autorisées (`models.ALLOWED_TRANSITIONS`) :
 | `sold`      | `removed`                     |
 | `removed`   | — (définitif)                 |
 
-Recherche plein texte (migration `listings.0003`) : extension `unaccent`, configuration
-`french_unaccent` (copie de `french` avec `unaccent` avant `french_stem`), et trigger
-`listings_listing_search_vector_trigger` (BEFORE INSERT OR UPDATE OF title, description) :
-titre en poids A, description en poids B. La recherche utilise la même configuration
-(`models.SEARCH_CONFIG`).
+Recherche plein texte (migrations `listings.0003` et `0005`) : extension `unaccent`,
+configuration `french_unaccent` (copie de `french` avec `unaccent` avant `french_stem`), et
+trigger `listings_listing_search_vector_trigger` (BEFORE INSERT OR UPDATE OF title,
+description, neighborhood) : titre en poids A, quartier en poids B, description en poids C.
+La recherche utilise la même configuration (`models.SEARCH_CONFIG`) ; voir
+`services.search_listings`.
 
 ## listings_photo
 

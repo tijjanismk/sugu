@@ -56,6 +56,8 @@ a { color: var(--indigo); }
 .sg-price-lg { margin: 0; font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.01em; color: var(--indigo); font-variant-numeric: tabular-nums; }
 /* Ancien prix barré après une baisse (carte et page) : 65 % du prix qu'il suit */
 .sg-was { margin-left: var(--space-2); font-size: .65em; font-weight: 500; color: var(--ink-muted); text-decoration: line-through; }
+/* Sur une carte étroite, l'ancien prix passe sous le prix pour ne jamais déborder */
+.sg-card__price .sg-was { display: block; margin: 0; font-size: 13px; line-height: 16px; }
 /* Galerie de la page annonce : une photo par écran, défilement horizontal aimanté */
 .sg-gallery { display: flex; gap: var(--space-2); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; background: var(--surface-sunken); }
 .sg-gallery::-webkit-scrollbar { display: none; }
@@ -75,7 +77,8 @@ a { color: var(--indigo); }
 .sg-chips::-webkit-scrollbar { display: none; }
 .sg-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 var(--space-3); border-radius: var(--radius-full); border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); font: inherit; font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap; cursor: pointer; }
 .sg-chip .sg-icon { width: 16px; height: 16px; }
-.sg-chip[aria-pressed="true"] { background: var(--indigo); border-color: var(--indigo); color: var(--on-indigo); }
+.sg-chip[aria-pressed="true"], .sg-chip--on { background: var(--indigo); border-color: var(--indigo); color: var(--on-indigo); }
+a.sg-chip { text-decoration: none; }
 .sg-chip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
 /* Champs de formulaire */

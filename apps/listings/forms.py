@@ -121,3 +121,33 @@ class ListingForm(forms.Form):
                     f"Photo trop lourde ({photo.size // (1024 * 1024)} Mo). 8 Mo au plus."
                 )
         return photos
+
+
+class SearchForm(forms.Form):
+    """Paramètres GET de la recherche (ticket #9). Une valeur invalide n'est jamais une erreur :
+    elle est ignorée et n'est pas réaffichée (docs/security.md, « Entrées utilisateur »)."""
+
+    q = forms.CharField(required=False, max_length=100)
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(), to_field_name="slug", required=False
+    )
+    city = forms.ModelChoiceField(queryset=City.objects.all(), to_field_name="slug", required=False)
+    price_min = forms.IntegerField(required=False, min_value=0, max_value=MAX_PRICE)
+    price_max = forms.IntegerField(required=False, min_value=0, max_value=MAX_PRICE)
+
+    def valid_filters(self) -> dict:
+        """Les seuls paramètres valides et renseignés ; le reste est ignoré."""
+        self.is_valid()
+        values = {
+            name: value
+            for name, value in self.cleaned_data.items()
+            if value not in (None, "") and name not in self.errors
+        }
+        if "q" in values:
+            values["q"] = values["q"].strip()
+            if not values["q"]:
+                del values["q"]
+        low, high = values.get("price_min"), values.get("price_max")
+        if low is not None and high is not None and low > high:
+            values["price_min"], values["price_max"] = high, low
+        return values

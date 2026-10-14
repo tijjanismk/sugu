@@ -8,6 +8,7 @@ La chip est un filtre ou une catégorie que l'on bascule d'un pouce ; actives, e
 - Une chip est un `<button type="button" aria-pressed="…">` ; en htmx, chaque bascule recharge la grille de résultats.
 - Icône Lucide de 16 px facultative devant le mot. Deux mots au plus par chip.
 - Sur l'accueil : les catégories de premier niveau. Sur les résultats : les filtres actifs en tête (chip active avec une croix pour retirer), puis les suggestions.
+- Filtre actif qui se retire par un lien (recherche sans JavaScript) : `<a class="sg-chip sg-chip--on">` avec la croix et un `aria-label` « Retirer le filtre … » ; même rendu que `aria-pressed="true"`.
 
 ## À éviter
 

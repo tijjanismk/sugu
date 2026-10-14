@@ -36,7 +36,8 @@ liste déroulante, suffixe « FCFA » ou « km », cases à cocher) et `listing_
 Ajouts du ticket #8 dans `design/` (à reporter dans l'artefact de design) : badge
 `sg-badge--drop` « Prix en baisse », ancien prix barré `sg-was`, grille à 3 puis 4 colonnes
 (640 et 1024 px), galerie `sg-gallery` de la page annonce, et règle du lieu hors de la ville
-dans `design/README.md` ; les autres composants arrivent avec le ticket qui
+dans `design/README.md`. Ticket #9 : chip active en lien `sg-chip--on`, ancien prix sur sa
+propre ligne dans une carte (il débordait), composant `search_bar` ; les autres composants arrivent avec le ticket qui
 les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
 
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.

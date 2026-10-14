@@ -15,7 +15,7 @@ La carte annonce montre une photo 4:3, le prix en premier, un titre sur deux lig
 - Favori actif : `aria-pressed="true"` sur le bouton, cœur plein en `heart`. La bascule se fait en htmx sur le bouton seul.
 - Vendue : `sg-card--sold`, photo atténuée, prix barré en `ink-muted`, badge « Vendu ». La carte reste visible sur la page du vendeur, disparaît de la recherche.
 - Nouvelle (moins de 24 h) : badge `sg-badge--new` en haut à gauche.
-- Prix en baisse (moins de 14 jours) : badge `sg-badge--drop` et ancien prix barré `<s class="sg-was">` dans `sg-card__price`. Un seul badge par carte : Vendu, sinon Prix en baisse, sinon Nouveau.
+- Prix en baisse (moins de 14 jours) : badge `sg-badge--drop` et ancien prix barré `<s class="sg-was">` dans `sg-card__price`, sur sa propre ligne (une carte fait 160 px de large sur mobile). Un seul badge par carte : Vendu, sinon Prix en baisse, sinon Nouveau.
 - Chargement : la carte `Skeleton` de mêmes dimensions.
 
 ## Grille

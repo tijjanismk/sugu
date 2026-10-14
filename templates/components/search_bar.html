@@ -1,0 +1,15 @@
+{% comment %}
+  Barre de recherche (design/components/SearchBar) : formulaire GET vers /recherche/.
+  Paramètres : filters (filtres validés, conservés en champs cachés), sticky (collée en haut).
+{% endcomment %}<form class="sg-search{% if sticky %} sticky top-0 z-30 bg-surface{% endif %}" role="search" method="get" action="{% url 'listings:search' %}">
+  <label class="sg-search__field">
+    {% include "components/icon.html" with name="search" %}
+    <span class="sr-only">Rechercher</span>
+    <input class="sg-search__input" type="search" name="q" value="{{ filters.q|default:'' }}" placeholder="Que cherchez-vous ?" maxlength="100" enterkeyhint="search">
+  </label>
+  {% if filters.category %}<input type="hidden" name="category" value="{{ filters.category.slug }}">{% endif %}
+  {% if filters.city %}<input type="hidden" name="city" value="{{ filters.city.slug }}">{% endif %}
+  {% if filters.price_min is not None %}<input type="hidden" name="price_min" value="{{ filters.price_min }}">{% endif %}
+  {% if filters.price_max is not None %}<input type="hidden" name="price_max" value="{{ filters.price_max }}">{% endif %}
+  <button class="sg-btn sg-btn--icon" type="submit" aria-label="Lancer la recherche">{% include "components/icon.html" with name="search" %}</button>
+</form>
