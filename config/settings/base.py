@@ -121,6 +121,8 @@ PASSWORD_RESET_TIMEOUT = 60 * 60
 ACCOUNT_RATE_LIMITS = {
     "login_failed": "5/15m/ip,5/15m/key",
     "signup": "3/h/ip",
+    # Actions du site (apps/core/ratelimit.py) : dépôt d'annonce par utilisateur (ticket #7).
+    "listing_create": "5/h/user,20/d/user",
 }
 
 # Cache partagé entre les processus Gunicorn, sans Redis (ADR 0001) : table créée par la

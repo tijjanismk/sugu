@@ -1,0 +1,25 @@
+{% load sugu_forms %}{% comment %}
+  Champ de formulaire (design/components/FormField). Paramètres : field (BoundField),
+  unit (facultatif, ex. « FCFA » : champ à suffixe). Cases à cocher multiples : sg-check.
+{% endcomment %}{% if field.widget_type == "checkbox" %}
+  <label class="sg-check">{{ field|sg_widget }} {{ field.label }}</label>
+{% elif field.widget_type == "checkboxselectmultiple" %}
+  <fieldset class="sg-field{% if field.errors %} sg-field--error{% endif %}">
+    <legend class="sg-field__label">{{ field.label }}{% if not field.field.required %} <small>(facultatif)</small>{% endif %}</legend>
+    {% for option in field %}<label class="sg-check -mx-4">{{ option.tag }} {{ option.choice_label }}</label>{% endfor %}
+    {% if field.errors %}<span class="sg-field__error" id="{{ field.auto_id }}_error">{% include "components/icon.html" with name="alert" %}{{ field.errors|join:" " }}</span>{% endif %}
+  </fieldset>
+{% else %}
+  <div class="sg-field{% if field.errors %} sg-field--error{% endif %}">
+    <label class="sg-field__label" for="{{ field.id_for_label }}">{{ field.label }}{% if not field.field.required %} <small>(facultatif)</small>{% endif %}</label>
+    {% if unit %}
+      <div class="sg-input sg-input--prefix">{{ field|sg_widget_bare }}<span class="sg-input__unit">{{ unit }}</span></div>
+    {% elif field.widget_type == "select" %}
+      <div class="sg-select">{{ field|sg_widget }}{% include "components/icon.html" with name="chevron" %}</div>
+    {% else %}
+      {{ field|sg_widget }}
+    {% endif %}
+    {% if field.errors %}<span class="sg-field__error" id="{{ field.auto_id }}_error">{% include "components/icon.html" with name="alert" %}{{ field.errors|join:" " }}</span>{% endif %}
+    {% if field.help_text %}<div class="sg-field__help" id="{{ field.auto_id }}_help">{{ field.help_text }}</div>{% endif %}
+  </div>
+{% endif %}

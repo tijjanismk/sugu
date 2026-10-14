@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Déposer une annonce · Sugu{% endblock %}
+{% block body_class %}{% endblock %}
+{% block topbar %}
+  {# Flux de dépôt (design/components/TopBar) : retour, titre, pas de barre basse. #}
+  <header class="sg-topbar sg-topbar--raised">
+    <a class="sg-btn sg-btn--icon" href="{% url 'core:home' %}" aria-label="Retour">{% include "components/icon.html" with name="back" %}</a>
+    <h1 class="sg-topbar__title">Déposer une annonce</h1>
+  </header>
+{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  <form class="sg-form" method="post" enctype="multipart/form-data" novalidate data-listing-form>
+    {% csrf_token %}
+    {% for error in form.non_field_errors %}
+      {% include "components/alert.html" with variant="danger" body=error %}
+    {% endfor %}
+
+    {# Photos (design/components/PhotoPicker) : le champ fichier marche seul ; photo-picker.js #}
+    {# ajoute les aperçus, le retrait, la couverture et la réduction avant l'envoi. #}
+    <div class="sg-field{% if form.photos.errors %} sg-field--error{% endif %}">
+      <label class="sg-field__label" for="{{ form.photos.id_for_label }}">Photos <small>(1 à 6)</small></label>
+      <div class="sg-photos -mx-4 hidden" data-photo-grid>
+        <button class="sg-photo--add" type="button" data-photo-add>{% include "components/icon.html" with name="post" %}Ajouter</button>
+      </div>
+      <template data-photo-tile>
+        <div class="sg-photo">
+          <img alt="" class="h-full w-full object-cover">
+          <button class="sg-photo__remove" type="button" aria-label="Retirer la photo">{% include "components/icon.html" with name="close" %}</button>
+        </div>
+      </template>
+      {{ form.photos }}
+      <span class="sg-field__help hidden" data-photo-status aria-live="polite"></span>
+      {% if form.photos.errors %}<span class="sg-field__error" id="{{ form.photos.auto_id }}_error">{% include "components/icon.html" with name="alert" %}{{ form.photos.errors|join:" " }}</span>{% endif %}
+      <div class="sg-field__help" id="{{ form.photos.auto_id }}_help">{{ form.photos.help_text }}</div>
+    </div>
+
+    {% include "components/field.html" with field=form.title %}
+    {% include "components/field.html" with field=form.category %}
+    {% include "components/field.html" with field=form.city %}
+    {% include "components/field.html" with field=form.price unit="FCFA" %}
+    {% include "components/field.html" with field=form.payment_methods %}
+    {% include "components/field.html" with field=form.description %}
+
+    <div class="sg-sticky">
+      <button class="sg-btn sg-btn--primary sg-btn--lg sg-btn--block" type="submit" data-submit>Publier l'annonce</button>
+    </div>
+  </form>
+{% endblock %}
+{% block bottomnav %}{% endblock %}
+{% block scripts %}<script src="{% static 'js/photo-picker.js' %}" defer></script>{% endblock %}
