@@ -4,13 +4,47 @@ from uuid import uuid4
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.db.models import Prefetch
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from .images import process_photo
-from .models import MAX_PHOTOS, Category, City, Listing, ListingStatus, Photo
+from .models import (
+    MAX_PHOTOS,
+    PUBLISHED_STATUSES,
+    Category,
+    City,
+    Listing,
+    ListingStatus,
+    Photo,
+)
 from .seed_data import CATEGORIES, CITIES, DEMO_LISTINGS, DEMO_SELLER
 
 HOME_CATEGORY_COUNT = 8
+PAGE_SIZE = 20
+
+
+# --- Lecture -----------------------------------------------------------------------------
+
+
+def with_cover(queryset):
+    """Ajoute `cover_photos` (la photo 0) et les relations d'une carte, sans requête par carte."""
+    return queryset.select_related("city", "category").prefetch_related(
+        Prefetch("photos", queryset=Photo.objects.filter(order=0), to_attr="cover_photos")
+    )
+
+
+def latest_listings():
+    """Annonces publiées, les plus récentes d'abord (accueil, ticket #8)."""
+    return with_cover(Listing.objects.filter(status=ListingStatus.PUBLISHED)).order_by(
+        "-published_at", "-pk"
+    )
+
+
+def get_visible_listing(pk: int) -> Listing:
+    """Page d'une annonce : publiée, réservée ou vendue. Brouillon et retirée : 404."""
+    queryset = Listing.objects.select_related("user", "city", "category").prefetch_related("photos")
+    return get_object_or_404(queryset, pk=pk, status__in=PUBLISHED_STATUSES)
 
 
 class InvalidStatusTransition(ValidationError):
@@ -99,7 +133,8 @@ def create_listing(user, *, data: dict, photos: list) -> Listing:
 
     Toutes les photos sont traitées avant la moindre écriture : si l'une est refusée, rien
     n'est enregistré. Seules les versions WebP sont stockées, jamais l'original.
-    `data` : title, description, category, city, price, payment_methods (formulaire validé).
+    `data` : title, description, category, city, neighborhood, distance_km, price,
+    payment_methods (formulaire validé).
     """
     if not 1 <= len(photos) <= MAX_PHOTOS:
         raise ValidationError(f"Ajoutez de 1 à {MAX_PHOTOS} photos.")
@@ -119,6 +154,8 @@ def create_listing(user, *, data: dict, photos: list) -> Listing:
                 description=data["description"],
                 category=data["category"],
                 city=data["city"],
+                neighborhood=data.get("neighborhood") or "",
+                distance_km=data.get("distance_km"),
                 price=data.get("price"),
                 payment_methods=list(data.get("payment_methods") or []),
             )
@@ -198,6 +235,8 @@ def seed_demo_listings() -> int:
         content = {
             "category": Category.objects.get(slug=item["category"]),
             "city": City.objects.get(slug=item["city"]),
+            "neighborhood": item.get("neighborhood", ""),
+            "distance_km": item.get("distance_km"),
             "description": item["description"],
             "price": item["price"],
             "payment_methods": item["payment_methods"],

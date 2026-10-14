@@ -1,7 +1,15 @@
 from django import forms
 
 from .images import MAX_UPLOAD_BYTES
-from .models import DESCRIPTION_MAX_LENGTH, MAX_PHOTOS, Category, City, Listing, PaymentMethod
+from .models import (
+    DESCRIPTION_MAX_LENGTH,
+    MAX_DISTANCE_KM,
+    MAX_PHOTOS,
+    Category,
+    City,
+    Listing,
+    PaymentMethod,
+)
 
 MAX_PRICE = 1_000_000_000
 
@@ -40,6 +48,20 @@ class ListingForm(forms.Form):
     )
     city = forms.ModelChoiceField(
         label="Ville", queryset=City.objects.all(), empty_label="Choisir une ville"
+    )
+    neighborhood = forms.CharField(
+        label="Quartier ou commune",
+        required=False,
+        max_length=Listing._meta.get_field("neighborhood").max_length,
+        widget=forms.TextInput(attrs={"placeholder": "Ex. : Sabalibougou, Commune V"}),
+    )
+    distance_km = forms.IntegerField(
+        label="Distance de la ville",
+        required=False,
+        min_value=1,
+        max_value=MAX_DISTANCE_KM,
+        help_text="Si l'objet est hors de la ville : 20 pour « à 20 km de Bamako ».",
+        widget=forms.TextInput(attrs={"inputmode": "numeric", "autocomplete": "off"}),
     )
     price = forms.CharField(
         label="Prix",

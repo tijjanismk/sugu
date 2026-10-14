@@ -14,19 +14,33 @@
     </section>
   {% endif %}
 
-  {% comment %}
-    Exemple de partial htmx (ticket #4) : « Actualiser » ne recharge que cette section, que la vue
-    renvoie seule quand la requête vient de htmx. Le ticket #8 y met les dernières annonces.
-  {% endcomment %}
-  {% partialdef recent inline %}
-    <section id="recent" class="mt-4" aria-labelledby="recent-title">
-      <div class="flex items-center justify-between px-4">
-        <h2 id="recent-title" class="heading text-ink">Dernières annonces</h2>
-        <button class="sg-btn sg-btn--quiet" type="button"
-                hx-get="{% url 'core:home' %}" hx-target="#recent" hx-swap="outerHTML">Actualiser</button>
+  <section class="mt-4" aria-labelledby="recent-title">
+    <h2 id="recent-title" class="heading px-4 text-ink">Dernières annonces</h2>
+    {% if page_obj.object_list %}
+      <div class="sg-grid">
+        {% comment %}
+          « Voir plus » (htmx) remplace son propre bloc par la page suivante : les cartes
+          s'ajoutent dans la même grille. Sans JavaScript, c'est un lien vers ?page=N.
+        {% endcomment %}
+        {% partialdef listing_page inline %}
+          {% for listing in page_obj %}
+            {% if page_obj.number > 1 or forloop.counter > 4 %}
+              {% include "components/listing_card.html" with lazy=True %}
+            {% else %}
+              {% include "components/listing_card.html" %}
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <div class="col-span-full" id="more">
+              <a class="sg-btn sg-btn--block" href="?page={{ page_obj.next_page_number }}"
+                 hx-get="?page={{ page_obj.next_page_number }}" hx-target="#more" hx-swap="outerHTML"
+                 hx-disabled-elt="this">Voir plus</a>
+            </div>
+          {% endif %}
+        {% endpartialdef %}
       </div>
+    {% else %}
       {% include "components/empty_state.html" with icon="compass" title="Aucune annonce pour l'instant" body="Les premières annonces arrivent bientôt. Revenez vite, ou déposez la vôtre." %}
-      <p class="caption px-4 text-ink-muted">Mis à jour à {% now "H:i:s" %}</p>
-    </section>
-  {% endpartialdef %}
+    {% endif %}
+  </section>
 {% endblock %}

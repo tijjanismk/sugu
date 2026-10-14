@@ -21,7 +21,7 @@ def listing_create(request: HttpRequest) -> HttpResponse:
         form = ListingForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                services.create_listing(
+                listing = services.create_listing(
                     request.user, data=form.cleaned_data, photos=form.cleaned_data["photos"]
                 )
             except ValidationError as exc:
@@ -29,7 +29,16 @@ def listing_create(request: HttpRequest) -> HttpResponse:
             else:
                 ratelimit.consume(request, "listing_create")
                 messages.success(request, "Annonce publiée. Elle est visible de tous.")
-                return redirect("core:home")
+                return redirect(listing)
     else:
         form = ListingForm()
     return render(request, "listings/create.html", {"form": form})
+
+
+def listing_detail(request: HttpRequest, pk: int, slug: str) -> HttpResponse:
+    """Page d'une annonce (ticket #8). Le slug n'est que décoratif : s'il ne correspond plus au
+    titre (annonce renommée, lien tronqué), on redirige vers l'adresse exacte."""
+    listing = services.get_visible_listing(pk)
+    if slug != listing.slug:
+        return redirect(listing, permanent=True)
+    return render(request, "listings/detail.html", {"listing": listing})

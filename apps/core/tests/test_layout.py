@@ -15,7 +15,7 @@ def test_l_accueil_renvoie_la_page_complete_sans_htmx(client):
     html = response.content.decode()
     assert response.status_code == 200
     assert "<html" in html
-    assert 'id="recent"' in html
+    assert 'id="recent-title"' in html
     assert "htmx.min.js" in html
 
 
@@ -26,7 +26,6 @@ def test_l_accueil_renvoie_seulement_le_partial_avec_htmx(client):
     assert response.status_code == 200
     assert "<html" not in html
     assert "sg-bottomnav" not in html
-    assert html.strip().startswith('<section id="recent"')
 
 
 def test_la_navigation_marque_la_page_courante(client):

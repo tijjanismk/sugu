@@ -101,10 +101,10 @@ def test_une_annonce_avec_3_photos_est_creee_en_moins_de_5_s(
     elapsed = time.perf_counter() - start
 
     assert response.status_code == 302, response.context["form"].errors
-    assert response.url == reverse("core:home")
     assert elapsed < 5, f"dépôt en {elapsed:.2f} s"
 
     listing = Listing.objects.get()
+    assert response.url == listing.get_absolute_url()  # on arrive sur la page de l'annonce
     assert listing.user == seller
     assert listing.status == ListingStatus.PUBLISHED
     assert listing.published_at is not None
@@ -264,3 +264,32 @@ def test_un_echec_en_base_ne_laisse_aucun_fichier(
 
     assert not Listing.objects.exists()
     assert _stored_files(_media) == []
+
+
+# --- Lieu précis (ajout du 2026-10-14) ---------------------------------------------------
+
+
+def test_le_quartier_et_la_distance_sont_enregistres(client, seller, categories, city):
+    data = _data(categories, city, _photos(1), neighborhood="Sabalibougou", distance_km="20")
+
+    client.post(URL, data)
+
+    listing = Listing.objects.get()
+    assert listing.neighborhood == "Sabalibougou"
+    assert listing.distance_km == 20
+    assert listing.place_label == "Sabalibougou, à 20 km de Bamako"
+
+
+def test_quartier_et_distance_sont_facultatifs(client, seller, categories, city):
+    client.post(URL, _data(categories, city, _photos(1)))
+
+    listing = Listing.objects.get()
+    assert listing.neighborhood == ""
+    assert listing.distance_km is None
+
+
+@pytest.mark.parametrize("distance", ["0", "500", "loin"])
+def test_une_distance_invalide_est_refusee(client, seller, categories, city, distance):
+    form = _refused(client, _data(categories, city, _photos(1), distance_km=distance))
+
+    assert form.errors["distance_km"]

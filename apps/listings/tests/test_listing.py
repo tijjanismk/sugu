@@ -324,3 +324,25 @@ def test_les_photos_sont_supprimees_avec_l_annonce():
     assert [p.order for p in listing.photos.all()] == [0, 1]
     listing.delete()
     assert Photo.objects.count() == 0
+
+
+# --- Lieu précis (ajout du 2026-10-14) ---------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("neighborhood", "distance_km", "expected"),
+    [("", None, "Bamako"), ("Sabalibougou", None, "Sabalibougou, Bamako"),
+     ("Commune V", None, "Commune V, Bamako"), ("", 20, "À 20 km de Bamako"),
+     ("Moribabougou", 20, "Moribabougou, à 20 km de Bamako")],
+)  # fmt: skip
+def test_le_lieu_affiche_quartier_puis_ville(neighborhood, distance_km, expected):
+    listing = ListingFactory(
+        city__name="Bamako", neighborhood=neighborhood, distance_km=distance_km
+    )
+
+    assert listing.place_label == expected
+
+
+@pytest.mark.parametrize("distance_km", [0, 301])
+def test_la_base_refuse_une_distance_hors_limites(distance_km):
+    _viole(distance_km=distance_km)

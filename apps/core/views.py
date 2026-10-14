@@ -1,18 +1,23 @@
+from django.core.paginator import Paginator
 from django.db import connection
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
-from apps.listings.services import home_categories
+from apps.listings.services import PAGE_SIZE, home_categories, latest_listings
 
 
 def home(request: HttpRequest) -> HttpResponse:
-    """Page d'accueil provisoire ; le ticket #8 y met la grille d'annonces.
+    """Accueil : catégories et dernières annonces, 20 par page (ticket #8).
 
-    Requête htmx (en-tête HX-Request) : seul le partial « recent » est renvoyé.
+    « Voir plus » demande la page suivante en htmx (en-tête HX-Request) : seul le partial
+    « listing_page » est renvoyé, ajouté sous la grille. Sans JavaScript, c'est un lien ?page=N.
     """
+    page_obj = Paginator(latest_listings(), PAGE_SIZE).get_page(request.GET.get("page"))
     if request.htmx:
-        return render(request, "core/home.html#recent")
-    return render(request, "core/home.html", {"categories": home_categories()})
+        return render(request, "core/home.html#listing_page", {"page_obj": page_obj})
+    return render(
+        request, "core/home.html", {"categories": home_categories(), "page_obj": page_obj}
+    )
 
 
 def health(request: HttpRequest) -> JsonResponse:
