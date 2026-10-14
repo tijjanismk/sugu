@@ -57,8 +57,8 @@ Apps Django :
 ### Recherche
 
 1. Requête GET avec `q`, `category`, `city`, `price_min`, `price_max`, `page`
-2. Recherche plein texte PostgreSQL (`SearchVector` sur titre + description,
-   configuration `french`) + filtres + tri par date
+2. Recherche plein texte PostgreSQL (`search_vector` maintenu par trigger sur titre +
+   description, configuration `french_unaccent`) + filtres + tri par date
 3. Rendu HTML complet ou partial htmx si en-tête `HX-Request`
 
 ### Messagerie
