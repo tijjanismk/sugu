@@ -144,3 +144,12 @@ def test_favicon_a_la_racine(client):
 @pytest.mark.parametrize("name", ["core:manifest", "core:service_worker", "core:offline"])
 def test_en_lecture_seule(client, name):
     assert client.post(reverse(name)).status_code == 405
+
+
+@pytest.mark.parametrize("name", ["js/pwa.js", "js/htmx.min.js"])
+def test_statiques_servis_sans_collectstatic(client, name):
+    """Le job e2e (CI) lance le serveur avec les réglages de test, sans collectstatic : sans
+    fichiers statiques, le service worker ne s'enregistrerait pas."""
+    response = client.get(f"/static/{name}")
+
+    assert response.status_code == 200

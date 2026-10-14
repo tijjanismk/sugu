@@ -22,6 +22,9 @@ MAILERS = {"default": {"BACKEND": "django.core.mail.backends.locmem.EmailBackend
 MEDIA_ROOT = Path(tempfile.gettempdir()) / "sugu-test-media"
 STORAGES["staticfiles"] = {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}  # noqa: F405
 WHITENOISE_AUTOREFRESH = True
+# Le job e2e lance runserver avec ces réglages, sans collectstatic : WhiteNoise sert alors
+# les fichiers depuis leurs sources (htmx, pwa.js qui enregistre le service worker).
+WHITENOISE_USE_FINDERS = True
 
 # Cache en mémoire, vidé avant chaque test (conftest.py) pour isoler les limites de débit.
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
