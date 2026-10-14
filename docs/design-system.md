@@ -42,7 +42,10 @@ propre ligne dans une carte (il débordait), composant `search_bar`. Ticket #10 
 (carte + bouton favori frère, la carte garde la hauteur de la rangée) et cœur `sg-fav` dans
 la barre du haut de la page annonce. Ticket #12 : lien dans une bulle `.sg-msg a`, icônes
 `send` et `read` (double coche). Ticket #13 : icône `phone`, ligne vendeur `sg-seller` sur
-l'annonce et en tête du profil ; les autres composants arrivent avec le ticket qui
+l'annonce et en tête du profil. Ticket #14 : icône d'application (« S » Figtree ExtraBold
+blanc sur `indigo`, point `sun`), générée par `scripts/make_icons.py` dans
+`static/img/icons/` (à reporter dans l'artefact de design) ; page hors-ligne sur le modèle
+EmptyState ; les autres composants arrivent avec le ticket qui
 les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
 
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.

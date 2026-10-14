@@ -107,8 +107,13 @@ Par ordre de probabilité pour un site d'annonces :
 - HTTPS partout : Caddy termine le TLS, Cloudflare en mode « Full (strict) ».
 - `prod.py` : `SECURE_SSL_REDIRECT`, cookies `Secure`, HSTS, `nosniff`, politique
   de référent stricte, protection contre l'inclusion dans un cadre.
-- Une Content-Security-Policy stricte sera ajoutée une fois le service worker en
-  place (ticket #14), car elle interagit avec lui.
+- Une Content-Security-Policy stricte reste à ajouter (ticket #15 ; Django 6 l'intègre) :
+  le service worker est en place (ticket #14). Déjà prêt : aucun `hx-on` ni filtre htmx
+  (`static/js/conversation.js`) ; restent le script de thème en ligne de `base.html` et de
+  la page hors-ligne (nonce ou empreinte) et la balise `<style>` d'indicateurs de htmx.
+- Service worker (ticket #14) : il ne met jamais une page en cache (messages, téléphone,
+  jeton CSRF) ; seuls la charte publique et la page hors-ligne, identique pour tous et sans
+  cookie, sont précachés. Servi à la racine, `Cache-Control: no-cache`.
 
 ### Secrets et configuration
 

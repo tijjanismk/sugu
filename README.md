@@ -26,6 +26,8 @@ Voir `docs/design.md` et `docs/adr/` pour les décisions d'architecture.
 
 - Docker et Docker Compose
 - [uv](https://docs.astral.sh/uv/) (gestion des dépendances Python)
+- Icônes de l'application : `uv run python scripts/make_icons.py` (après un changement de
+  charte ; les PNG sont versionnés).
 - Le binaire Tailwind CSS : `scripts/install-tailwind.sh` (`./tailwindcss`, ou `./tailwindcss.exe`
   sous Windows avec Git Bash)
 
