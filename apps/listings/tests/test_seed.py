@@ -6,9 +6,9 @@ import pytest
 from django.core.management import call_command
 from django.urls import reverse
 
-from apps.listings.models import Category, City
-from apps.listings.seed_data import CATEGORIES, CITIES
-from apps.listings.services import seed_reference_data
+from apps.listings.models import Category, City, Listing, ListingStatus
+from apps.listings.seed_data import CATEGORIES, CITIES, DEMO_LISTINGS
+from apps.listings.services import seed_demo_listings, seed_reference_data
 
 pytestmark = pytest.mark.django_db
 
@@ -83,3 +83,31 @@ def test_l_accueil_sans_categorie_n_affiche_pas_la_section(client):
     html = client.get(reverse("core:home")).content.decode()
 
     assert "sg-cats" not in html
+
+
+# --- Annonces de démonstration (ticket #6) -----------------------------------------------
+
+
+def test_seed_cree_les_annonces_de_demo_publiees():
+    seed_reference_data()
+
+    assert seed_demo_listings() == len(DEMO_LISTINGS)
+    assert Listing.objects.filter(status=ListingStatus.PUBLISHED).count() == len(DEMO_LISTINGS)
+    seller = Listing.objects.first().user
+    assert not seller.has_usable_password()
+    velo = Listing.objects.get(title__startswith="Vélo de course")
+    assert velo.has_recent_price_drop
+
+
+def test_les_annonces_de_demo_sont_idempotentes():
+    seed_reference_data()
+    seed_demo_listings()
+
+    assert seed_demo_listings() == 0
+    assert Listing.objects.count() == len(DEMO_LISTINGS)
+
+
+def test_seed_categories_only_ne_cree_pas_d_annonce():
+    call_command("seed", "--categories-only", stdout=StringIO())
+
+    assert Listing.objects.count() == 0
