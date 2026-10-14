@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     "django_htmx",
     "allauth",
     "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "apps.core",
     "apps.accounts",
     "apps.listings",
@@ -61,6 +63,7 @@ TEMPLATES = [
                 "apps.core.context_processors.navigation",
                 "apps.favorites.context_processors.favorites",
                 "apps.messaging.context_processors.unread_messages",
+                "apps.accounts.context_processors.auth_options",
             ],
         },
     },
@@ -134,6 +137,30 @@ ACCOUNT_RATE_LIMITS = {
     # Suppression de compte (ticket #13) : le mot de passe ne se devine pas par essais.
     "account_delete": "5/h/user",
 }
+
+# Connexion avec Google (ticket #3, ADR 0002). Sans identifiants, le bouton est masqué.
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID", default="")
+GOOGLE_LOGIN_ENABLED = bool(GOOGLE_CLIENT_ID)
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APPS": (
+            [{"client_id": GOOGLE_CLIENT_ID, "secret": env("GOOGLE_CLIENT_SECRET"), "key": ""}]
+            if GOOGLE_LOGIN_ENABLED
+            else []
+        ),
+        "SCOPE": ["openid", "email", "profile"],
+        "AUTH_PARAMS": {"prompt": "select_account"},
+        "OAUTH_PKCE_ENABLED": True,
+    }
+}
+SOCIALACCOUNT_ADAPTER = "apps.accounts.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_AUTO_SIGNUP = True
+# Google ne renvoie que des adresses vérifiées : une adresse déjà inscrite retrouve son compte.
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_STORE_TOKENS = False  # aucun jeton Google gardé en base
+SOCIALACCOUNT_LOGIN_ON_GET = False  # la redirection vers Google part d'un POST
 
 # Cache partagé entre les processus Gunicorn, sans Redis (ADR 0001) : table créée par la
 # migration core 0001. Dev et test le remplacent par un cache en mémoire.

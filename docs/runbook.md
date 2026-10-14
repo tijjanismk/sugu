@@ -27,6 +27,12 @@ tester en production. À mettre en place après le premier déploiement.
 8. `... manage.py createsuperuser` puis `... manage.py seed --categories-only`
 9. Vérifier https://sugu.ml, l'admin, et le dépôt d'une annonce avec photo
    (test R2)
+10. Connexion avec Google (ADR 0002), facultative : dans la console Google Cloud, créer un
+    identifiant OAuth « Application Web », adresse de retour autorisée
+    `https://sugu.ml/comptes/google/login/callback/` (et
+    `http://localhost:8000/comptes/google/login/callback/` pour le développement), écran de
+    consentement publié ; puis `GOOGLE_CLIENT_ID` et `GOOGLE_CLIENT_SECRET` dans `.env`. Sans
+    ces deux variables, le bouton « Continuer avec Google » n'apparaît pas.
 
 ## Déploiement d'une nouvelle version
 

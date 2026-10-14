@@ -22,7 +22,7 @@ humaine et trace les choix.
 | Paquet             | Version |
 |--------------------|---------|
 | django             | 6.1.2   |
-| django-allauth     | 65.19.7 |
+| django-allauth     | 65.19.7 (extra `socialaccount` : requests 2.34.2, oauthlib 4.0.0, pyjwt 2.15.1, cryptography 50.0.2 ; ADR 0002) |
 | django-environ     | 0.14.0  |
 | django-storages    | 1.14.6  |
 | django-htmx        | 1.29.0  |

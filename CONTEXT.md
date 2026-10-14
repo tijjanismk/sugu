@@ -77,6 +77,9 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   `scripts/make_icons.py` ; test hors-ligne dans `tests/e2e/test_pwa.py`)
 - Aussi fait : #16 Tests de bout en bout (trois parcours dans `tests/e2e`, verts sur `main` ;
   pas encore lancés sur le poste : Chromium de Playwright non téléchargé)
+- Ajout au #3 : connexion avec Google (ADR 0002, allauth `socialaccount`), bouton en tête
+  des pages de connexion et d'inscription, masqué sans `GOOGLE_CLIENT_ID` ; identifiants
+  OAuth à créer par le propriétaire dans la console Google (runbook, étape 10)
 - Ajout au #12 : email de nouveau message (`apps/messaging/notifications.py`), au premier
   non lu d'une conversation, pas pendant un échange en direct, sans le texte du message,
   désactivable au profil ; envoi dans la requête (pas de file en V1)
