@@ -1,8 +1,10 @@
 {% load sugu_format %}{% comment %}
   Carte annonce (design/components/ListingCard). Paramètres : listing (avec `cover_photos`,
   voir services.with_cover), lazy (vrai au-delà des quatre premières cartes). La miniature
-  porte width/height : le navigateur réserve sa place, rien ne saute au chargement.
+  porte width/height : le navigateur réserve sa place, rien ne saute au chargement. Le cœur
+  (ticket #11) est un formulaire frère du lien, dans le même conteneur `sg-card-slot`.
 {% endcomment %}{% with badge=listing.card_badge photo=listing.cover_photos.0 %}
+<div class="sg-card-slot">
 <a class="sg-card{% if badge == 'sold' %} sg-card--sold{% endif %}" href="{{ listing.get_absolute_url }}">
   {% if photo %}
     <img class="sg-card__media" src="{{ photo.thumb.url }}" width="400" height="300" alt="{{ listing.title }}"{% if lazy %} loading="lazy"{% endif %} decoding="async">
@@ -22,4 +24,6 @@
     <p class="sg-card__meta">{% include "components/icon.html" with name="pin" size="sm" %}{{ listing.place_label }} · {{ listing.published_at|relative_date }}</p>
   </div>
 </a>
+{% include "favorites/button.html" with variant="card" %}
+</div>
 {% endwith %}

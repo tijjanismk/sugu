@@ -71,7 +71,14 @@ def search(request: HttpRequest) -> HttpResponse:
     next_url = (
         _search_url(filters, page=page_obj.next_page_number()) if page_obj.has_next() else None
     )
-    context = {"filters": filters, "page_obj": page_obj, "next_url": next_url}
+    # Retour après un clic sur un cœur sans JavaScript : la recherche nettoyée, jamais les
+    # valeurs invalides de l'adresse (docs/security.md, « Entrées utilisateur »).
+    context = {
+        "filters": filters,
+        "page_obj": page_obj,
+        "next_url": next_url,
+        "return_url": _search_url(filters),
+    }
     if request.htmx:
         return render(request, "listings/search.html#results_page", context)
 

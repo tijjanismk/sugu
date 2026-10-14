@@ -132,9 +132,13 @@ Critères d'acceptation :
   modification (ajout du 2026-10-14 : d'autres sites d'annonces ne doivent pas détourner les
   acheteurs) ; message clair au vendeur
 
-## #11 — Favoris
+## #11 — Favoris ✅ (fait le 2026-10-14)
 
 Bouton cœur en htmx sur la liste et la page annonce, page « Mes favoris ».
+Le bouton envoie l'état voulu (mettre ou retirer), pas « inverser » : un double clic ne
+change rien. Sans JavaScript, c'est un formulaire qui revient à la page d'origine. Pas de
+cœur sur ses propres annonces. « Mes favoris » garde les annonces vendues (badge) et cache
+les annonces retirées.
 
 Critères d'acceptation :
 - Bascule sans rechargement
@@ -222,7 +226,21 @@ Critères d'acceptation :
   déclassement caché ; tri par prix dans la recherche
 - Annonces recopiées par d'autres sites : robots filtrés par Cloudflare (déjà prévu) ;
   surveiller les comptes qui déposent en masse
-- Annonces mises en avant (payantes) — première source de revenus
+- **Sources de revenus** (liste du 2026-10-14, rien en V1 : le lancement ne vise que le volume
+  d'annonces ; on commence quand il y a quelques centaines d'annonces actives), dans l'ordre :
+  1. Mise en avant « À la une » pendant 7 jours (en tête de l'accueil et de la recherche, badge),
+     payée par mobile money (Orange Money, Moov Money), activée à la main dans l'admin au début ;
+     champ `boosted_until` sur l'annonce — première source de revenus
+  2. Remontée payante : l'annonce repasse en tête comme si elle venait d'être publiée
+  3. Dépôt payant dans quelques catégories à forte valeur (immobilier, véhicules, emploi), le
+     reste gratuit ; filtre aussi le spam
+  4. Comptes pro / boutiques sur abonnement : plus d'annonces, page boutique, statistiques de
+     vues, badge « Pro »
+  5. Sponsor local par catégorie (opérateur, banque, concessionnaire) : une image fixe et légère,
+     jamais de régie publicitaire (poids de page, traçage)
+  6. Badge « Vendeur vérifié » (téléphone vérifié par SMS), payant ou inclus dans le compte pro
+  7. Plus tard, avec paiement intégré (ADR obligatoire) : paiement sécurisé avec commission
+     (argent bloqué jusqu'à la remise) et livraison par des coursiers partenaires
 - Inscription par numéro de téléphone (OTP SMS) — ADR à écrire
 - Déploiement sans coupure
 - Redimensionnement asynchrone si le dépôt d'annonce devient lent

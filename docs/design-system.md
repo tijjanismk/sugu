@@ -38,7 +38,9 @@ Ajouts du ticket #8 dans `design/` (à reporter dans l'artefact de design) : bad
 (640 et 1024 px), galerie `sg-gallery` de la page annonce, et règle du lieu hors de la ville
 dans `design/README.md`. Ticket #9 : chip active en lien `sg-chip--on`, ancien prix sur sa
 propre ligne dans une carte (il débordait), composant `search_bar`. Ticket #10 : vignette
-`sg-list__thumb` de ListItem pour « Mes annonces » ; les autres composants arrivent avec le ticket qui
+`sg-list__thumb` de ListItem pour « Mes annonces ». Ticket #11 : conteneur `sg-card-slot`
+(carte + bouton favori frère, la carte garde la hauteur de la rangée) et cœur `sg-fav` dans
+la barre du haut de la page annonce ; les autres composants arrivent avec le ticket qui
 les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
 
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.
