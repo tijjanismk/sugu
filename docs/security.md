@@ -74,8 +74,11 @@ Par ordre de probabilité pour un site d'annonces :
   navigateur avant l'envoi (`photo-picker.js`) n'est qu'un confort : le serveur revérifie tout.
 - Les messages sont du texte brut : liens cliquables, rien d'autre interprété
   (ticket #12).
-- Les paramètres de recherche sont validés par un `Form` ; une valeur inattendue
-  est ignorée, pas renvoyée telle quelle dans la page.
+- Les paramètres de recherche sont validés par un `Form` (`SearchForm.valid_filters`) ; une
+  valeur inattendue est ignorée, pas renvoyée telle quelle dans la page : les liens (chips,
+  « Voir plus ») sont reconstruits à partir des seuls filtres valides. Les mots-clés ne
+  gardent que lettres et chiffres avant d'atteindre PostgreSQL (`tsquery` brute construite
+  par `services.search_query`), ce qui neutralise la syntaxe `& | ! :`.
 
 ### Transport et en-têtes
 

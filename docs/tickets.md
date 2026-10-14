@@ -100,7 +100,7 @@ Critères d'acceptation :
   saisis au dépôt et affichés « Sabalibougou, Bamako » / « À 15 km de Ségou » sur la carte et
   la page annonce
 
-## #9 — Recherche et filtres
+## #9 — Recherche et filtres ✅ (fait le 2026-10-14)
 
 Recherche plein texte (`french`), filtres catégorie / ville / prix, formulaire
 GET conservant les paramètres.
