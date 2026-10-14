@@ -53,6 +53,13 @@ Par ordre de probabilité pour un site d'annonces :
 
 ### Comptes
 
+- Connexion avec Google (ticket #3, ADR 0002) : flux OAuth par redirection lancé en POST,
+  `state` et PKCE vérifiés par allauth, portée `openid email profile`, aucun jeton Google
+  conservé. Une adresse vérifiée par Google retrouve le compte existant (pas de doublon) ;
+  si ce compte avait été créé avec cette adresse sans la vérifier (pré-détournement :
+  quelqu'un s'inscrit avec l'adresse d'autrui et attend), allauth efface son mot de passe,
+  ce qui fait tomber les sessions de l'intrus (le hachage de session dépend du mot de
+  passe) — testé. Identifiants OAuth dans l'environnement, jamais dans le dépôt.
 - Mots de passe hachés en Argon2 (`PASSWORD_HASHERS`), longueur minimale et liste
   des mots de passe courants (`AUTH_PASSWORD_VALIDATORS`).
 - Limitation des tentatives : 5 connexions ratées par compte et par IP sur 15 min,

@@ -3,6 +3,7 @@
 {% block head_title %}Se connecter{% endblock head_title %}
 {% block content %}
   {% element h1 %}Se connecter{% endelement %}
+  {% include "account/_google.html" %}
   {% element p %}Pas encore de compte ? <a href="{{ signup_url }}">Créer un compte</a>{% endelement %}
   {% url "account_login" as login_url %}
   {% element form form=form method="post" action=login_url tags="entrance,login" %}

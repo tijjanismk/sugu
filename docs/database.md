@@ -6,7 +6,11 @@ Toutes les tables ont `id` (clé primaire), `created_at`, `updated_at`.
 
 Pas de `username` ni de `first_name` / `last_name` : l'email est l'identifiant (ticket #3,
 migration `accounts.0002`). Les tables `account_emailaddress` et
-`account_emailconfirmation` d'allauth suivent les adresses et leur confirmation.
+`account_emailconfirmation` d'allauth suivent les adresses et leur confirmation ;
+`socialaccount_socialaccount` relie un compte à son compte Google (identifiant Google,
+données de profil), supprimé avec le compte (#13). Les tables `socialaccount_socialapp` et
+`socialaccount_socialtoken` restent vides : identifiants OAuth dans les réglages, aucun
+jeton conservé (ADR 0002).
 
 | Champ               | Type            | Notes                                       |
 |---------------------|-----------------|---------------------------------------------|

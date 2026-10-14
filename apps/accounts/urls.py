@@ -5,7 +5,7 @@ de téléphone, confirmation d'email et réinitialisation par lien.
 """
 
 from allauth.account import views
-from django.urls import path, re_path
+from django.urls import include, path, re_path
 
 from . import views as account_views
 
@@ -52,4 +52,9 @@ urlpatterns = [
         views.password_reset_from_key_done,
         name="account_reset_password_from_key_done",
     ),
+    # Connexion avec Google (ticket #3, ADR 0002) : /comptes/google/login/ et son retour
+    # /comptes/google/login/callback/ (à déclarer dans la console Google), puis les pages
+    # communes d'allauth (annulation, erreur, inscription à compléter).
+    path("", include("allauth.socialaccount.providers.google.urls")),
+    path("social/", include("allauth.socialaccount.urls")),
 ]

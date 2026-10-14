@@ -1,4 +1,5 @@
 from allauth.account.models import EmailAddress
+from allauth.socialaccount.models import SocialAccount
 from django.db import transaction
 from django.db.models import F
 from django.utils import timezone
@@ -28,12 +29,14 @@ def delete_account(user: User) -> None:
       personne garde son historique, utile en cas de litige ;
     - email, nom, téléphone et ville sont effacés ; l'adresse email est libérée ;
     - le compte ne peut plus se connecter et toutes ses sessions tombent ;
-    - ses favoris, sans intérêt pour personne d'autre, sont supprimés.
+    - ses favoris, sans intérêt pour personne d'autre, sont supprimés, ainsi que le lien avec
+      son compte Google (ticket #3).
     """
     for listing in user.listings.exclude(status=ListingStatus.REMOVED):
         listing_services.remove(listing)
     Favorite.objects.filter(user=user).delete()
     EmailAddress.objects.filter(user=user).delete()
+    SocialAccount.objects.filter(user=user).delete()
 
     user.email = f"supprime-{user.pk}@sugu.invalid"
     user.display_name = DELETED_NAME

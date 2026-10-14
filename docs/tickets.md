@@ -26,7 +26,7 @@ Critères d'acceptation :
 - Un push direct sur `main` est refusé
 - `makemigrations --check` est dans la CI
 
-## #3 — Modèle utilisateur et authentification ✅ (fait le 2026-10-13)
+## #3 — Modèle utilisateur et authentification ✅ (fait le 2026-10-13, connexion Google le 2026-10-14)
 
 Créer `accounts.User` (email, display_name, phone, city), configurer allauth
 (inscription, connexion, déconnexion, mot de passe oublié par email).
@@ -36,6 +36,17 @@ Critères d'acceptation :
 - Tests d'intégration sur les trois flux
 - `AUTH_USER_MODEL` fixé dès la première migration
 - Limitation de débit sur connexion et inscription (voir `docs/security.md`)
+
+Ajout du 2026-10-14 : **connexion avec Google** dès la V1, bouton « Continuer avec Google » en
+tête des pages de connexion et d'inscription. Compte créé d'un clic (nom affiché repris de
+Google, adresse vérifiée par Google) ; une adresse déjà inscrite retrouve son compte, sans
+doublon ; aucun jeton Google conservé. Bouton masqué tant que les identifiants OAuth ne sont
+pas configurés (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`). Dépendances : ADR 0002.
+
+Critères ajoutés :
+- Inscription et connexion par Google (tests avec la réponse de Google simulée)
+- Même adresse email : le compte existant est retrouvé, pas de doublon
+- La suppression de compte (#13) délie aussi le compte Google
 
 ## #4 — Base HTML, Tailwind et htmx ✅ (fait le 2026-10-13)
 
