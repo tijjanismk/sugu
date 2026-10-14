@@ -1,6 +1,7 @@
 """Tests (pytest et CI) : rapides, sans réseau, stockage de fichiers temporaire."""
 
 import tempfile
+from pathlib import Path
 
 from .base import *  # noqa: F403
 from .base import env
@@ -15,7 +16,10 @@ DATABASES = {
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 MAILERS = {"default": {"BACKEND": "django.core.mail.backends.locmem.EmailBackend"}}
 
-MEDIA_ROOT = tempfile.mkdtemp(prefix="sugu-test-media-")
+# Un seul dossier, réutilisé d'une exécution à l'autre : mkdtemp en créait un nouveau à
+# chaque lancement de pytest, jamais supprimé. Les tests qui écrivent des fichiers
+# (dépôt d'annonce) utilisent en plus leur propre tmp_path.
+MEDIA_ROOT = Path(tempfile.gettempdir()) / "sugu-test-media"
 STORAGES["staticfiles"] = {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}  # noqa: F405
 WHITENOISE_AUTOREFRESH = True
 
