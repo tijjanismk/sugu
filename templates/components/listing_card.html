@@ -1,0 +1,25 @@
+{% load sugu_format %}{% comment %}
+  Carte annonce (design/components/ListingCard). Paramètres : listing (avec `cover_photos`,
+  voir services.with_cover), lazy (vrai au-delà des quatre premières cartes). La miniature
+  porte width/height : le navigateur réserve sa place, rien ne saute au chargement.
+{% endcomment %}{% with badge=listing.card_badge photo=listing.cover_photos.0 %}
+<a class="sg-card{% if badge == 'sold' %} sg-card--sold{% endif %}" href="{{ listing.get_absolute_url }}">
+  {% if photo %}
+    <img class="sg-card__media" src="{{ photo.thumb.url }}" width="400" height="300" alt="{{ listing.title }}"{% if lazy %} loading="lazy"{% endif %} decoding="async">
+  {% else %}
+    <div class="sg-card__media">{% include "components/icon.html" with name="camera" size="lg" %}</div>
+  {% endif %}
+  {% if badge == "sold" %}<span class="sg-badge sg-badge--sold sg-card__badge">Vendu</span>
+  {% elif badge == "drop" %}<span class="sg-badge sg-badge--drop sg-card__badge">{% include "components/icon.html" with name="drop" %}Prix en baisse</span>
+  {% elif badge == "new" %}<span class="sg-badge sg-badge--new sg-card__badge">Nouveau</span>{% endif %}
+  <div class="sg-card__body">
+    {% if listing.price is None %}
+      <p class="sg-card__price sg-card__price--open">À débattre</p>
+    {% else %}
+      <p class="sg-card__price">{{ listing.price|fcfa }}{% if badge == "drop" %}<s class="sg-was"><span class="sr-only">au lieu de </span>{{ listing.previous_price|thousands }}</s>{% endif %}</p>
+    {% endif %}
+    <p class="sg-card__title">{{ listing.title }}</p>
+    <p class="sg-card__meta">{% include "components/icon.html" with name="pin" size="sm" %}{{ listing.place_label }} · {{ listing.published_at|relative_date }}</p>
+  </div>
+</a>
+{% endwith %}

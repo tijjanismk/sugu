@@ -15,12 +15,13 @@ La carte annonce montre une photo 4:3, le prix en premier, un titre sur deux lig
 - Favori actif : `aria-pressed="true"` sur le bouton, cœur plein en `heart`. La bascule se fait en htmx sur le bouton seul.
 - Vendue : `sg-card--sold`, photo atténuée, prix barré en `ink-muted`, badge « Vendu ». La carte reste visible sur la page du vendeur, disparaît de la recherche.
 - Nouvelle (moins de 24 h) : badge `sg-badge--new` en haut à gauche.
+- Prix en baisse (moins de 14 jours) : badge `sg-badge--drop` et ancien prix barré `<s class="sg-was">` dans `sg-card__price`. Un seul badge par carte : Vendu, sinon Prix en baisse, sinon Nouveau.
 - Chargement : la carte `Skeleton` de mêmes dimensions.
 
 ## Grille
 
-`sg-grid` : deux colonnes, gouttière `space-3`, marge `space-4` ; trois colonnes à partir de 640 px, quatre à 1024 px dans `page-max`. Le bouton « Voir plus » (`sg-btn`, pleine largeur) charge la page suivante en htmx sous la grille.
+`sg-grid` : deux colonnes, gouttière `space-3`, marge `space-4` ; trois colonnes à partir de 640 px, quatre à 1024 px dans `page-max` (media queries dans `bundle.css`). Le bouton « Voir plus » (`sg-btn`, pleine largeur) charge la page suivante en htmx sous la grille.
 
 ## Prix sur la page de l'annonce
 
-`sg-price-lg` (style `price-lg`) sous la galerie, suivi des badges de mode de règlement.
+`sg-price-lg` (style `price-lg`) sous la galerie `sg-gallery` (une photo par écran, défilement aimanté, dimensions réservées), suivi de l'ancien prix `sg-was` en cas de baisse, puis des badges de mode de règlement.

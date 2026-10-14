@@ -10,6 +10,7 @@ from django.db import models
 from django.db.models import F, Q
 from django.db.models.functions import Length
 from django.db.models.lookups import LessThanOrEqual
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -22,6 +23,10 @@ DESCRIPTION_MAX_LENGTH = 2000
 MAX_PHOTOS = 6
 # Durée pendant laquelle une baisse de prix est signalée aux acheteurs.
 PRICE_DROP_BADGE_DAYS = 14
+# Une annonce est « Nouvelle » pendant ses premières 24 heures (design/components/Badge).
+NEW_BADGE_HOURS = 24
+# Distance de la ville indiquée par le vendeur (« à 20 km de Bamako »), en km.
+MAX_DISTANCE_KM = 300
 
 
 def _unique_slug(model, base: str, instance_pk) -> str:
@@ -134,7 +139,8 @@ ALLOWED_TRANSITIONS = {
     ListingStatus.REMOVED: set(),
 }
 
-# Statuts d'une annonce qui a été publiée : published_at est alors obligatoire.
+# Statuts d'une annonce qui a été publiée : published_at est alors obligatoire. Ce sont aussi
+# les annonces visibles de tous sur leur page (une annonce vendue garde sa page, avec un bandeau).
 PUBLISHED_STATUSES = [ListingStatus.PUBLISHED, ListingStatus.RESERVED, ListingStatus.SOLD]
 
 
@@ -157,6 +163,12 @@ class Listing(TimeStampedModel):
     )
     city = models.ForeignKey(
         City, verbose_name="ville", on_delete=models.PROTECT, related_name="listings"
+    )
+    # Lieu précis, facultatif (ajout du 2026-10-14) : « Sabalibougou », « Commune V »…
+    neighborhood = models.CharField("quartier ou commune", max_length=80, blank=True)
+    # Pour un objet hors de la ville : « à 20 km de Bamako ».
+    distance_km = models.PositiveSmallIntegerField(
+        "distance de la ville (km)", null=True, blank=True
     )
     title = models.CharField("titre", max_length=80)
     description = models.TextField(
@@ -197,6 +209,11 @@ class Listing(TimeStampedModel):
                 condition=Q(status__in=ListingStatus.values), name="listing_status_valid"
             ),
             models.CheckConstraint(
+                condition=Q(distance_km__isnull=True)
+                | Q(distance_km__gte=1, distance_km__lte=MAX_DISTANCE_KM),
+                name="listing_distance_km_range",
+            ),
+            models.CheckConstraint(
                 condition=Q(payment_methods__contained_by=PaymentMethod.values),
                 name="listing_payment_methods_valid",
             ),
@@ -222,6 +239,44 @@ class Listing(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("listings:detail", kwargs={"pk": self.pk, "slug": self.slug})
+
+    @property
+    def slug(self) -> str:
+        """Slug du titre pour l'URL (lisible, jamais utilisé pour retrouver l'annonce)."""
+        return slugify(self.title)[:60].strip("-") or "annonce"
+
+    @property
+    def place_label(self) -> str:
+        """Lieu affiché, quartier puis ville (design/README.md) : « Sabalibougou, Bamako »,
+        « À 20 km de Bamako », « Moribabougou, à 20 km de Bamako »."""
+        city = self.city.name
+        where = f"à {self.distance_km} km de {city}" if self.distance_km else city
+        label = f"{self.neighborhood}, {where}" if self.neighborhood else where
+        return label[0].upper() + label[1:]
+
+    @property
+    def is_sold(self) -> bool:
+        return self.status == ListingStatus.SOLD
+
+    @property
+    def is_new(self) -> bool:
+        if self.published_at is None:
+            return False
+        return timezone.now() - self.published_at < timedelta(hours=NEW_BADGE_HOURS)
+
+    @property
+    def card_badge(self) -> str | None:
+        """Le badge unique d'une carte : Vendu, sinon Prix en baisse, sinon Nouveau."""
+        if self.is_sold:
+            return "sold"
+        if self.has_recent_price_drop:
+            return "drop"
+        if self.is_new:
+            return "new"
+        return None
 
     def can_change_status_to(self, new_status: str) -> bool:
         return new_status in ALLOWED_TRANSITIONS[ListingStatus(self.status)]

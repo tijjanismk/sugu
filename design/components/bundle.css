@@ -34,6 +34,8 @@ a { color: var(--indigo); }
 
 /* Carte annonce */
 .sg-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); padding: var(--space-4); }
+@media (min-width: 640px) { .sg-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .sg-grid { grid-template-columns: repeat(4, 1fr); } }
 .sg-card { position: relative; display: block; background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; text-decoration: none; color: inherit; }
 .sg-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .sg-card__media { display: grid; place-items: center; aspect-ratio: 4 / 3; width: 100%; background: var(--surface-sunken); color: var(--ink-muted); object-fit: cover; }
@@ -51,6 +53,13 @@ a { color: var(--indigo); }
 .sg-card--sold .sg-card__media { opacity: .5; }
 .sg-card--sold .sg-card__price { color: var(--ink-muted); text-decoration: line-through; }
 .sg-price-lg { margin: 0; font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.01em; color: var(--indigo); font-variant-numeric: tabular-nums; }
+/* Ancien prix barré après une baisse (carte et page) : 65 % du prix qu'il suit */
+.sg-was { margin-left: var(--space-2); font-size: .65em; font-weight: 500; color: var(--ink-muted); text-decoration: line-through; }
+/* Galerie de la page annonce : une photo par écran, défilement horizontal aimanté */
+.sg-gallery { display: flex; gap: var(--space-2); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; background: var(--surface-sunken); }
+.sg-gallery::-webkit-scrollbar { display: none; }
+.sg-gallery img { flex: 0 0 100%; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: contain; scroll-snap-align: start; }
+.sg-gallery__empty { flex: 0 0 100%; aspect-ratio: 4 / 3; display: grid; place-items: center; color: var(--ink-muted); }
 
 /* Recherche */
 .sg-search { display: flex; gap: var(--space-2); padding: var(--space-3) var(--space-4); }
@@ -119,6 +128,7 @@ textarea.sg-input { min-height: 112px; padding: var(--space-3); resize: vertical
 .sg-badge--sold { background: var(--ink); color: var(--surface); }
 .sg-badge--money { background: var(--sun-soft); color: var(--ink); }
 .sg-badge--ok { background: var(--success-soft); color: var(--success); }
+.sg-badge--drop { background: var(--success-soft); color: var(--success); }
 
 /* Messagerie */
 .sg-thread { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4); }

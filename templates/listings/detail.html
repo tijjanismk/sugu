@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load sugu_format %}
+{% block title %}{{ listing.title }} · {{ listing.price|fcfa }} · Sugu{% endblock %}
+{% block head %}<meta name="description" content="{{ listing.description|truncatechars:150 }}">{% endblock %}
+{% block topbar %}
+  <header class="sg-topbar sg-topbar--raised">
+    <a class="sg-btn sg-btn--icon" href="{% url 'core:home' %}" aria-label="Retour à l'accueil">{% include "components/icon.html" with name="back" %}</a>
+    <p class="sg-topbar__title">{{ listing.title }}</p>
+  </header>
+{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  <article aria-labelledby="listing-title">
+    {# Galerie : dimensions réelles en attributs, rien ne saute au chargement. #}
+    <div class="sg-gallery" aria-label="Photos de l'annonce">
+      {% for photo in listing.photos.all %}
+        <img src="{{ photo.large.url }}" width="{{ photo.width }}" height="{{ photo.height }}" alt="{{ listing.title }}, photo {{ forloop.counter }}"{% if not forloop.first %} loading="lazy"{% endif %} decoding="async">
+      {% empty %}
+        <div class="sg-gallery__empty">{% include "components/icon.html" with name="camera" size="lg" %}</div>
+      {% endfor %}
+    </div>
+    {% with count=listing.photos.all|length %}{% if count > 1 %}
+      <p class="caption px-4 pt-2 text-ink-muted">{{ count }} photos : faites défiler.</p>
+    {% endif %}{% endwith %}
+
+    {% if listing.is_sold %}
+      {% include "components/alert.html" with variant="info" title="Annonce vendue" body="Cet objet a trouvé preneur. L'annonce reste visible pour mémoire." %}
+    {% endif %}
+
+    <div class="px-4 pt-4">
+      {% if listing.price is None %}
+        <p class="sg-price-lg text-ink-muted">À débattre</p>
+      {% else %}
+        <p class="sg-price-lg">{{ listing.price|fcfa }}{% if listing.has_recent_price_drop and not listing.is_sold %}<s class="sg-was"><span class="sr-only">au lieu de </span>{{ listing.previous_price|fcfa }}</s>{% endif %}</p>
+      {% endif %}
+
+      <div class="mt-2 flex flex-wrap gap-2">
+        {% if listing.is_sold %}<span class="sg-badge sg-badge--sold">Vendu</span>
+        {% elif listing.has_recent_price_drop %}<span class="sg-badge sg-badge--drop">{% include "components/icon.html" with name="drop" %}Prix en baisse</span>{% endif %}
+        {% for method in listing.payment_methods %}
+          {% if method == "mobile_money" %}<span class="sg-badge sg-badge--money">{% include "components/icon.html" with name="smartphone" %}Mobile money</span>
+          {% elif method == "cash_on_delivery" %}<span class="sg-badge">Paiement à la livraison</span>{% endif %}
+        {% endfor %}
+      </div>
+
+      <h1 id="listing-title" class="title mt-4 text-ink">{{ listing.title }}</h1>
+      <p class="small mt-1 flex items-center gap-1 text-ink-muted">
+        {% include "components/icon.html" with name="pin" size="sm" %}{{ listing.place_label }} · {{ listing.category.name }} · {{ listing.published_at|relative_date }}
+      </p>
+
+      <h2 class="heading mt-6 text-ink">Description</h2>
+      {# Texte brut : linebreaksbr échappe le HTML saisi avant d'ajouter les retours à la ligne. #}
+      <p class="body mt-2 text-ink">{{ listing.description|linebreaksbr }}</p>
+
+      <h2 class="heading mt-6 text-ink">Vendeur</h2>
+      <p class="body mt-2 text-ink">{{ listing.user.display_name }}</p>
+    </div>
+
+    {# Rappel de sécurité sur chaque annonce (docs/security.md). Contact : ticket #12. #}
+    {% include "components/alert.html" with variant="info" title="Restez prudent" body="Rencontrez le vendeur dans un lieu public et ne payez jamais avant d'avoir vu l'objet." %}
+  </article>
+{% endblock %}
