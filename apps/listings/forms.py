@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 
 from .images import MAX_UPLOAD_BYTES
@@ -12,6 +14,33 @@ from .models import (
 )
 
 MAX_PRICE = 1_000_000_000
+
+# Liens, adresses web et emails : refusés dans une annonce (ajout du 2026-10-14). D'autres sites
+# d'annonces ne doivent pas détourner les acheteurs ; le contact passe par Sugu (ticket #12).
+LINK_PATTERN = re.compile(
+    r"(https?://|www\.|[\w.+-]+@[\w-]+\.[a-z]{2,}"
+    r"|\b[a-z0-9-]+\.(com|net|org|info|biz|io|co|me|app|shop|store|site|online|africa"
+    r"|ml|sn|ci|bf|gn|ne|tg|bj|cm|fr)\b)",
+    re.IGNORECASE,
+)
+LINK_ERROR = "Les liens vers d'autres sites, les adresses web et les emails ne sont pas acceptés."
+
+
+def reject_links(value: str) -> str:
+    if value and LINK_PATTERN.search(value):
+        raise forms.ValidationError(LINK_ERROR, code="link")
+    return value
+
+
+def validate_photo_files(photos: list) -> list:
+    if len(photos) > MAX_PHOTOS:
+        raise forms.ValidationError(f"{MAX_PHOTOS} photos au plus.")
+    for photo in photos:
+        if photo.size > MAX_UPLOAD_BYTES:
+            raise forms.ValidationError(
+                f"Photo trop lourde ({photo.size // (1024 * 1024)} Mo). 8 Mo au plus."
+            )
+    return photos
 
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -32,8 +61,8 @@ class MultipleFileField(forms.FileField):
         return [single_clean(data, initial)] if data else single_clean(data, initial)
 
 
-class ListingForm(forms.Form):
-    """Dépôt d'une annonce (ticket #7). Le traitement des photos est fait par le service."""
+class ListingContentForm(forms.Form):
+    """Contenu d'une annonce, commun au dépôt (#7) et à la modification (#10)."""
 
     title = forms.CharField(
         label="Titre",
@@ -82,11 +111,6 @@ class ListingForm(forms.Form):
             attrs={"rows": 5, "placeholder": "État, âge, accessoires, lieu de remise…"}
         ),
     )
-    photos = MultipleFileField(
-        label="Photos",
-        help_text="La première photo est la couverture. Prenez-la en plein jour, sur fond simple.",
-        widget=MultipleFileInput(attrs={"accept": "image/*", "data-photo-input": ""}),
-    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -111,16 +135,60 @@ class ListingForm(forms.Form):
             raise forms.ValidationError("Ce prix paraît trop élevé.")
         return price
 
+    def clean_title(self):
+        return reject_links(self.cleaned_data["title"])
+
+    def clean_neighborhood(self):
+        return reject_links(self.cleaned_data["neighborhood"])
+
+    def clean_description(self):
+        return reject_links(self.cleaned_data["description"])
+
+
+class ListingForm(ListingContentForm):
+    """Dépôt d'une annonce (ticket #7). Le traitement des photos est fait par le service."""
+
+    photos = MultipleFileField(
+        label="Photos",
+        help_text="La première photo est la couverture. Prenez-la en plein jour, sur fond simple.",
+        widget=MultipleFileInput(attrs={"accept": "image/*", "data-photo-input": ""}),
+    )
+
+    field_order = [
+        "photos", "title", "category", "city", "neighborhood", "distance_km", "price",
+        "payment_methods", "description",
+    ]  # fmt: skip
+
     def clean_photos(self):
-        photos = self.cleaned_data["photos"]
-        if len(photos) > MAX_PHOTOS:
-            raise forms.ValidationError(f"{MAX_PHOTOS} photos au plus.")
-        for photo in photos:
-            if photo.size > MAX_UPLOAD_BYTES:
-                raise forms.ValidationError(
-                    f"Photo trop lourde ({photo.size // (1024 * 1024)} Mo). 8 Mo au plus."
-                )
-        return photos
+        return validate_photo_files(self.cleaned_data["photos"])
+
+
+class ListingEditForm(ListingContentForm):
+    """Modification du contenu (ticket #10) ; les photos ont leur propre formulaire."""
+
+    @classmethod
+    def for_listing(cls, listing, data=None):
+        initial = {
+            "title": listing.title,
+            "category": listing.category_id,
+            "city": listing.city_id,
+            "neighborhood": listing.neighborhood,
+            "distance_km": listing.distance_km,
+            "price": "" if listing.price is None else str(listing.price),
+            "payment_methods": listing.payment_methods,
+            "description": listing.description,
+        }
+        return cls(data, initial=initial)
+
+
+class PhotoAddForm(forms.Form):
+    photos = MultipleFileField(
+        label="Ajouter des photos",
+        widget=MultipleFileInput(attrs={"accept": "image/*", "data-photo-input": ""}),
+    )
+
+    def clean_photos(self):
+        return validate_photo_files(self.cleaned_data["photos"])
 
 
 class SearchForm(forms.Form):

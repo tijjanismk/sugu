@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Accès refusé · Sugu{% endblock %}
+{% block content %}
+  {% url "core:home" as home_url %}
+  {% include "components/empty_state.html" with icon="shield" title="Vous n'avez pas accès à cette page" body="Elle concerne une annonce ou un compte qui n'est pas le vôtre." action_href=home_url action_label="Retour à l'accueil" %}
+{% endblock %}

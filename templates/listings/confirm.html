@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Sugu{% endblock %}
+{% block body_class %}{% endblock %}
+{% block bottomnav %}{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  {# Confirmation d'une action définitive (design/components/Button) : rien ne se passe sans POST. #}
+  <div class="px-4 pt-6">
+    <h1 class="title text-ink">{{ title }}</h1>
+    <p class="body mt-2 font-semibold text-ink">{{ listing.title }}</p>
+    <p class="body mt-2 text-ink-muted">{{ body }}</p>
+  </div>
+  <form class="flex flex-col gap-2 px-4 pt-6" method="post">
+    {% csrf_token %}
+    <button class="sg-btn sg-btn--lg sg-btn--block {% if danger %}sg-btn--danger{% else %}sg-btn--primary{% endif %}" type="submit">{{ button }}</button>
+    <a class="sg-btn sg-btn--quiet sg-btn--block" href="{% url 'listings:edit' listing.pk %}">Annuler</a>
+  </form>
+{% endblock %}

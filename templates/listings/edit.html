@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static sugu_format %}
+{% block title %}Modifier « {{ listing.title }} » · Sugu{% endblock %}
+{% block body_class %}{% endblock %}
+{% block topbar %}
+  <header class="sg-topbar sg-topbar--raised">
+    <a class="sg-btn sg-btn--icon" href="{% url 'listings:mine' %}" aria-label="Retour à mes annonces">{% include "components/icon.html" with name="back" %}</a>
+    <h1 class="sg-topbar__title">Gérer l'annonce</h1>
+    <a class="sg-btn sg-btn--quiet" href="{{ listing.get_absolute_url }}">Voir</a>
+  </header>
+{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  {% if not editable %}
+    {% include "components/alert.html" with variant="info" title="Annonce vendue" body="Une annonce vendue ne se modifie plus. Vous pouvez seulement la supprimer." %}
+  {% endif %}
+
+  {# --- Photos : retirer (la suivante devient la couverture), ajouter jusqu'à 6 --- #}
+  <section class="pt-4" aria-labelledby="photos-title">
+    <h2 id="photos-title" class="sg-field__label px-4">Photos <small>({{ photos|length }} sur 6)</small></h2>
+    <div class="sg-photos">
+      {% for photo in photos %}
+        <div class="sg-photo">
+          <img src="{{ photo.thumb.url }}" width="400" height="300" alt="Photo {{ forloop.counter }}" class="h-full w-full object-cover">
+          {% if forloop.first %}<span class="sg-photo__cover">Couverture</span>{% endif %}
+          {% if editable and photos|length > 1 %}
+            <form method="post" action="{% url 'listings:photo_remove' listing.pk photo.pk %}">
+              {% csrf_token %}
+              <button class="sg-photo__remove" type="submit" aria-label="Retirer la photo {{ forloop.counter }}">{% include "components/icon.html" with name="close" %}</button>
+            </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% if editable and photos_left > 0 %}
+      <form class="sg-form" method="post" enctype="multipart/form-data" action="{% url 'listings:photo_add' listing.pk %}" data-listing-form data-max-photos="{{ photos_left }}">
+        {% csrf_token %}
+        <div class="sg-field">
+          <label class="sg-field__label" for="{{ photo_form.photos.id_for_label }}">Ajouter des photos <small>({{ photos_left }} au plus)</small></label>
+          <div class="sg-photos -mx-4 hidden" data-photo-grid>
+            <button class="sg-photo--add" type="button" data-photo-add>{% include "components/icon.html" with name="post" %}Ajouter</button>
+          </div>
+          <template data-photo-tile>
+            <div class="sg-photo">
+              <img alt="" class="h-full w-full object-cover">
+              <button class="sg-photo__remove" type="button" aria-label="Retirer la photo">{% include "components/icon.html" with name="close" %}</button>
+            </div>
+          </template>
+          {{ photo_form.photos }}
+          <span class="sg-field__help hidden" data-photo-status aria-live="polite"></span>
+        </div>
+        <div class="px-4"><button class="sg-btn sg-btn--block" type="submit" data-submit>Envoyer les photos</button></div>
+      </form>
+    {% endif %}
+  </section>
+
+  {# --- Contenu de l'annonce --- #}
+  {% if editable %}
+    <form class="sg-form mt-4" method="post" novalidate>
+      {% csrf_token %}
+      {% for error in form.non_field_errors %}
+        {% include "components/alert.html" with variant="danger" body=error %}
+      {% endfor %}
+      {% include "components/field.html" with field=form.title %}
+      {% include "components/field.html" with field=form.category %}
+      {% include "components/field.html" with field=form.city %}
+      {% include "components/field.html" with field=form.neighborhood %}
+      {% include "components/field.html" with field=form.distance_km unit="km" %}
+      {% include "components/field.html" with field=form.price unit="FCFA" %}
+      {% if listing.has_recent_price_drop %}
+        <div class="sg-alert sg-alert--info" role="status">
+          {% include "components/icon.html" with name="drop" %}
+          <div><strong>Baisse de prix en cours</strong>Ancien prix : {{ listing.previous_price|fcfa }}. La mention « Prix en baisse » s'affiche jusqu'au {{ listing.price_drop_until|date:"j F" }}.</div>
+        </div>
+      {% else %}
+        <p class="sg-field__help px-4">Baisser le prix affiche « Prix en baisse » sur l'annonce pendant 14 jours.</p>
+      {% endif %}
+      {% include "components/field.html" with field=form.payment_methods %}
+      {% include "components/field.html" with field=form.description %}
+      <div class="sg-sticky">
+        <button class="sg-btn sg-btn--primary sg-btn--lg sg-btn--block" type="submit">Enregistrer les modifications</button>
+      </div>
+    </form>
+  {% endif %}
+
+  {# --- Actions définitives, chacune suivie d'une page de confirmation --- #}
+  <section class="flex flex-col gap-2 px-4 py-6" aria-label="Autres actions">
+    {% if listing.status == "published" %}
+      <a class="sg-btn sg-btn--block" href="{% url 'listings:mark_sold' listing.pk %}">Marquer comme vendue</a>
+    {% endif %}
+    <a class="sg-btn sg-btn--danger sg-btn--block" href="{% url 'listings:delete' listing.pk %}">{% include "components/icon.html" with name="trash" %}Supprimer l'annonce</a>
+  </section>
+{% endblock %}
+{% block bottomnav %}{% endblock %}
+{% block scripts %}{% if editable and photos_left > 0 %}<script src="{% static 'js/photo-picker.js' %}" defer></script>{% endif %}{% endblock %}

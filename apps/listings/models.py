@@ -282,6 +282,13 @@ class Listing(TimeStampedModel):
         return new_status in ALLOWED_TRANSITIONS[ListingStatus(self.status)]
 
     @property
+    def price_drop_until(self):
+        """Fin de la mention « Prix en baisse » (montrée au vendeur dans le formulaire)."""
+        if self.price_dropped_at is None:
+            return None
+        return self.price_dropped_at + timedelta(days=PRICE_DROP_BADGE_DAYS)
+
+    @property
     def has_recent_price_drop(self) -> bool:
         """Vrai pendant PRICE_DROP_BADGE_DAYS jours après une baisse de prix."""
         if self.price_dropped_at is None:
