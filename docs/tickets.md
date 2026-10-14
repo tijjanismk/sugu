@@ -70,7 +70,7 @@ Critères d'acceptation :
   « à débattre » l'efface ; contrainte en base : ancien prix > prix actuel (tests)
 - `docs/database.md` à jour
 
-## #7 — Dépôt d'annonce avec photos
+## #7 — Dépôt d'annonce avec photos ✅ (fait le 2026-10-14)
 
 Formulaire multipart, validation, service de redimensionnement WebP
 (1200 px + 400 px), stockage local en dev et R2 en prod via `django-storages`.
@@ -79,6 +79,9 @@ Critères d'acceptation :
 - Une annonce avec 3 photos est créée en moins de 5 s
 - Les originaux ne sont pas conservés ; un fichier qui n'est pas une image est rejeté ; EXIF retiré
 - Tests unitaires du service d'images avec une image générée en mémoire
+- Réduction des photos dans le navigateur avant l'envoi (≈ 1 600 px, ajout du 2026-10-14) :
+  envoi environ 10 fois plus léger en 3G ; sans JavaScript, l'envoi direct fonctionne toujours
+  et le serveur garde toutes ses vérifications
 
 ## #8 — Liste, page annonce et pagination
 

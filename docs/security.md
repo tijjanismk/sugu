@@ -66,9 +66,12 @@ Par ordre de probabilité pour un site d'annonces :
 
 - Validation côté serveur de chaque champ : longueur, format, valeurs permises
   (prix positif, catégorie existante, 6 photos au plus, 8 Mo chacune).
-- Les photos sont ouvertes et **réencodées** par Pillow en WebP ; un fichier qui
-  n'est pas une image valide est rejeté ; l'original n'est jamais conservé ni servi
-  (ticket #7). Les métadonnées EXIF (dont la position GPS) sont retirées.
+- Les photos sont ouvertes et **réencodées** par Pillow en WebP (`apps/listings/images.py`) :
+  seuls JPEG, PNG et WebP valides sont acceptés, un fichier tronqué ou déguisé est rejeté,
+  une image de plus de 40 Mpx est refusée avant décodage (bombe de décompression),
+  l'original n'est jamais écrit ni servi. L'orientation EXIF est appliquée puis toutes les
+  métadonnées (dont la position GPS) disparaissent au réencodage. La réduction faite dans le
+  navigateur avant l'envoi (`photo-picker.js`) n'est qu'un confort : le serveur revérifie tout.
 - Les messages sont du texte brut : liens cliquables, rien d'autre interprété
   (ticket #12).
 - Les paramètres de recherche sont validés par un `Form` ; une valeur inattendue
@@ -93,7 +96,8 @@ Par ordre de probabilité pour un site d'annonces :
 ### Débit et robots
 
 - Limitation de débit sur inscription, connexion, dépôt d'annonce, envoi de message
-  et signalement (inscription et connexion faites au ticket #3 ; #7, #12 à venir).
+  et signalement (inscription et connexion : ticket #3 ; dépôt d'annonce : 5 par heure et
+  20 par jour par utilisateur, ticket #7, via `apps/core/ratelimit.py` ; #12 à venir).
 - Cloudflare devant le site : absorption des attaques par saturation, filtrage des
   robots, cache des fichiers statiques.
 - Si le spam d'inscriptions arrive : défi Turnstile (Cloudflare) sur le formulaire
