@@ -16,6 +16,8 @@
     {% include "components/field.html" with field=form.display_name %}
     {% include "components/field.html" with field=form.phone %}
     {% include "components/field.html" with field=form.city %}
+    {% include "components/field.html" with field=form.notify_messages %}
+    <p class="sg-field__help px-4 pb-2">Un email au premier message d'une conversation, sans son contenu.</p>
     <div class="px-4"><button class="sg-btn sg-btn--primary sg-btn--block" type="submit">Enregistrer</button></div>
   </form>
 

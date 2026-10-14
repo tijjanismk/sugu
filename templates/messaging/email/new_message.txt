@@ -1,0 +1,13 @@
+{% autoescape off %}Bonjour {{ recipient }},
+
+{{ sender }} vous a écrit sur Sugu à propos de votre échange sur « {{ listing_title }} ».
+
+Lire le message et répondre :
+{{ conversation_url }}
+
+Vous ne recevez qu'un email par conversation tant que vous ne l'avez pas ouverte.
+Ne plus recevoir ces emails : {{ profile_url }}
+
+Rappel : rencontrez-vous dans un lieu public et ne payez jamais avant d'avoir vu l'objet.
+
+L'équipe Sugu{% endautoescape %}

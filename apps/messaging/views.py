@@ -67,7 +67,7 @@ def start(request: HttpRequest, listing_pk: int) -> HttpResponse:
             return ratelimit.too_many_requests(request)
         if form.is_valid():
             conversation = services.start_conversation(
-                request.user, listing, form.cleaned_data["body"]
+                request.user, listing, form.cleaned_data["body"], base_url=_site_url(request)
             )
             ratelimit.consume(request, "conversation_start")
             return redirect(conversation)
@@ -75,6 +75,12 @@ def start(request: HttpRequest, listing_pk: int) -> HttpResponse:
         form = MessageForm(initial={"body": FIRST_MESSAGE})
     context = {"listing": listing, "other": listing.user, "form": form, "items": []}
     return render(request, "messaging/conversation.html", context)
+
+
+def _site_url(request: HttpRequest) -> str:
+    """« https://sugu.ml » : liens absolus de l'email de nouveau message (https derrière le
+    proxy grâce à SECURE_PROXY_SSL_HEADER)."""
+    return request.build_absolute_uri("/").rstrip("/")
 
 
 def _after(request: HttpRequest) -> int:
@@ -118,7 +124,12 @@ def conversation(request: HttpRequest, pk: int) -> HttpResponse:
             return ratelimit.too_many_requests(request)
         form = MessageForm(request.POST)
         if form.is_valid():
-            services.send_message(conversation, request.user, form.cleaned_data["body"])
+            services.send_message(
+                conversation,
+                request.user,
+                form.cleaned_data["body"],
+                base_url=_site_url(request),
+            )
             ratelimit.consume(request, "message_send")
             if request.htmx:
                 return _thread_update(request, conversation, _after(request))

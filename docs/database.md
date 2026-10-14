@@ -16,6 +16,7 @@ migration `accounts.0002`). Les tables `account_emailaddress` et
 | phone               | varchar(20)     | facultatif, chiffres seuls (+ indicatif), visible aux connectés |
 | phone_verified      | bool            | réservé à une future vérification OTP       |
 | city_id             | FK → city       | optionnel, SET NULL si la ville disparaît   |
+| notify_messages     | bool, défaut vrai | email de nouveau message (#12), au profil |
 | session_version     | int, défaut 0   | +1 = toutes les sessions tombent (#13)      |
 | deleted_at          | timestamp, null | compte supprimé (anonymisé) par son titulaire |
 | is_active, is_staff | bool            | Django                                      |

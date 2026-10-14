@@ -92,4 +92,4 @@ docker compose -f compose.prod.yml start web
 | 502 Bad Gateway            | conteneur web arrêté                | `docker compose ps`, puis `logs web`                |
 | Photos ne s'affichent pas  | clés R2 ou domaine custom           | vérifier `.env`, tester un upload                   |
 | Site lent                  | disque plein ou requête sans index  | `df -h`, activer `django-debug-toolbar` en staging  |
-| Emails non reçus           | SMTP mal configuré                  | `manage.py sendtestemail`, vérifier `EMAIL_URL`     |
+| Emails non reçus           | SMTP mal configuré                  | `manage.py sendtestemail`, vérifier `EMAIL_URL` ; sans lui, ni réinitialisation de mot de passe ni email de nouveau message |

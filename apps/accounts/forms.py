@@ -61,7 +61,7 @@ class SignupForm(forms.Form):
 
 
 class ProfileForm(forms.ModelForm):
-    """Profil (ticket #13) : nom affiché, téléphone, ville."""
+    """Profil (ticket #13) : nom affiché, téléphone, ville ; emails de messages (#12)."""
 
     display_name = _display_name_field()
     phone = _phone_field()
@@ -74,7 +74,8 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ["display_name", "phone", "city"]
+        fields = ["display_name", "phone", "city", "notify_messages"]
+        labels = {"notify_messages": "Me prévenir par email des nouveaux messages"}
 
     def clean_display_name(self):
         return reject_links(self.cleaned_data["display_name"])
