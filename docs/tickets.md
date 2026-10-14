@@ -145,7 +145,7 @@ Critères d'acceptation :
 - Redirection vers la connexion si non connecté
 - Contrainte d'unicité testée
 
-## #12 — Messagerie ✅ (fait le 2026-10-14)
+## #12 — Messagerie (rouvert le 2026-10-14 : emails de nouveau message)
 
 Conversation par couple (annonce, acheteur), envoi de message, liste des
 conversations, polling htmx 10 s, compteur de non-lus.
@@ -154,12 +154,19 @@ navigation) ; la conversation n'est créée qu'au premier message, avec un premi
 proposé (« Bonjour, l'objet est-il toujours disponible ? ») et le rappel de prudence. Pas de
 nouvelle conversation sur une annonce vendue ; une conversation commencée continue.
 Rafraîchissement suspendu quand l'onglet est en arrière-plan (économie de données).
+Ajout du 2026-10-14 : **email de nouveau message**, sinon un vendeur ne sait pas qu'on lui a
+écrit tant qu'il n'ouvre pas Sugu. Un seul email par conversation tant que le destinataire ne
+l'a pas ouverte (pas un email par message) ; l'email donne l'auteur, l'annonce et le lien vers
+la conversation, pas le texte du message (vie privée, et un lien d'arnaque ne part pas depuis
+l'adresse de Sugu) ; désactivable dans le profil ; jamais vers un compte supprimé.
 
 Critères d'acceptation :
 - Un vendeur ne peut pas se contacter lui-même
 - Un message est marqué lu à l'ouverture
 - Le compteur est juste
 - Tests d'intégration complets
+- Email au premier message non lu d'une conversation, pas aux suivants (test)
+- Pas d'email si l'avertissement est désactivé dans le profil ou si le compte est supprimé
 
 ## #13 — Profil et contact ✅ (fait le 2026-10-14)
 
