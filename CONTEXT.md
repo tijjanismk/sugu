@@ -72,12 +72,14 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #5 Catégories, villes et données de démo (app `listings` avec
-  `Category` sur deux niveaux et `City`, modèle abstrait `core.TimeStampedModel`, `User.city`,
-  `manage.py seed` idempotent : 30 catégories et 10 villes du Mali, tuiles sur l'accueil)
-- Tâche en cours : aucune ; prochaine : #6 Modèles Listing et Photo
+- Dernière tâche terminée : #6 Modèles Listing et Photo (statuts et transitions dans
+  `services.py`, contraintes CHECK, trigger `search_vector` avec la configuration
+  `french_unaccent`, baisse de prix `previous_price` / `price_dropped_at`, admin de modération,
+  12 annonces de démo dans `seed`)
+- Tâche en cours : aucune ; prochaine : #7 Dépôt d'annonce avec photos
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
   port) ; les liens Recherche, Déposer, Favoris et Messages, et les tuiles de catégories,
-  mènent à la 404 jusqu'aux tickets #7 à #12 ; `seed` ne crée pas encore d'annonces (#6)
+  mènent à la 404 jusqu'aux tickets #7 à #12 ; badge « Prix en baisse » à ajouter dans
+  `design/` avant le ticket #8 ; suppression des fichiers photo à faire au ticket #7

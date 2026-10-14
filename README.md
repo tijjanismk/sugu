@@ -39,7 +39,7 @@ uv sync                       # installe Python 3.14 et les dépendances
 uv run pre-commit install     # ruff avant chaque commit
 docker compose up -d db       # démarre PostgreSQL 18
 uv run python manage.py migrate
-uv run python manage.py seed  # catégories et villes (idempotent) ; annonces de démo au ticket #6
+uv run python manage.py seed  # catégories, villes et annonces de démo (idempotent)
 uv run python manage.py createsuperuser
 ```
 

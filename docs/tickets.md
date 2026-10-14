@@ -57,14 +57,17 @@ Critères d'acceptation :
 - Les catégories s'affichent sur l'accueil
 - Tests unitaires sur le slug et la hiérarchie
 
-## #6 — Modèles Listing et Photo
+## #6 — Modèles Listing et Photo ✅ (fait le 2026-10-14)
 
 Modèles, statuts, contraintes, index, trigger PostgreSQL pour `search_vector`,
-admin.
+admin. Baisse de prix : `previous_price` et `price_dropped_at`, service `update_price`
+(ajout du 2026-10-14).
 
 Critères d'acceptation :
 - Migrations commitées
 - Tests des transitions de statut
+- Une baisse de prix sur une annonce publiée mémorise l'ancien prix ; une hausse ou
+  « à débattre » l'efface ; contrainte en base : ancien prix > prix actuel (tests)
 - `docs/database.md` à jour
 
 ## #7 — Dépôt d'annonce avec photos
@@ -87,6 +90,8 @@ Critères d'acceptation :
 - Le partial htmx est renvoyé si `HX-Request`
 - Test d'intégration pour les deux cas
 - Aucun saut de mise en page au chargement des images
+- Baisse de prix récente (14 jours) : ancien prix barré et badge « Prix en baisse » sur la
+  carte et la page annonce ; badge ajouté d'abord dans `design/` (Badge)
 
 ## #9 — Recherche et filtres
 
@@ -108,6 +113,8 @@ Critères d'acceptation :
 - Un utilisateur ne peut agir que sur ses annonces (test 403)
 - Une annonce vendue reste visible avec un bandeau
 - Une annonce supprimée disparaît de la recherche
+- Modifier le prix passe par `update_price` : baisser le prix déclenche la mention de
+  baisse, le vendeur voit l'ancien prix dans le formulaire
 
 ## #11 — Favoris
 
@@ -189,6 +196,8 @@ Critères d'acceptation :
   reste visible, et revient à `published` si le vendeur annule ou après 7 jours.
   Une seule réservation active par annonce. Sans acompte ni paiement. Préparé en V1
   par le statut `reserved` et la table `listings_reservation` (voir `docs/database.md`).
+  Échéance affichée en texte calculé par le serveur (« Réservée encore 3 j »), pas de compte à
+  rebours animé (décision du 2026-10-14 : pas d'urgence artificielle, pas de JS permanent).
 - Modération : signalements, file de modération dans l'admin
 - Annonces mises en avant (payantes) — première source de revenus
 - Inscription par numéro de téléphone (OTP SMS) — ADR à écrire

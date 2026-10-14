@@ -51,30 +51,60 @@ Principales villes du Mali chargées par `manage.py seed` (régions du découpag
 
 ## listings_listing
 
-| Champ           | Type            | Notes                                        |
-|-----------------|-----------------|----------------------------------------------|
-| user_id         | FK → user       | vendeur                                      |
-| category_id     | FK → category   |                                              |
-| city_id         | FK → city       |                                              |
-| title           | varchar(80)     |                                              |
-| description     | text            | max 2 000 caractères                         |
-| price           | integer         | en FCFA, nullable (« à débattre »)           |
-| payment_methods | varchar[]       | valeurs : `cash_on_delivery`, `mobile_money` |
-| status          | varchar(12)     | `draft`, `published`, `reserved`, `sold`, `removed` (`reserved` inutilisé en V1, réservé à la V2) |
-| search_vector   | tsvector        | maintenu par trigger, index GIN              |
-| published_at    | timestamp, null |                                              |
+Statut et prix ne s'écrivent que par `apps/listings/services.py` (`change_status`, `publish`,
+`mark_sold`, `remove`, `update_price`) ; l'admin les affiche en lecture seule.
 
-Index : (status, published_at desc), (category_id), (city_id), GIN(search_vector)
+| Champ            | Type             | Notes                                                       |
+|------------------|------------------|-------------------------------------------------------------|
+| user_id          | FK → user        | vendeur ; PROTECT (un compte est anonymisé, pas supprimé)   |
+| category_id      | FK → category    | PROTECT                                                     |
+| city_id          | FK → city        | PROTECT                                                     |
+| title            | varchar(80)      |                                                             |
+| description      | text             | max 2 000 caractères (validation et CHECK)                  |
+| price            | integer ≥ 0      | en FCFA, nullable (« à débattre »)                          |
+| previous_price   | integer ≥ 0, null| prix affiché juste avant une baisse (ticket #6, 2026-10-14) |
+| price_dropped_at | timestamp, null  | date de la baisse ; mention « Prix en baisse » 14 jours     |
+| payment_methods  | varchar(20)[]    | valeurs : `cash_on_delivery`, `mobile_money` (CHECK)        |
+| status           | varchar(12)      | `draft`, `published`, `reserved`, `sold`, `removed` (CHECK) ; `reserved` inutilisé en V1 |
+| search_vector    | tsvector         | maintenu par trigger, index GIN ; ne jamais l'écrire en Python |
+| published_at     | timestamp, null  | fixé à la première publication                              |
+
+Index : (status, published_at desc) `listing_status_published_idx`, (category_id), (city_id),
+GIN(search_vector) `listing_search_vector_gin`.
+
+Contraintes CHECK : `listing_status_valid`, `listing_payment_methods_valid`,
+`listing_description_max_length`, `listing_published_has_date` (published / reserved / sold
+⇒ `published_at` renseigné), `listing_price_drop_coherent` (`previous_price` et
+`price_dropped_at` ensemble, et `previous_price > price`).
+
+Transitions de statut autorisées (`models.ALLOWED_TRANSITIONS`) :
+
+| De          | Vers                          |
+|-------------|-------------------------------|
+| `draft`     | `published`, `removed`        |
+| `published` | `sold`, `removed`             |
+| `reserved`  | `published`, `sold`, `removed` (V2) |
+| `sold`      | `removed`                     |
+| `removed`   | — (définitif)                 |
+
+Recherche plein texte (migration `listings.0003`) : extension `unaccent`, configuration
+`french_unaccent` (copie de `french` avec `unaccent` avant `french_stem`), et trigger
+`listings_listing_search_vector_trigger` (BEFORE INSERT OR UPDATE OF title, description) :
+titre en poids A, description en poids B. La recherche utilise la même configuration
+(`models.SEARCH_CONFIG`).
 
 ## listings_photo
 
-| Champ         | Type         | Notes                                |
-|---------------|--------------|--------------------------------------|
-| listing_id    | FK → listing | suppression en cascade               |
-| large         | varchar      | clé R2 de la version 1200 px WebP    |
-| thumb         | varchar      | clé R2 de la miniature 400 px WebP   |
-| order         | smallint     | la photo 0 est la couverture         |
-| width, height | smallint     | pour réserver l'espace à l'affichage |
+| Champ         | Type          | Notes                                              |
+|---------------|---------------|----------------------------------------------------|
+| listing_id    | FK → listing  | suppression en cascade                             |
+| large         | varchar(255)  | fichier de la version 1200 px WebP (R2 en prod)    |
+| thumb         | varchar(255)  | fichier de la miniature 400 px WebP                |
+| order         | smallint 0–5  | la photo 0 est la couverture                       |
+| width, height | smallint      | pour réserver l'espace à l'affichage               |
+
+Contraintes : unique (listing_id, order) `photo_unique_order` ; CHECK order < 6
+`photo_order_max` (6 photos au plus). La suppression des fichiers arrive avec le ticket #7.
 
 ## messaging_conversation
 
