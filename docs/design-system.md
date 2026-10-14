@@ -30,8 +30,13 @@ Fait au ticket #4 : `static/css/tokens.css`, `static/css/components.css` (rangé
 couches `base` et `components` de Tailwind, pour qu'une classe utilitaire l'emporte),
 `@theme inline` dans `input.css`, Figtree servie localement, barre haute à partir de 1024 px
 (`sg-topnav`). Gabarits créés : `top_bar`, `bottom_nav`, `alert`, `messages`,
-`empty_state`, `icon` (tracés Lucide), puis `category_tiles` (#5) et `field` (#7 : champ,
-liste déroulante, suffixe « FCFA », cases à cocher) ; les autres composants arrivent avec le ticket qui
+`empty_state`, `icon` (tracés Lucide), puis `category_tiles` (#5), `field` (#7 : champ,
+liste déroulante, suffixe « FCFA » ou « km », cases à cocher) et `listing_card` (#8).
+
+Ajouts du ticket #8 dans `design/` (à reporter dans l'artefact de design) : badge
+`sg-badge--drop` « Prix en baisse », ancien prix barré `sg-was`, grille à 3 puis 4 colonnes
+(640 et 1024 px), galerie `sg-gallery` de la page annonce, et règle du lieu hors de la ville
+dans `design/README.md` ; les autres composants arrivent avec le ticket qui
 les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
 
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.

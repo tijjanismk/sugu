@@ -72,15 +72,15 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #7 Dépôt d'annonce avec photos (`/deposer/`, service d'images
-  Pillow → WebP 1200 px + miniature 400×300 sans EXIF, `create_listing` transactionnel,
-  fichiers effacés avec la photo, réduction dans le navigateur par `photo-picker.js`,
-  limitation 5/h et 20/j ; 3 photos traitées en ~2,5 s dans le pire cas)
-- Tâche en cours : aucune ; prochaine : #8 Liste, page annonce et pagination
+- Dernière tâche terminée : #8 Liste, page annonce et pagination (accueil : 20 annonces par
+  page et « Voir plus » en htmx ; page `/annonce/<id>-<slug>/` avec galerie, prix, badges,
+  rappel de sécurité ; carte annonce ; badge « Prix en baisse » ajouté à `design/` ; lieu
+  précis : quartier et distance de la ville ; filtres `fcfa` et `relative_date`)
+- Tâche en cours : aucune ; prochaine : #9 Recherche et filtres
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
   port) ; les liens Recherche, Favoris et Messages, et les tuiles de catégories, mènent à la
-  404 jusqu'aux tickets #9 à #12 ; badge « Prix en baisse » à ajouter dans `design/` avant
-  le ticket #8 ; après un dépôt, retour à l'accueil faute de page annonce (#8) ; photos HEIC
-  refusées sans JavaScript (le navigateur les convertit en JPEG avec)
+  404 jusqu'aux tickets #9 à #12 ; ajouts de design du #8 à reporter dans l'artefact de
+  design ; pas encore de bouton « Contacter » (#12) ni de téléphone (#13) sur la page
+  annonce ; photos HEIC refusées sans JavaScript

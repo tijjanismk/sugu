@@ -59,6 +59,8 @@ Statut et prix ne s'écrivent que par `apps/listings/services.py` (`change_statu
 | user_id          | FK → user        | vendeur ; PROTECT (un compte est anonymisé, pas supprimé)   |
 | category_id      | FK → category    | PROTECT                                                     |
 | city_id          | FK → city        | PROTECT                                                     |
+| neighborhood     | varchar(80)      | quartier ou commune, facultatif (ajout du 2026-10-14)       |
+| distance_km      | smallint, null   | distance de la ville, 1 à 300 km (CHECK `listing_distance_km_range`) |
 | title            | varchar(80)      |                                                             |
 | description      | text             | max 2 000 caractères (validation et CHECK)                  |
 | price            | integer ≥ 0      | en FCFA, nullable (« à débattre »)                          |
@@ -72,7 +74,10 @@ Statut et prix ne s'écrivent que par `apps/listings/services.py` (`change_statu
 Index : (status, published_at desc) `listing_status_published_idx`, (category_id), (city_id),
 GIN(search_vector) `listing_search_vector_gin`.
 
-Contraintes CHECK : `listing_status_valid`, `listing_payment_methods_valid`,
+Lieu affiché (`Listing.place_label`) : « Sabalibougou, Bamako », « À 20 km de Bamako »,
+« Moribabougou, à 20 km de Bamako ».
+
+Contraintes CHECK : `listing_status_valid`, `listing_distance_km_range`, `listing_payment_methods_valid`,
 `listing_description_max_length`, `listing_published_has_date` (published / reserved / sold
 ⇒ `published_at` renseigné), `listing_price_drop_coherent` (`previous_price` et
 `price_dropped_at` ensemble, et `previous_price > price`).

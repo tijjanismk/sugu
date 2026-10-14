@@ -83,7 +83,7 @@ Critères d'acceptation :
   envoi environ 10 fois plus léger en 3G ; sans JavaScript, l'envoi direct fonctionne toujours
   et le serveur garde toutes ses vérifications
 
-## #8 — Liste, page annonce et pagination
+## #8 — Liste, page annonce et pagination ✅ (fait le 2026-10-14)
 
 Accueil avec les dernières annonces, page détail, bouton « voir plus » en htmx,
 images avec dimensions fixes.
@@ -95,6 +95,10 @@ Critères d'acceptation :
 - Aucun saut de mise en page au chargement des images
 - Baisse de prix récente (14 jours) : ancien prix barré et badge « Prix en baisse » sur la
   carte et la page annonce ; badge ajouté d'abord dans `design/` (Badge)
+- Lieu précis (ajout du 2026-10-14) : champs facultatifs « quartier ou commune » (ex.
+  Sabalibougou, Commune V) et « distance de la ville » en km (ex. à 20 km de Bamako),
+  saisis au dépôt et affichés « Sabalibougou, Bamako » / « À 15 km de Ségou » sur la carte et
+  la page annonce
 
 ## #9 — Recherche et filtres
 
@@ -106,6 +110,8 @@ Critères d'acceptation :
 - Les filtres se combinent
 - L'URL est partageable
 - Tests d'intégration sur 5 scénarios
+- Le quartier fait partie de la recherche plein texte (« sabalibougou » trouve l'annonce) ;
+  un filtre « dans un rayon de N km » reste possible plus tard grâce à `distance_km`
 
 ## #10 — Gestion de mes annonces
 
@@ -118,6 +124,7 @@ Critères d'acceptation :
 - Une annonce supprimée disparaît de la recherche
 - Modifier le prix passe par `update_price` : baisser le prix déclenche la mention de
   baisse, le vendeur voit l'ancien prix dans le formulaire
+- Le quartier et la distance de la ville sont modifiables
 
 ## #11 — Favoris
 
