@@ -35,6 +35,11 @@ Par ordre de probabilité pour un site d'annonces :
   `Conversation.buyer` / `Conversation.seller`. Pas de vérification = faille.
 - Les tests d'intégration couvrent le cas « un autre utilisateur essaie » (réponse
   403 ou 404) pour chaque action de modification. C'est obligatoire dans la PR.
+- Annonces (ticket #10) : les vues de gestion passent par `_own_listing` (404 si l'annonce
+  est supprimée ou n'existe pas, 403 si elle est à un autre) et les services revérifient le
+  propriétaire (`services.check_owner`). Les actions définitives (vendre, supprimer) passent
+  par une page de confirmation puis un POST ; un GET ne modifie jamais rien. Une contre-épreuve
+  (vérification retirée → les 5 tests « autre utilisateur » échouent) a été faite.
 - Les requêtes de lecture filtrent par utilisateur dans l'ORM
   (`Conversation.objects.filter(Q(buyer=user) | Q(seller=user))`), jamais après coup.
 - L'admin Django n'est accessible qu'aux comptes `is_staff`, protégé par un mot de
@@ -66,6 +71,9 @@ Par ordre de probabilité pour un site d'annonces :
 
 - Validation côté serveur de chaque champ : longueur, format, valeurs permises
   (prix positif, catégorie existante, 6 photos au plus, 8 Mo chacune).
+- Liens vers d'autres sites, adresses web et emails refusés dans le titre, le quartier et la
+  description d'une annonce (`forms.LINK_PATTERN`, dépôt et modification) : d'autres sites
+  d'annonces ne détournent pas les acheteurs ; le contact passe par Sugu.
 - Les photos sont ouvertes et **réencodées** par Pillow en WebP (`apps/listings/images.py`) :
   seuls JPEG, PNG et WebP valides sont acceptés, un fichier tronqué ou déguisé est rejeté,
   une image de plus de 40 Mpx est refusée avant décodage (bombe de décompression),

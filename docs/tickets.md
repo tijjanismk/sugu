@@ -113,7 +113,7 @@ Critères d'acceptation :
 - Le quartier fait partie de la recherche plein texte (« sabalibougou » trouve l'annonce) ;
   un filtre « dans un rayon de N km » reste possible plus tard grâce à `distance_km`
 
-## #10 — Gestion de mes annonces
+## #10 — Gestion de mes annonces ✅ (fait le 2026-10-14)
 
 Page « Mes annonces », modification, marquage vendu, suppression (statut
 `removed`).
@@ -125,6 +125,12 @@ Critères d'acceptation :
 - Modifier le prix passe par `update_price` : baisser le prix déclenche la mention de
   baisse, le vendeur voit l'ancien prix dans le formulaire
 - Le quartier et la distance de la ville sont modifiables
+- Photos modifiables (ajout du 2026-10-14) : retirer une photo, en ajouter jusqu'à 6 (même
+  service d'images et même réduction dans le navigateur qu'au #7) ; si la couverture est
+  retirée, la photo suivante la remplace ; réordonnancement par glisser-déposer en V2
+- Liens vers d'autres sites refusés dans le titre et la description, au dépôt comme à la
+  modification (ajout du 2026-10-14 : d'autres sites d'annonces ne doivent pas détourner les
+  acheteurs) ; message clair au vendeur
 
 ## #11 — Favoris
 
@@ -209,6 +215,13 @@ Critères d'acceptation :
   Échéance affichée en texte calculé par le serveur (« Réservée encore 3 j »), pas de compte à
   rebours animé (décision du 2026-10-14 : pas d'urgence artificielle, pas de JS permanent).
 - Modération : signalements, file de modération dans l'admin
+- Prix anormaux (idée du 2026-10-14, à faire quand chaque sous-catégorie compte au moins une
+  dizaine d'annonces) : prix très bas par rapport à la médiane des annonces similaires →
+  signalement à la modération et rappel de prudence renforcé (arnaque) ; prix très élevé →
+  simple conseil au vendeur au dépôt (« 5 fois la médiane, vérifiez »), jamais de blocage ni de
+  déclassement caché ; tri par prix dans la recherche
+- Annonces recopiées par d'autres sites : robots filtrés par Cloudflare (déjà prévu) ;
+  surveiller les comptes qui déposent en masse
 - Annonces mises en avant (payantes) — première source de revenus
 - Inscription par numéro de téléphone (OTP SMS) — ADR à écrire
 - Déploiement sans coupure
