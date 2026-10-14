@@ -15,7 +15,7 @@ Sugu est le marché du quartier dans la poche : des particuliers qui vendent et 
 - Un bouton dit ce qu'il fait et son résultat garde le même mot : « Publier » → « Annonce publiée ». Jamais « Valider », « OK », « Soumettre ».
 - Prix : espace insécable comme séparateur de milliers, unité après, jamais de décimales : « 45 000 FCFA ». Prix absent : « À débattre » en style `price`, couleur `ink-muted`.
 - Dates relatives jusqu'à sept jours (« il y a 2 h », « hier », « il y a 3 j »), puis la date courte (« 12 oct. »).
-- Lieu : quartier puis ville, séparés d'une virgule : « Hamdallaye, Bamako ».
+- Lieu : quartier puis ville, séparés d'une virgule : « Hamdallaye, Bamako ». Hors de la ville : « À 20 km de Ségou », ou « Moribabougou, à 20 km de Bamako ».
 - Erreurs : dire ce qui bloque et comment débloquer, en une phrase, sans s'excuser : « Ajoutez au moins une photo pour publier. » Pas de « Oups ».
 - Écran vide : une invitation à agir, pas un constat : « Aucun favori pour l'instant. Touchez le cœur d'une annonce pour la retrouver ici. »
 - Pas d'émoji dans l'interface. Les messages entre utilisateurs en contiennent s'ils le veulent.
