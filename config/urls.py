@@ -8,6 +8,7 @@ urlpatterns = [
     path("comptes/", include("apps.accounts.urls")),
     path("", include("apps.listings.urls")),
     path("", include("apps.favorites.urls")),
+    path("", include("apps.messaging.urls")),
     path("", include("apps.core.urls")),
 ]
 

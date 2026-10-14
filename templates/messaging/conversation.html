@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static sugu_format %}
+{% block title %}{{ other.display_name }} · {{ listing.title }} · Sugu{% endblock %}
+{% block body_class %}{% endblock %}
+{% block topbar %}
+  <header class="sg-topbar sg-topbar--raised">
+    <a class="sg-btn sg-btn--icon" href="{% if conversation %}{% url 'messaging:inbox' %}{% else %}{{ listing.get_absolute_url }}{% endif %}" aria-label="{% if conversation %}Retour aux messages{% else %}Retour à l'annonce{% endif %}">{% include "components/icon.html" with name="back" %}</a>
+    <span class="sg-avatar" aria-hidden="true">{{ other.display_name|initials }}</span>
+    <h1 class="sg-topbar__title">{{ other.display_name }}</h1>
+  </header>
+{% endblock %}
+{% block main_class %}mx-auto flex min-h-[calc(100dvh-57px)] max-w-content flex-col{% endblock %}
+{% block content %}
+  {# L'annonce concernée, en version compacte, lien vers l'annonce (design/components/MessageBubble). #}
+  {% with photo=listing.cover_photos.0 %}
+    <a class="sg-list__item" href="{{ listing.get_absolute_url }}">
+      {% if photo %}
+        <img class="sg-list__thumb" src="{{ photo.thumb.url }}" width="56" height="56" alt="">
+      {% else %}
+        <span class="sg-list__thumb">{% include "components/icon.html" with name="camera" %}</span>
+      {% endif %}
+      <div class="sg-list__body">
+        <p class="sg-list__title">{{ listing.price|fcfa }}</p>
+        <p class="sg-list__text">{{ listing.title }}</p>
+      </div>
+      {% if listing.is_sold %}<span class="sg-badge sg-badge--sold">Vendu</span>{% endif %}
+    </a>
+  {% endwith %}
+
+  {% if not conversation %}
+    {% include "components/alert.html" with variant="info" title="Restez prudent" body="Rencontrez le vendeur dans un lieu public et ne payez jamais avant d'avoir vu l'objet." %}
+  {% endif %}
+  <div class="sg-thread flex-1" id="thread" aria-live="polite">
+    {% for item in items %}{% include "messaging/_message.html" %}{% endfor %}
+    {% comment %}
+      Rafraîchissement : toutes les 10 s, demande les messages arrivés après `apres`. La réponse
+      remplace ce bloc par les nouvelles bulles suivies d'un nouveau bloc (partial thread_update) ;
+      rien de neuf : 204, la page ne bouge pas. L'envoi d'un message renvoie la même chose.
+    {% endcomment %}
+    {% if conversation %}
+      {% partialdef thread_update inline %}
+        {% for item in new_items %}{% include "messaging/_message.html" %}{% endfor %}
+        <div id="poll" hx-get="{% url 'messaging:poll' conversation.pk %}" hx-trigger="every 10s" hx-swap="outerHTML" hx-include="#poll-after">
+          <input type="hidden" id="poll-after" name="apres" value="{{ last_pk }}">
+        </div>
+      {% endpartialdef %}
+    {% endif %}
+  </div>
+
+  <form class="sg-composer sticky bottom-0 flex-wrap" method="post" novalidate data-composer
+        {% if conversation %}action="{% url 'messaging:conversation' conversation.pk %}"
+        hx-post="{% url 'messaging:conversation' conversation.pk %}" hx-target="#poll" hx-swap="outerHTML" hx-include="#poll-after"
+        {% else %}action="{% url 'messaging:start' listing.pk %}"{% endif %}>
+    {% csrf_token %}
+    <input class="sg-input min-w-0 flex-1" type="text" name="body" value="{{ form.body.value|default_if_none:'' }}" maxlength="1000" required placeholder="Écrire un message" aria-label="Message" autocomplete="off"{% if form.body.errors %} aria-invalid="true" aria-describedby="composer-error"{% endif %}>
+    <button class="sg-btn sg-btn--primary sg-btn--icon" type="submit" aria-label="Envoyer">{% include "components/icon.html" with name="send" %}</button>
+    {% partialdef composer_error inline %}<p class="sg-field__error basis-full empty:hidden" id="composer-error" role="alert">{% if error %}{{ error }}{% else %}{{ form.body.errors.0|default:'' }}{% endif %}</p>{% endpartialdef %}
+  </form>
+{% endblock %}
+{% block bottomnav %}{% endblock %}
+{% block scripts %}<script src="{% static 'js/conversation.js' %}" defer></script>{% endblock %}

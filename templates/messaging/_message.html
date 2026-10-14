@@ -1,0 +1,10 @@
+{% load sugu_format %}{% comment %}
+  Une bulle (design/components/MessageBubble). Paramètre : item (services.ThreadItem). Le texte
+  est échappé ; seules les adresses web deviennent des liens (urlize, rel="nofollow").
+{% endcomment %}{% if item.new_day %}<span class="sg-thread__day">{{ item.message.created_at|day_label }}</span>{% endif %}
+<div class="sg-msg{% if item.mine %} sg-msg--me{% endif %}" id="message-{{ item.message.pk }}">
+  {% if item.mine %}<span class="sr-only">Vous : </span>{% endif %}{{ item.message.body|urlize }}
+  <span class="sg-msg__time">{{ item.message.created_at|time:"H:i" }}{% if item.mine %}
+    {% if item.message.read_at %}{% include "components/icon.html" with name="read" %}<span class="sr-only">, lu</span>{% else %}{% include "components/icon.html" with name="check" %}<span class="sr-only">, envoyé</span>{% endif %}
+  {% endif %}</span>
+</div>

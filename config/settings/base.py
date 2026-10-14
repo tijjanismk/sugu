@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.listings",
     "apps.favorites",
+    "apps.messaging",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +60,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.navigation",
                 "apps.favorites.context_processors.favorites",
+                "apps.messaging.context_processors.unread_messages",
             ],
         },
     },
@@ -125,6 +127,10 @@ ACCOUNT_RATE_LIMITS = {
     "signup": "3/h/ip",
     # Actions du site (apps/core/ratelimit.py) : dépôt d'annonce par utilisateur (ticket #7).
     "listing_create": "5/h/user,20/d/user",
+    # Messagerie (ticket #12) : nouvelles conversations (démarchage, arnaques en série) et
+    # messages (une négociation en échange quelques dizaines par heure).
+    "conversation_start": "10/h/user,30/d/user",
+    "message_send": "60/h/user,300/d/user",
 }
 
 # Cache partagé entre les processus Gunicorn, sans Redis (ADR 0001) : table créée par la
