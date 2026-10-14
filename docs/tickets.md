@@ -175,15 +175,22 @@ Critères d'acceptation :
 - Téléphone masqué aux visiteurs (test)
 - Suppression de compte anonymise annonces et messages sans les détruire
 
-## #14 — PWA
+## #14 — PWA ✅ (fait le 2026-10-14)
 
 `manifest.json`, icônes, service worker cachant les fichiers statiques et une
 page hors-ligne.
+Manifeste `/manifest.webmanifest` (raccourcis « Déposer une annonce » et « Messages »),
+icônes générées par `scripts/make_icons.py`, service worker `/sw.js` : les pages ne sont
+jamais mises en cache (données personnelles), seulement la charte et la page hors-ligne.
 
 Critères d'acceptation :
-- Chrome mobile propose « Ajouter à l'écran d'accueil »
-- La page hors-ligne s'affiche sans réseau
-- Audit Lighthouse PWA sans erreur bloquante
+- Chrome mobile propose « Ajouter à l'écran d'accueil » (critères d'installation testés :
+  nom, `start_url`, `display: standalone`, icônes PNG 192 et 512 ; à confirmer sur un vrai
+  téléphone après la mise en production, #15, car l'installation exige HTTPS)
+- La page hors-ligne s'affiche sans réseau (test Playwright `tests/e2e/test_pwa.py`, lancé
+  sur `main` ; le navigateur intégré de Claude n'accepte pas les service workers)
+- Audit Lighthouse PWA sans erreur bloquante (cette catégorie a disparu de Lighthouse 12 :
+  remplacée par les critères d'installation ci-dessus)
 
 ## #15 — Mise en production
 

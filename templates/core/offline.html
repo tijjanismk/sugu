@@ -1,0 +1,28 @@
+{% load static %}<!doctype html>
+{% comment %}
+  Page hors-ligne (ticket #14), mise en cache par le service worker et affichée quand une page
+  ne se charge pas faute de réseau. Elle est la même pour tous : ni utilisateur, ni jeton CSRF,
+  ni messages. Elle n'hérite donc pas de base.html.
+{% endcomment %}
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pas de connexion · Sugu</title>
+  <meta name="robots" content="noindex">
+  <script>(function(){var t;try{t=localStorage.getItem("sugu-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <header class="sg-topbar sg-topbar--raised"><span class="sg-topbar__brand">Sugu</span></header>
+  <main class="mx-auto max-w-content">
+    <div class="sg-empty">
+      <div class="sg-empty__mark">{% include "components/icon.html" with name="compass" %}</div>
+      <h1 class="heading text-ink">Pas de connexion</h1>
+      <p>Sugu a besoin d'internet pour afficher les annonces. Vérifiez votre connexion ou vos données mobiles, puis réessayez.</p>
+      {# Lien vide : recharge l'adresse demandée, pas cette page. #}
+      <a class="sg-btn sg-btn--primary" href="">Réessayer</a>
+    </div>
+  </main>
+</body>
+</html>

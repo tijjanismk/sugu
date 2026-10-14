@@ -72,16 +72,17 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #13 Profil et contact (`/comptes/profil/`, ligne vendeur avec
-  téléphone aux seuls connectés, « Déconnecter mes autres appareils » par
-  `User.session_version`, suppression de compte par anonymisation dans
-  `apps/accounts/services.py`)
-- Tâche en cours : aucune ; prochaine : #14 PWA
+- Dernière tâche terminée : #14 PWA (`apps/core/pwa.py` : manifeste, `/sw.js` à la racine
+  qui ne met jamais une page en cache, page `/hors-ligne/` identique pour tous, icônes par
+  `scripts/make_icons.py` ; test hors-ligne dans `tests/e2e/test_pwa.py`)
+- Tâche en cours : aucune ; prochaine : #15 Mise en production
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
   port) ; pas encore d'avertissement par email d'un nouveau message ;
-  ajouts de design des #8 à #13 à reporter dans l'artefact de design ; pas de synonymes dans la
+  installation PWA à confirmer sur un vrai téléphone en HTTPS (#15) ; le navigateur intégré
+  de Claude refuse les service workers (vérifier dans Chrome) ; ajouts de design des #8 à
+  #14 (dont l'icône d'application) à reporter dans l'artefact de design ; pas de synonymes dans la
   recherche ; photos HEIC refusées sans JavaScript ; idées V2 notées le 2026-10-14 : prix
   anormaux, annonces recopiées par d'autres sites ; revenus : aucun en V1, liste ordonnée des
   sources rangée dans la section V2 de `docs/tickets.md` (mise en avant par mobile money
