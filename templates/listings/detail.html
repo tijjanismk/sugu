@@ -61,8 +61,28 @@
       <p class="body mt-2 text-ink">{{ listing.description|linebreaksbr }}</p>
 
       <h2 class="heading mt-6 text-ink">Vendeur</h2>
-      <p class="body mt-2 text-ink">{{ listing.user.display_name }}</p>
     </div>
+    {% comment %}
+      Ligne vendeur (design/components/Avatar). Le numéro n'est dans la page que pour un
+      utilisateur connecté (docs/security.md) ; un visiteur voit pourquoi il ne l'a pas.
+    {% endcomment %}
+    {% with seller=listing.user %}
+      <div class="sg-seller">
+        <span class="sg-avatar sg-avatar--lg" aria-hidden="true">{{ seller.display_name|initials }}</span>
+        <div class="sg-seller__body">
+          <p class="sg-seller__name">{{ seller.display_name }}</p>
+          <p class="sg-seller__meta">Membre depuis {{ seller.date_joined|month_year }} · {{ seller_listing_count }} annonce{{ seller_listing_count|pluralize }}</p>
+          {% if seller.phone and user.is_authenticated %}<p class="sg-seller__meta">{{ seller.phone|phone }}</p>{% endif %}
+        </div>
+        {% if seller.phone and user.pk != seller.pk %}
+          {% if user.is_authenticated %}
+            <a class="sg-btn sg-btn--primary" href="tel:{{ seller.phone }}">{% include "components/icon.html" with name="phone" %}Appeler</a>
+          {% else %}
+            <a class="sg-btn" href="{% url 'account_login' %}?next={{ listing.get_absolute_url|urlencode }}">Se connecter pour voir le numéro</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endwith %}
 
     {# Rappel de sécurité sur chaque annonce (docs/security.md). #}
     {% include "components/alert.html" with variant="info" title="Restez prudent" body="Rencontrez le vendeur dans un lieu public et ne payez jamais avant d'avoir vu l'objet." %}

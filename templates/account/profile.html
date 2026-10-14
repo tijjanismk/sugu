@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load sugu_format %}
+{% block title %}Mon profil · Sugu{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  <div class="sg-seller pt-6">
+    <span class="sg-avatar sg-avatar--lg" aria-hidden="true">{{ user.display_name|initials }}</span>
+    <div class="sg-seller__body">
+      <h1 class="sg-seller__name">{{ user.display_name }}</h1>
+      <p class="sg-seller__meta">{{ user.email }} · membre depuis {{ user.date_joined|month_year }}</p>
+    </div>
+  </div>
+
+  <form class="sg-form" method="post" novalidate>
+    {% csrf_token %}
+    {% include "components/field.html" with field=form.display_name %}
+    {% include "components/field.html" with field=form.phone %}
+    {% include "components/field.html" with field=form.city %}
+    <div class="px-4"><button class="sg-btn sg-btn--primary sg-btn--block" type="submit">Enregistrer</button></div>
+  </form>
+
+  {# Compte : mot de passe, appareils, déconnexion, suppression (docs/security.md). #}
+  <section class="flex flex-col gap-2 px-4 py-6" aria-labelledby="account-title">
+    <h2 id="account-title" class="heading text-ink">Compte</h2>
+    <a class="sg-btn sg-btn--block" href="{% url 'account_change_password' %}">Changer de mot de passe</a>
+    <form method="post" action="{% url 'account_sign_out_others' %}">
+      {% csrf_token %}
+      <button class="sg-btn sg-btn--block" type="submit">Déconnecter mes autres appareils</button>
+    </form>
+    <p class="caption text-ink-muted">Téléphone perdu ou prêté : toutes les autres sessions se ferment, celle-ci reste ouverte.</p>
+    <form method="post" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      <button class="sg-btn sg-btn--quiet sg-btn--block" type="submit">{% include "components/icon.html" with name="logout" %}Se déconnecter</button>
+    </form>
+    <a class="sg-btn sg-btn--quiet sg-btn--block text-danger" href="{% url 'account_delete' %}">{% include "components/icon.html" with name="trash" %}Supprimer mon compte</a>
+  </section>
+{% endblock %}

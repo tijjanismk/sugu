@@ -2,6 +2,7 @@ from functools import wraps
 
 from django.contrib import messages as flash
 from django.contrib.auth.views import redirect_to_login
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -109,6 +110,8 @@ def conversation(request: HttpRequest, pk: int) -> HttpResponse:
     conversation = services.get_conversation(request.user, pk)
     form = MessageForm()
     if request.method == "POST":
+        if conversation.other_party(request.user).is_deleted:
+            raise PermissionDenied("Ce compte a été supprimé.")
         if not ratelimit.consume(request, "message_send", dry_run=True):
             if request.htmx:
                 return _composer_error(request, RATE_LIMITED)

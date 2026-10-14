@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Supprimer mon compte · Sugu{% endblock %}
+{% block body_class %}{% endblock %}
+{% block bottomnav %}{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  {# Action définitive (design/components/Button) : confirmée par le mot de passe, en POST. #}
+  <div class="px-4 pt-6">
+    <h1 class="title text-ink">Supprimer mon compte</h1>
+    <ul class="body mt-2 list-disc pl-5 text-ink-muted">
+      <li>Vos annonces sont retirées du site.</li>
+      <li>Vos messages restent chez vos correspondants, signés « Compte supprimé ».</li>
+      <li>Votre nom, votre email et votre téléphone sont effacés.</li>
+      <li>Cette action est définitive.</li>
+    </ul>
+  </div>
+  <form class="sg-form mt-4" method="post" novalidate>
+    {% csrf_token %}
+    {% include "components/field.html" with field=form.password %}
+    <div class="flex flex-col gap-2 px-4">
+      <button class="sg-btn sg-btn--danger sg-btn--lg sg-btn--block" type="submit">Supprimer définitivement</button>
+      <a class="sg-btn sg-btn--quiet sg-btn--block" href="{% url 'account_profile' %}">Annuler</a>
+    </div>
+  </form>
+{% endblock %}

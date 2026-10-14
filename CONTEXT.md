@@ -72,16 +72,16 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## État d'avancement
 
 <!-- Mettre à jour à la fin de chaque session -->
-- Dernière tâche terminée : #12 Messagerie (app `apps/messaging`, « Écrire au vendeur » sur
-  l'annonce, conversation créée au premier message, envoi htmx ou formulaire classique,
-  rafraîchissement htmx 10 s via `static/js/conversation.js` (pas de `hx-on` : future CSP),
-  lecture à l'ouverture, pastille de non-lus dans la navigation, boîte `/messages/`)
-- Tâche en cours : aucune ; prochaine : #13 Profil et contact
+- Dernière tâche terminée : #13 Profil et contact (`/comptes/profil/`, ligne vendeur avec
+  téléphone aux seuls connectés, « Déconnecter mes autres appareils » par
+  `User.session_version`, suppression de compte par anonymisation dans
+  `apps/accounts/services.py`)
+- Tâche en cours : aucune ; prochaine : #14 PWA
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
   port) ; pas encore d'avertissement par email d'un nouveau message ;
-  ajouts de design des #8 à #12 à reporter dans l'artefact de design ; pas de synonymes dans la
+  ajouts de design des #8 à #13 à reporter dans l'artefact de design ; pas de synonymes dans la
   recherche ; photos HEIC refusées sans JavaScript ; idées V2 notées le 2026-10-14 : prix
   anormaux, annonces recopiées par d'autres sites ; revenus : aucun en V1, liste ordonnée des
   sources rangée dans la section V2 de `docs/tickets.md` (mise en avant par mobile money

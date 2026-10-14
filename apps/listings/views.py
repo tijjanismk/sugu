@@ -46,7 +46,10 @@ def listing_detail(request: HttpRequest, pk: int, slug: str) -> HttpResponse:
     listing = services.get_visible_listing(pk)
     if slug != listing.slug:
         return redirect(listing, permanent=True)
-    return render(request, "listings/detail.html", {"listing": listing})
+    # Ligne vendeur (ticket #13) : ses annonces en ligne.
+    count = listing.user.listings.filter(status=ListingStatus.PUBLISHED).count()
+    context = {"listing": listing, "seller_listing_count": count}
+    return render(request, "listings/detail.html", context)
 
 
 def _search_url(filters: dict, **changes) -> str:

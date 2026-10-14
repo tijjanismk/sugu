@@ -161,10 +161,15 @@ Critères d'acceptation :
 - Le compteur est juste
 - Tests d'intégration complets
 
-## #13 — Profil et contact
+## #13 — Profil et contact ✅ (fait le 2026-10-14)
 
 Page profil (nom affiché, téléphone, ville), affichage du téléphone sur
 l'annonce aux seuls connectés, suppression de compte avec anonymisation.
+Ligne vendeur sur l'annonce (avatar, « Membre depuis oct. 2026 · 3 annonces », « Appeler »
+ou « Se connecter pour voir le numéro »). Téléphone enregistré en chiffres, affiché par
+paires (« +223 76 12 34 56 »). « Déconnecter mes autres appareils » depuis le profil.
+Suppression confirmée par le mot de passe ; le correspondant garde la conversation mais ne
+peut plus écrire à un compte supprimé.
 
 Critères d'acceptation :
 - Téléphone masqué aux visiteurs (test)
