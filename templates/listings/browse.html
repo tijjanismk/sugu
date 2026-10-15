@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% comment %}
+  Page catégorie ou ville (référencement, ticket #9, 2026-10-15) : adresse lisible, titre et
+  description propres, annonces en ligne, liens vers les pages voisines qui ont des annonces.
+{% endcomment %}
+{% block title %}{{ text.title }}{% endblock %}
+{% block content %}
+  {% include "components/search_bar.html" %}
+
+  <nav class="caption px-4 pt-2 text-ink-muted" aria-label="Fil d'Ariane">
+    <a class="text-ink-muted" href="{% url 'core:home' %}">Accueil</a>
+    {% if category.parent %} › <a class="text-ink-muted" href="{% url 'listings:category' category.parent.slug %}">{{ category.parent.name }}</a>{% endif %}
+    {% if category and city %} › <a class="text-ink-muted" href="{% url 'listings:category' category.slug %}">{{ category.name }}</a>{% endif %}
+  </nav>
+  <section aria-labelledby="browse-title">
+    <h1 id="browse-title" class="title px-4 pt-1 text-ink">{{ text.heading }}</h1>
+    <p class="small px-4 pb-2 text-ink-muted">{% with count=page_obj.paginator.count %}{{ count }} annonce{{ count|pluralize }} en ligne{% endwith %}</p>
+    {% if page_obj.object_list %}
+      <div class="sg-grid">
+        {% partialdef browse_page inline %}
+          {% for listing in page_obj %}
+            {% if page_obj.number > 1 or forloop.counter > 4 %}
+              {% include "components/listing_card.html" with lazy=True %}
+            {% else %}
+              {% include "components/listing_card.html" %}
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <div class="col-span-full" id="more">
+              <a class="sg-btn sg-btn--block" href="?page={{ page_obj.next_page_number }}"
+                 hx-get="?page={{ page_obj.next_page_number }}" hx-target="#more" hx-swap="outerHTML"
+                 hx-disabled-elt="this">Voir plus</a>
+            </div>
+          {% endif %}
+        {% endpartialdef %}
+      </div>
+    {% else %}
+      {% url "listings:create" as create_url %}
+      {% include "components/empty_state.html" with icon="compass" title="Pas encore d'annonce ici" body="Soyez le premier : une photo, un prix, quelques mots, et votre annonce est en ligne." action_href=create_url action_label="Déposer une annonce" %}
+    {% endif %}
+  </section>
+
+  {% if links.children %}
+    <nav class="pt-4" aria-labelledby="children-title">
+      <h2 id="children-title" class="heading px-4 text-ink">Dans {{ category.name|lower }}{% if city %} à {{ city.name }}{% endif %}</h2>
+      <div class="sg-chips">
+        {% for child in links.children %}
+          <a class="sg-chip" href="{% if city %}{% url 'listings:category_city' child.slug city.slug %}{% else %}{% url 'listings:category' child.slug %}{% endif %}">{{ child.name }}</a>
+        {% endfor %}
+      </div>
+    </nav>
+  {% endif %}
+  {% if links.cities %}
+    <nav class="pt-4" aria-labelledby="cities-title">
+      <h2 id="cities-title" class="heading px-4 text-ink">{{ category.name }} {% if city %}dans d'autres villes{% else %}par ville{% endif %}</h2>
+      <div class="sg-chips">
+        {% for other in links.cities %}
+          <a class="sg-chip" href="{% url 'listings:category_city' category.slug other.slug %}">{{ other.name }}</a>
+        {% endfor %}
+      </div>
+    </nav>
+  {% endif %}
+  {% if links.categories %}
+    <nav class="pt-4" aria-labelledby="categories-title">
+      <h2 id="categories-title" class="heading px-4 text-ink">Catégories à {{ city.name }}</h2>
+      <div class="sg-chips">
+        {% for parent in links.categories %}
+          <a class="sg-chip" href="{% url 'listings:category_city' parent.slug city.slug %}">{{ parent.name }}</a>
+        {% endfor %}
+      </div>
+    </nav>
+  {% endif %}
+{% endblock %}

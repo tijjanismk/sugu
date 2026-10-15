@@ -74,7 +74,7 @@ def test_les_categories_principales_s_affichent_sur_l_accueil(client):
     assert html.count('class="sg-cat"') == 8
     for name, slug, *_ in CATEGORIES[:8]:
         assert name in html
-        assert f"?category={slug}" in html
+        assert f"/categorie/{slug}/" in html  # page catégorie (référencement)
     # Les sous-catégories ne sont pas des tuiles.
     assert "Smartphones" not in html
 

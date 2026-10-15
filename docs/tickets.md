@@ -103,7 +103,7 @@ Critères d'acceptation :
   envoi environ 10 fois plus léger en 3G ; sans JavaScript, l'envoi direct fonctionne toujours
   et le serveur garde toutes ses vérifications
 
-## #8 — Liste, page annonce et pagination ✅ (fait le 2026-10-14, photo entière sur les cartes le 2026-10-15)
+## #8 — Liste, page annonce et pagination ✅ (fait le 2026-10-14 ; photo entière et référencement le 2026-10-15)
 
 Accueil avec les dernières annonces, page détail, bouton « voir plus » en htmx,
 images avec dimensions fixes.
@@ -123,8 +123,12 @@ Critères d'acceptation :
   en bas) : la miniature n'est plus recadrée en 4:3, elle est centrée dans la carte sur le
   fond `surface-sunken` ; les miniatures déjà en ligne sont régénérées
   (`manage.py regenerer_miniatures`)
+- Référencement (demande du 2026-10-15, sans publicité) : balises Open Graph sur la page
+  annonce (photo, prix, titre : aperçu quand l'annonce est partagée sur WhatsApp ou
+  Facebook) et données structurées schema.org `Product` / `Offer` (prix en XOF, disponible
+  ou vendue) pour des résultats enrichis ; une seule description par page
 
-## #9 — Recherche et filtres ✅ (fait le 2026-10-14)
+## #9 — Recherche et filtres ✅ (fait le 2026-10-14 ; pages catégorie et ville le 2026-10-15)
 
 Recherche plein texte (`french`), filtres catégorie / ville / prix, formulaire
 GET conservant les paramètres.
@@ -136,6 +140,11 @@ Critères d'acceptation :
 - Tests d'intégration sur 5 scénarios
 - Le quartier fait partie de la recherche plein texte (« sabalibougou » trouve l'annonce) ;
   un filtre « dans un rayon de N km » reste possible plus tard grâce à `distance_km`
+- Référencement (demande du 2026-10-15) : pages catégorie et ville à adresse lisible
+  (`/categorie/telephones/`, `/categorie/telephones/bamako/`, `/ville/bamako/`), titre et
+  description propres (« Téléphones à Bamako »), liens entre catégories et villes ; ce sont
+  elles que Google indexe, la recherche libre (`/recherche/`) ne l'est pas ; page sans
+  annonce non indexée
 
 ## #10 — Gestion de mes annonces ✅ (fait le 2026-10-14)
 
@@ -254,6 +263,12 @@ la pile de production sur le poste (`compose.repetition.yml`) : HTTPS, coupure h
 Cloudflare, rôle PostgreSQL sans privilège, dépôt avec photo et emails vérifiés. Emails par
 Brevo. Restent : choix du serveur et du domaine, Cloudflare, R2, Brevo en vrai, premier
 déploiement, tag `v0.1.0`.
+
+Ajout du 2026-10-15, référencement (sans publicité) : `robots.txt` (pages privées exclues),
+`sitemap.xml` tenu à jour (accueil, catégories, villes, annonces en ligne), adresse
+canonique sur chaque page, inscription à Google Search Console (par le propriétaire ;
+balise de vérification par `GOOGLE_SITE_VERIFICATION`). Au passage à sugu.ml : redirection
+301 de sugu.gardientv.tech pour garder le classement.
 
 ## #16 — Tests de bout en bout ✅ (fait le 2026-10-14, sur `main`)
 

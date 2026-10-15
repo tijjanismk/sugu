@@ -47,7 +47,10 @@ blanc sur `indigo`, point `sun`), générée par `scripts/make_icons.py` dans
 `static/img/icons/` (à reporter dans l'artefact de design) ; page hors-ligne sur le modèle
 EmptyState. Bannière « Installer l'application » (#14, 2026-10-15) : Alert info avec
 icône `smartphone` et deux boutons (`sg-btn--primary` « Installer », `sg-btn--quiet` « Plus
-tard ») sous la barre de recherche de l'accueil (à reporter dans l'artefact de design) ; les autres composants arrivent avec le ticket qui
+tard ») sous la barre de recherche de l'accueil (à reporter dans l'artefact de design).
+Pages catégorie et ville (#9, 2026-10-15) : fil d'Ariane en `caption`, titre, compteur,
+grille de cartes, liens vers les pages voisines en `sg-chip` ; la page annonce reprend ces
+chips sous « Plus d'annonces » ; les autres composants arrivent avec le ticket qui
 les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
 
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.

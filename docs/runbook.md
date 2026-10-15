@@ -102,6 +102,17 @@ docker compose -p sugu -f compose.prod.yml -f compose.serveur-partage.yml exec w
 
 L'adresse de l'admin est dans `/opt/sugu/.env` (`ADMIN_URL`).
 
+### Référencement (Google Search Console)
+
+1. https://search.google.com/search-console → « Ajouter une propriété » → « Préfixe de
+   l'URL » `https://sugu.gardientv.tech/`
+2. Vérification par « Balise HTML » : copier la valeur `content="…"` dans `/opt/sugu/.env`
+   (`GOOGLE_SITE_VERIFICATION=…`), redémarrer `web`, puis « Valider »
+3. « Sitemaps » → envoyer `sitemap.xml`
+4. Bing Webmaster Tools : « Importer depuis Google Search Console »
+5. Au passage à sugu.ml : nouvelle propriété, redirection 301 de l'ancienne adresse
+   (Caddy de l'hôte) et « Changement d'adresse » dans la Search Console
+
 ## Déploiement d'une nouvelle version
 
 ```bash
