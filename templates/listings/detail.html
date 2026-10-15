@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% load sugu_format %}
 {% block title %}{{ listing.title }} · {{ listing.price|fcfa }} · Sugu{% endblock %}
-{% block head %}<meta name="description" content="{{ listing.description|truncatechars:150 }}">{% endblock %}
+{% comment %} Description et aperçu : `seo` (apps/listings/seo.py) ; ici les données structurées
+  schema.org pour les résultats enrichis de Google (ticket #8, 2026-10-15). {% endcomment %}
+{% block head %}<script type="application/ld+json" nonce="{{ csp_nonce }}">{{ structured_data }}</script>{% endblock %}
 {% block topbar %}
   <header class="sg-topbar sg-topbar--raised">
     <a class="sg-btn sg-btn--icon" href="{% url 'core:home' %}" aria-label="Retour à l'accueil">{% include "components/icon.html" with name="back" %}</a>
@@ -83,6 +85,16 @@
         {% endif %}
       </div>
     {% endwith %}
+
+    {# Liens vers les pages catégorie et ville (référencement : Google suit ces liens). #}
+    <nav class="px-4 pt-4" aria-labelledby="more-title">
+      <h2 id="more-title" class="heading text-ink">Plus d'annonces</h2>
+      <div class="sg-chips -mx-4">
+        <a class="sg-chip" href="{% url 'listings:category_city' listing.category.slug listing.city.slug %}">{{ listing.category.name }} à {{ listing.city.name }}</a>
+        <a class="sg-chip" href="{% url 'listings:category' listing.category.slug %}">{{ listing.category.name }}</a>
+        <a class="sg-chip" href="{% url 'listings:city' listing.city.slug %}">Annonces à {{ listing.city.name }}</a>
+      </div>
+    </nav>
 
     {# Rappel de sécurité sur chaque annonce (docs/security.md). #}
     {% include "components/alert.html" with variant="info" title="Restez prudent" body="Rencontrez le vendeur dans un lieu public et ne payez jamais avant d'avoir vu l'objet." %}

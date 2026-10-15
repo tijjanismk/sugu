@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
     "django.contrib.postgres",
     "django_htmx",
     "allauth",
@@ -64,6 +65,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.navigation",
+                "apps.core.context_processors.seo",
                 "apps.favorites.context_processors.favorites",
                 "apps.messaging.context_processors.unread_messages",
                 "apps.accounts.context_processors.auth_options",
@@ -165,6 +167,9 @@ SECURE_CSP = {
 # Email confirmé obligatoire pour déposer et écrire à un vendeur (ticket #3, 2026-10-15,
 # apps/accounts/decorators.py). Suppose des emails réellement livrés (Brevo).
 VERIFIED_EMAIL_REQUIRED = env.bool("VERIFIED_EMAIL_REQUIRED", default=True)
+
+# Référencement : balise de vérification de Google Search Console (2026-10-15).
+GOOGLE_SITE_VERIFICATION = env("GOOGLE_SITE_VERIFICATION", default="")
 
 # Admin : adresse secrète en production (ADMIN_URL, ticket #15) ; /admin/ en développement.
 ADMIN_URL = env("ADMIN_URL", default="admin/")

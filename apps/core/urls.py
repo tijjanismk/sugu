@@ -13,4 +13,5 @@ urlpatterns = [
     path("sw.js", views.service_worker, name="service_worker"),
     path("hors-ligne/", views.offline, name="offline"),
     path("favicon.ico", views.favicon, name="favicon"),
+    path("robots.txt", views.robots_txt, name="robots"),
 ]

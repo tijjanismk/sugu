@@ -1,4 +1,5 @@
 import re
+from collections import Counter
 from dataclasses import dataclass
 from uuid import uuid4
 
@@ -6,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.db.models import F, Prefetch, Q
+from django.db.models import Count, F, Prefetch, Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
@@ -89,6 +90,51 @@ def search_listings(*, q=None, category=None, city=None, price_min=None, price_m
         rank=SearchRank(F("search_vector"), query)
     )
     return with_cover(listings).order_by("-rank", "-published_at", "-pk")
+
+
+# --- Pages catégorie et ville (référencement, ticket #9, ajout du 2026-10-15) --------------
+
+INDEXED_STATUSES = [ListingStatus.PUBLISHED, ListingStatus.RESERVED]
+
+
+def published_counts() -> Counter:
+    """Annonces en ligne par (catégorie, ville), en une requête. Une annonce compte pour sa
+    sous-catégorie et pour sa catégorie principale ; la clé None vaut « toutes » :
+    (catégorie, None), (None, ville). Sert aux liens internes et au plan du site."""
+    counts = Counter()
+    rows = (
+        Listing.objects.filter(status=ListingStatus.PUBLISHED)
+        .values_list("category_id", "category__parent_id", "city_id")
+        .annotate(n=Count("pk"))
+    )
+    for category_id, parent_id, city_id, n in rows:
+        for category in (category_id, parent_id):
+            if category:
+                counts[(category, city_id)] += n
+                counts[(category, None)] += n
+        counts[(None, city_id)] += n
+    return counts
+
+
+def browse_text(category, city, count: int) -> dict:
+    """Titre, titre de page et description d'une page catégorie ou ville."""
+    if category and city:
+        heading = f"{category.name} à {city.name}"
+        title = f"{heading} : petites annonces · Sugu"
+    elif category:
+        heading = category.name
+        title = f"{heading} : petites annonces au Mali · Sugu"
+    else:
+        heading = f"Annonces à {city.name}"
+        title = f"Petites annonces à {city.name} · Sugu"
+    what = f"« {category.name} »" if category else ""
+    where = f"à {city.name}" if city else "au Mali"
+    plural = "s" if count > 1 else ""
+    description = (
+        f"{count} annonce{plural} {what} {where} entre particuliers sur Sugu : prix en FCFA, "
+        "photos et contact direct avec le vendeur."
+    )
+    return {"heading": heading, "title": title, "description": " ".join(description.split())}
 
 
 def get_visible_listing(pk: int) -> Listing:

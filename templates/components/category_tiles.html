@@ -1,8 +1,8 @@
 {% comment %}
-  Tuiles de catégories (design/components/CategoryTile) : chaque tuile mène à la recherche
-  filtrée sur la catégorie (ticket #9). Paramètre : categories.
+  Tuiles de catégories (design/components/CategoryTile) : chaque tuile mène à la page de la
+  catégorie, à adresse lisible et indexée (ticket #9, référencement). Paramètre : categories.
 {% endcomment %}<div class="sg-cats">
   {% for category in categories %}
-    <a class="sg-cat" href="{{ search_url }}?category={{ category.slug }}"><span class="sg-cat__icon">{% include "components/icon.html" with name=category.icon|default:"grid" %}</span>{{ category.name }}</a>
+    <a class="sg-cat" href="{% url 'listings:category' category.slug %}"><span class="sg-cat__icon">{% include "components/icon.html" with name=category.icon|default:"grid" %}</span>{{ category.name }}</a>
   {% endfor %}
 </div>

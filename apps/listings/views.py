@@ -14,6 +14,7 @@ from apps.core.templatetags.sugu_format import fcfa
 from . import services
 from .forms import ListingEditForm, ListingForm, PhotoAddForm, SearchForm
 from .models import Category, City, Listing, ListingStatus, Photo
+from .seo import listing_seo
 
 
 @verified_email_required
@@ -49,8 +50,47 @@ def listing_detail(request: HttpRequest, pk: int, slug: str) -> HttpResponse:
         return redirect(listing, permanent=True)
     # Ligne vendeur (ticket #13) : ses annonces en ligne.
     count = listing.user.listings.filter(status=ListingStatus.PUBLISHED).count()
-    context = {"listing": listing, "seller_listing_count": count}
+    context = {"listing": listing, "seller_listing_count": count, **listing_seo(request, listing)}
     return render(request, "listings/detail.html", context)
+
+
+def browse(request: HttpRequest, category: str | None = None, city: str | None = None):
+    """Pages catégorie et ville à adresse lisible (référencement, ticket #9, 2026-10-15) :
+    /categorie/telephones/, /categorie/telephones/bamako/, /ville/bamako/. Ce sont elles que
+    Google indexe (la recherche libre ne l'est pas) ; une page sans annonce ne l'est pas."""
+    category = (
+        get_object_or_404(Category.objects.select_related("parent"), slug=category)
+        if category
+        else None
+    )
+    city = get_object_or_404(City, slug=city) if city else None
+    page_obj = Paginator(
+        services.search_listings(category=category, city=city), services.PAGE_SIZE
+    ).get_page(request.GET.get("page"))
+    context = {"page_obj": page_obj, "category": category, "city": city}
+    if request.htmx:
+        return render(request, "listings/browse.html#browse_page", context)
+
+    counts = services.published_counts()
+    count = page_obj.paginator.count
+    text = services.browse_text(category, city, count)
+    # Liens internes : d'autres villes pour cette catégorie, les sous-catégories, ou les
+    # catégories de cette ville. Seulement vers des pages qui ont des annonces.
+    links = {}
+    if category:
+        cities = City.objects.order_by("name")
+        links["cities"] = [c for c in cities if c != city and counts[(category.pk, c.pk)]]
+        children = category.children.order_by("order", "name")
+        links["children"] = [c for c in children if counts[(c.pk, city.pk if city else None)]]
+    else:
+        parents = Category.objects.filter(parent__isnull=True).order_by("order", "name")
+        links["categories"] = [c for c in parents if counts[(c.pk, city.pk)]]
+    context.update(
+        text=text,
+        links=links,
+        seo={"description": text["description"], "og_title": text["heading"], "noindex": not count},
+    )
+    return render(request, "listings/browse.html", context)
 
 
 def _search_url(filters: dict, **changes) -> str:
@@ -103,6 +143,9 @@ def search(request: HttpRequest) -> HttpResponse:
         categories=Category.objects.filter(parent__isnull=True).prefetch_related("children"),
         cities=City.objects.all(),
     )
+    # Recherche libre : utile aux visiteurs, pas aux moteurs (contenu en double, combinaisons
+    # infinies). Les liens restent suivis ; les pages catégorie et ville sont indexées.
+    context["seo"] = {"noindex": True}
     return render(request, "listings/search.html", context)
 
 

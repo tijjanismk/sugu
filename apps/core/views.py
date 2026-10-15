@@ -74,3 +74,29 @@ def offline(request: HttpRequest) -> HttpResponse:
 def favicon(request: HttpRequest) -> HttpResponse:
     """Les navigateurs demandent /favicon.ico d'office : on les renvoie vers l'icône."""
     return redirect(static("img/icons/favicon.ico"), permanent=True)
+
+
+# Pages privées ou sans intérêt pour un moteur de recherche (référencement, 2026-10-15). L'admin
+# n'y figure pas : son adresse est secrète (ticket #15). La recherche libre reste explorable
+# (ses liens mènent aux annonces) mais porte « noindex ».
+ROBOTS_DISALLOW = [
+    "/comptes/",
+    "/messages/",
+    "/favoris/",
+    "/mes-annonces/",
+    "/deposer/",
+    "/hors-ligne/",
+    "/annonce/*/contacter/",
+    "/annonce/*/modifier/",
+    "/annonce/*/vendue/",
+    "/annonce/*/supprimer/",
+    "/annonce/*/photos/",
+]
+
+
+@require_GET
+def robots_txt(request: HttpRequest) -> HttpResponse:
+    lines = ["User-agent: *", *(f"Disallow: {path}" for path in ROBOTS_DISALLOW), ""]
+    lines.append(f"Sitemap: {request.build_absolute_uri(reverse('sitemap'))}")
+    body = "\n".join(lines) + "\n"
+    return HttpResponse(body, content_type="text/plain; charset=utf-8")

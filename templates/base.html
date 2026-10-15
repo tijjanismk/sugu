@@ -4,7 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}Sugu{% endblock %}</title>
-  <meta name="description" content="Petites annonces entre particuliers, près de chez vous.">
+  {% comment %}
+    Référencement (2026-10-15) : une seule description, l'adresse canonique et l'aperçu de
+    partage (Open Graph). Les pages qui en ont besoin passent `seo` (description, og_title,
+    og_type, image, noindex) ; sinon, les valeurs du site.
+  {% endcomment %}
+  {% with description=seo.description|default:default_description %}
+  <meta name="description" content="{{ description }}">
+  {% if seo.noindex %}<meta name="robots" content="noindex, follow">{% endif %}
+  <link rel="canonical" href="{{ canonical_url }}">
+  <meta property="og:site_name" content="Sugu">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:type" content="{{ seo.og_type|default:'website' }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:title" content="{{ seo.og_title|default:'Sugu — le marché du quartier, dans la poche' }}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:image" content="{{ seo.image|default:default_og_image }}">
+  {% if seo.image_width %}<meta property="og:image:width" content="{{ seo.image_width }}"><meta property="og:image:height" content="{{ seo.image_height }}">{% endif %}
+  <meta name="twitter:card" content="{% if seo.image %}summary_large_image{% else %}summary{% endif %}">
+  {% endwith %}
+  {% if google_site_verification %}<meta name="google-site-verification" content="{{ google_site_verification }}">{% endif %}
   {# Thème : réglage du téléphone, ou choix enregistré (profil, ticket #13). Avant le CSS, pour éviter un flash. #}
   <script nonce="{{ csp_nonce }}">(function(){var t;try{t=localStorage.getItem("sugu-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
   <link rel="preload" href="{% static 'fonts/figtree-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>

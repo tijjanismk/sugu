@@ -81,6 +81,10 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   non recadrée, `manage.py regenerer_miniatures`) ; email confirmé obligatoire pour déposer
   et écrire à un vendeur (#3, `VERIFIED_EMAIL_REQUIRED`) ; emails encore capturés par
   Mailpit sur le serveur : Brevo à configurer par le propriétaire
+- Référencement (2026-10-15, sans publicité) : `robots.txt`, `sitemap.xml`, adresse
+  canonique (#15) ; pages `/categorie/<slug>/[<ville>/]` et `/ville/<slug>/` (#9) ; Open
+  Graph et schema.org `Product` sur la page annonce (#8) ; Search Console à faire par le
+  propriétaire (runbook, « Référencement »)
 - Ajout au #14 (2026-10-15) : bannière « Installer l'application » sur l'accueil
   (`static/js/install.js`), seulement dans le navigateur ; « Plus tard » = 30 jours
 - Ajout au #3 : connexion avec Google (ADR 0002, allauth `socialaccount`), bouton en tête
