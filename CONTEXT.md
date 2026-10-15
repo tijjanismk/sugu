@@ -77,6 +77,8 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   `scripts/make_icons.py` ; test hors-ligne dans `tests/e2e/test_pwa.py`)
 - Aussi fait : #16 Tests de bout en bout (trois parcours dans `tests/e2e`, verts sur `main` ;
   pas encore lancés sur le poste : Chromium de Playwright non téléchargé)
+- Ajout au #14 (2026-10-15) : bannière « Installer l'application » sur l'accueil
+  (`static/js/install.js`), seulement dans le navigateur ; « Plus tard » = 30 jours
 - Ajout au #3 : connexion avec Google (ADR 0002, allauth `socialaccount`), bouton en tête
   des pages de connexion et d'inscription, masqué sans `GOOGLE_CLIENT_ID` ; identifiants
   OAuth à créer par le propriétaire dans la console Google (runbook, étape 10)

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Sugu — le marché du quartier, dans la poche{% endblock %}
 {% block content %}
   <section class="px-4 pt-6 pb-2">
@@ -6,6 +7,7 @@
     <p class="body mt-2 text-ink-muted">Achetez et vendez entre particuliers, près de chez vous.</p>
   </section>
   {% include "components/search_bar.html" %}
+  {% include "components/install_banner.html" %}
 
   {% if categories %}
     <section class="mt-4" aria-labelledby="categories-title">
@@ -45,3 +47,4 @@
     {% endif %}
   </section>
 {% endblock %}
+{% block scripts %}<script src="{% static 'js/install.js' %}" defer></script>{% endblock %}

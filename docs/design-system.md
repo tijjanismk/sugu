@@ -45,7 +45,9 @@ la barre du haut de la page annonce. Ticket #12 : lien dans une bulle `.sg-msg a
 l'annonce et en tête du profil. Ticket #14 : icône d'application (« S » Figtree ExtraBold
 blanc sur `indigo`, point `sun`), générée par `scripts/make_icons.py` dans
 `static/img/icons/` (à reporter dans l'artefact de design) ; page hors-ligne sur le modèle
-EmptyState ; les autres composants arrivent avec le ticket qui
+EmptyState. Bannière « Installer l'application » (#14, 2026-10-15) : Alert info avec
+icône `smartphone` et deux boutons (`sg-btn--primary` « Installer », `sg-btn--quiet` « Plus
+tard ») sous la barre de recherche de l'accueil (à reporter dans l'artefact de design) ; les autres composants arrivent avec le ticket qui
 les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
 
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.
