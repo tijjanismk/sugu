@@ -26,7 +26,7 @@ Critères d'acceptation :
 - Un push direct sur `main` est refusé
 - `makemigrations --check` est dans la CI
 
-## #3 — Modèle utilisateur et authentification ✅ (fait le 2026-10-13, connexion Google le 2026-10-14)
+## #3 — Modèle utilisateur et authentification ✅ (fait le 2026-10-13 ; Google le 2026-10-14 ; email confirmé pour déposer le 2026-10-15)
 
 Créer `accounts.User` (email, display_name, phone, city), configurer allauth
 (inscription, connexion, déconnexion, mot de passe oublié par email).
@@ -47,6 +47,15 @@ Critères ajoutés :
 - Inscription et connexion par Google (tests avec la réponse de Google simulée)
 - Même adresse email : le compte existant est retrouvé, pas de doublon
 - La suppression de compte (#13) délie aussi le compte Google
+
+Ajout du 2026-10-15 : **email confirmé obligatoire pour déposer une annonce et écrire à un
+vendeur** (parcourir, chercher et mettre en favori restent ouverts). Sans confirmation : page
+« Confirmez votre adresse email », le lien est renvoyé (délai entre deux envois, allauth). Les
+comptes Google sont déjà confirmés. Réglage `VERIFIED_EMAIL_REQUIRED` (vrai par défaut).
+Suppose des emails réellement livrés (Brevo).
+
+Critères ajoutés :
+- Sans email confirmé, ni dépôt ni premier message (tests) ; avec, rien ne change
 
 ## #4 — Base HTML, Tailwind et htmx ✅ (fait le 2026-10-13)
 
@@ -94,7 +103,7 @@ Critères d'acceptation :
   envoi environ 10 fois plus léger en 3G ; sans JavaScript, l'envoi direct fonctionne toujours
   et le serveur garde toutes ses vérifications
 
-## #8 — Liste, page annonce et pagination ✅ (fait le 2026-10-14)
+## #8 — Liste, page annonce et pagination ✅ (fait le 2026-10-14, photo entière sur les cartes le 2026-10-15)
 
 Accueil avec les dernières annonces, page détail, bouton « voir plus » en htmx,
 images avec dimensions fixes.
@@ -110,6 +119,10 @@ Critères d'acceptation :
   Sabalibougou, Commune V) et « distance de la ville » en km (ex. à 20 km de Bamako),
   saisis au dépôt et affichés « Sabalibougou, Bamako » / « À 15 km de Ségou » sur la carte et
   la page annonce
+- Photo entière sur les cartes (retour du 2026-10-15, un logo carré arrivait coupé en haut et
+  en bas) : la miniature n'est plus recadrée en 4:3, elle est centrée dans la carte sur le
+  fond `surface-sunken` ; les miniatures déjà en ligne sont régénérées
+  (`manage.py regenerer_miniatures`)
 
 ## #9 — Recherche et filtres ✅ (fait le 2026-10-14)
 

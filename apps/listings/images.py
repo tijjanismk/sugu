@@ -3,7 +3,9 @@
 Chaque photo est ouverte par Pillow puis **réencodée** en WebP : un fichier qui n'est pas une
 image valide est rejeté, les métadonnées (EXIF, dont la position GPS) disparaissent, et
 l'original n'est jamais conservé. Deux versions : 1200 px proportionnelle pour la page de
-l'annonce, miniature 400×300 recadrée au format 4:3 de la carte.
+l'annonce, miniature proportionnelle qui tient dans 400×300 pour la carte. Jamais recadrée
+(retour du 2026-10-15 : un logo carré perdait son haut et son bas) : la carte la centre
+sur son fond.
 """
 
 import io
@@ -87,6 +89,15 @@ def _webp(image: Image.Image, quality: int) -> bytes:
     return buffer.getvalue()
 
 
+def make_thumb(large: Image.Image) -> Image.Image:
+    """Miniature de carte depuis la version 1200 px : la photo entière, dans 400×300."""
+    return ImageOps.contain(large, THUMB_SIZE, Image.Resampling.LANCZOS)
+
+
+def thumb_file(large: Image.Image) -> ContentFile:
+    return ContentFile(_webp(make_thumb(large), THUMB_QUALITY))
+
+
 def process_photo(uploaded) -> ProcessedPhoto:
     """Valide et réencode une photo envoyée. Lève ValidationError si elle est refusée."""
     image = _open_verified(uploaded)
@@ -95,11 +106,10 @@ def process_photo(uploaded) -> ProcessedPhoto:
 
     large = image.copy()
     large.thumbnail((LARGE_MAX_SIZE, LARGE_MAX_SIZE), Image.Resampling.LANCZOS)  # sans agrandir
-    thumb = ImageOps.fit(large, THUMB_SIZE, Image.Resampling.LANCZOS)  # depuis la 1200 px
 
     return ProcessedPhoto(
         large=ContentFile(_webp(large, LARGE_QUALITY)),
-        thumb=ContentFile(_webp(thumb, THUMB_QUALITY)),
+        thumb=thumb_file(large),
         width=large.width,
         height=large.height,
     )

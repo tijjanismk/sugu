@@ -22,6 +22,9 @@ MAILERS = {"default": {"BACKEND": "django.core.mail.backends.locmem.EmailBackend
 MEDIA_ROOT = Path(tempfile.gettempdir()) / "sugu-test-media"
 STORAGES["staticfiles"] = {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}  # noqa: F405
 WHITENOISE_AUTOREFRESH = True
+# Les parcours de bout en bout (mêmes réglages) ne peuvent pas lire les emails de confirmation ;
+# les tests de la vérification l'activent eux-mêmes (apps/accounts/tests/test_verification.py).
+VERIFIED_EMAIL_REQUIRED = False
 # Le job e2e lance runserver avec ces réglages, sans collectstatic : WhiteNoise sert alors
 # les fichiers depuis leurs sources (htmx, pwa.js qui enregistre le service worker).
 WHITENOISE_USE_FINDERS = True

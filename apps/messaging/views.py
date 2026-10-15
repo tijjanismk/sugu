@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET
 from django_htmx.http import HttpResponseClientRedirect, retarget
 
+from apps.accounts.decorators import verified_email_required
 from apps.core import ratelimit
 from apps.listings.models import PUBLISHED_STATUSES, Listing
 from apps.listings.services import PAGE_SIZE, with_cover
@@ -45,7 +46,7 @@ def inbox(request: HttpRequest) -> HttpResponse:
     return render(request, "messaging/inbox.html", {"page_obj": page_obj})
 
 
-@login_required
+@verified_email_required
 def start(request: HttpRequest, listing_pk: int) -> HttpResponse:
     """« Écrire au vendeur » depuis une annonce. La conversation n'existe qu'au premier message ;
     si elle existe déjà, on y va directement."""

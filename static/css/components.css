@@ -39,7 +39,8 @@ a { color: var(--indigo); }
 @media (min-width: 1024px) { .sg-grid { grid-template-columns: repeat(4, 1fr); } }
 .sg-card { position: relative; display: block; background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; text-decoration: none; color: inherit; }
 .sg-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-.sg-card__media { display: grid; place-items: center; aspect-ratio: 4 / 3; width: 100%; background: var(--surface-sunken); color: var(--ink-muted); object-fit: cover; }
+/* Photo entière, centrée sur le fond (contain) : un logo ou une photo en hauteur n'est jamais coupé */
+.sg-card__media { display: grid; place-items: center; aspect-ratio: 4 / 3; width: 100%; background: var(--surface-sunken); color: var(--ink-muted); object-fit: contain; }
 .sg-card__body { padding: var(--space-3); }
 .sg-card__price { margin: 0; font-size: 20px; line-height: 24px; font-weight: 800; color: var(--indigo); font-variant-numeric: tabular-nums; }
 .sg-card__price--open { color: var(--ink-muted); font-weight: 700; }

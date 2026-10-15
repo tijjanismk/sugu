@@ -1,0 +1,13 @@
+{% extends "account/base_entrance.html" %}
+{% load allauth %}
+{% comment %}
+  Email non confirmé (ticket #3, ajout du 2026-10-15) : on ne dépose pas et on n'écrit pas à
+  un vendeur sans adresse confirmée. allauth vient de renvoyer le lien.
+{% endcomment %}
+{% block head_title %}Confirmez votre adresse email{% endblock head_title %}
+{% block content %}
+  {% element h1 %}Confirmez votre adresse email{% endelement %}
+  {% element p %}Pour déposer une annonce ou écrire à un vendeur, confirmez d'abord votre adresse. Nous venons d'envoyer un lien à <strong>{{ user.email }}</strong> : touchez-le, puis revenez ici.{% endelement %}
+  {% element p %}Rien reçu après quelques minutes ? Regardez dans les courriers indésirables. Adresse erronée ? <a href="{% url 'account_email' %}">Changer d'adresse</a>.{% endelement %}
+  <div class="px-4 pt-4"><a class="sg-btn sg-btn--block" href="{% url 'core:home' %}">Retour aux annonces</a></div>
+{% endblock content %}
