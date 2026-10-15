@@ -12,4 +12,6 @@ tailwindcss
 .coverage
 htmlcov/
 test-results/
+# Copies des sauvegardes de la base sur le serveur (scripts/backup.sh)
+sauvegardes/
 tailwindcss.exe

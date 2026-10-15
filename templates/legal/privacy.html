@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% comment %}
+  Politique de confidentialité (ticket #17). Décrit ce que le code fait réellement : la tenir à
+  jour à chaque nouvelle donnée collectée ou nouveau prestataire (docs/security.md).
+{% endcomment %}
+{% block title %}Politique de confidentialité · Sugu{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  <article class="sg-prose">
+    <h1>Politique de confidentialité</h1>
+    <p class="sg-prose__updated">Mise à jour : 15 octobre 2026</p>
+
+    <p>Sugu collecte le moins de données possible : seulement ce qu'il faut pour publier des annonces et mettre en relation vendeurs et acheteurs. Pas de publicité, pas de mesure d'audience, aucune donnée vendue ni prêtée.</p>
+
+    <h2>Responsable du traitement</h2>
+    {% include "legal/_publisher.html" %}
+    <p>Cadre : loi n° 2013-015 du 21 mai 2013 portant protection des données à caractère personnel en République du Mali.</p>
+
+    <h2>Ce que nous enregistrons</h2>
+    <ul>
+      <li><strong>Votre compte</strong> : adresse email, nom affiché, ville, et votre numéro de téléphone si vous l'indiquez. Votre mot de passe n'est jamais enregistré en clair : seule une empreinte l'est, impossible à relire, même pour nous.</li>
+      <li><strong>Connexion avec Google</strong>, si vous la choisissez : Google nous transmet votre adresse email et votre nom, rien d'autre.</li>
+      <li><strong>Vos annonces</strong> : titre, description, prix, catégorie, lieu et photos. Les informations cachées dans les photos (modèle du téléphone, position GPS) sont effacées à l'envoi.</li>
+      <li><strong>Vos messages</strong> avec les autres membres, et vos favoris.</li>
+      <li><strong>Pour protéger le site</strong> : l'adresse IP de la connexion sert, quelques minutes à quelques heures, à limiter les tentatives répétées (mots de passe, inscriptions). Elle n'est pas conservée dans un journal.</li>
+    </ul>
+
+    <h2>Qui voit quoi</h2>
+    <ul>
+      <li>Tout le monde voit vos annonces, votre nom affiché et la date de votre inscription. Les moteurs de recherche aussi, tant que l'annonce est en ligne.</li>
+      <li>Votre numéro de téléphone, si vous l'indiquez, n'est visible que par les membres connectés, sur vos annonces.</li>
+      <li>Vos messages ne sont lus que par vous et la personne à qui vous écrivez. Nous ne les consultons qu'en cas d'obligation légale ou pour traiter un abus signalé.</li>
+      <li>Votre adresse email n'est jamais affichée.</li>
+    </ul>
+
+    <h2>Prestataires</h2>
+    <p>Ils traitent les données pour notre compte, uniquement pour le service rendu :</p>
+    <ul>
+      <li>l'hébergeur du site et de la base de données (voir les <a href="{% url 'core:legal_notice' %}">mentions légales</a>) ;</li>
+      <li>Brevo (France), pour envoyer les emails : confirmation d'adresse, mot de passe oublié, avertissement de nouveau message ;</li>
+      <li>Cloudflare, pour le stockage des sauvegardes et des photos ;</li>
+      <li>Sentry, pour être averti des erreurs du site : ces rapports ne contiennent ni votre nom, ni votre email, ni votre adresse IP, ni le contenu de vos messages ;</li>
+      <li>Google, seulement si vous utilisez « Continuer avec Google ».</li>
+    </ul>
+    <p>Ces prestataires sont situés hors du Mali. [À COMPLÉTER : pays de l'hébergeur et autorisation de transfert délivrée par l'APDP, le cas échéant.]</p>
+
+    <h2>Combien de temps</h2>
+    <ul>
+      <li>Votre compte et vos annonces : tant que vous gardez votre compte.</li>
+      <li>Quand vous supprimez votre compte : votre email, votre nom, votre téléphone et votre ville sont effacés tout de suite, vos annonces retirées du site et vos favoris supprimés. Vos messages restent dans les conversations, signés « Compte supprimé », pour que l'autre personne garde son historique.</li>
+      <li>Annonces retirées et messages : [À COMPLÉTER : durée de conservation, par exemple 3 ans, puis effacement].</li>
+      <li>Sauvegardes de la base : 30 jours, et un an pour une sauvegarde par mois. Une donnée effacée disparaît des sauvegardes au plus tard à ces dates.</li>
+    </ul>
+
+    <h2>Cookies et stockage du téléphone</h2>
+    <p>Sugu n'utilise que des cookies nécessaires : celui qui garde votre session ouverte (deux semaines) et celui qui protège les formulaires. Votre navigateur garde aussi votre choix de thème clair ou sombre, la date à laquelle vous avez écarté le bandeau « Installer l'application », et quelques pages pour le mode hors ligne. Rien de tout cela ne sert à vous suivre ni ne quitte votre téléphone.</p>
+
+    <h2>Vos droits</h2>
+    <p>Vous pouvez à tout moment consulter et corriger vos informations depuis votre <a href="{% url 'account_profile' %}">profil</a>, choisir de ne plus recevoir d'email de nouveau message, et supprimer votre compte depuis le profil. Pour toute autre demande (copie de vos données, opposition, question), écrivez-nous à l'adresse de <a href="#contact">contact</a> : nous répondons sous un mois.</p>
+    <p>Si notre réponse ne vous satisfait pas, vous pouvez saisir l'Autorité de protection des données à caractère personnel (APDP) du Mali.</p>
+
+    <h2>Sécurité</h2>
+    <p>Le site n'est accessible qu'en connexion chiffrée (HTTPS). L'accès au serveur et à la base est réservé à l'éditeur. Si une fuite de données touchait vos informations, nous vous préviendrions, ainsi que l'APDP.</p>
+  </article>
+{% endblock %}

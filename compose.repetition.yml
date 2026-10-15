@@ -2,7 +2,8 @@
 # la vraie pile (image, Caddy, PostgreSQL sans superutilisateur) sans Cloudflare, R2 ni Brevo.
 #   docker compose -p sugu-repetition --env-file .env.repetition \
 #     -f compose.prod.yml -f compose.repetition.yml up -d --build
-# Site : https://localhost:8443 (certificat local de Caddy) ; emails : http://localhost:8025
+# Site : https://localhost:8443 (certificat local de Caddy) ; emails : http://localhost:8025 ;
+# sauvegardes : bucket S3 local (service s3).
 services:
   caddy:
     environment:
@@ -13,3 +14,9 @@ services:
   mailpit:
     image: axllent/mailpit:v1.27
     ports: ["8025:8025"]
+
+  # Bucket S3 local à la place de R2, pour essayer sauvegarde et restauration (ticket #17).
+  # Clés de test seulement : BACKUP_* de .env.repetition (docs/runbook.md).
+  s3:
+    image: rclone/rclone:1.75.1
+    command: ["serve", "s3", "/data", "--addr", ":9000", "--auth-key", "repetition,repetition-secret"]

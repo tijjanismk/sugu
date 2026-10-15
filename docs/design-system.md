@@ -50,8 +50,11 @@ icône `smartphone` et deux boutons (`sg-btn--primary` « Installer », `sg-btn-
 tard ») sous la barre de recherche de l'accueil (à reporter dans l'artefact de design).
 Pages catégorie et ville (#9, 2026-10-15) : fil d'Ariane en `caption`, titre, compteur,
 grille de cartes, liens vers les pages voisines en `sg-chip` ; la page annonce reprend ces
-chips sous « Plus d'annonces » ; les autres composants arrivent avec le ticket qui
-les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
+chips sous « Plus d'annonces » ; pages légales et « À propos » (#17, 2026-10-15) : texte long
+`sg-prose` (titres en styles `title` et `heading`, texte `body`, date en `ink-muted`) et pied
+de page `sg-footer` (liens en `ink-muted`, zones tactiles de 44 px, filet `line`), absent des
+parcours (dépôt, modification, conversation, confirmation) ; à reporter dans l'artefact de
+design ; les autres composants arrivent avec le ticket qui les utilise. Poids de l'accueil mesuré : 45 Ko compressés (HTML, CSS, htmx et police).
 
 1. `static/css/tokens.css` ← copie de `design/tokens.css`.
 2. `static/css/input.css` : `@import "tailwindcss";` puis un bloc `@theme` qui

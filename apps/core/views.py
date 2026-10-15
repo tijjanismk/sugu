@@ -76,6 +76,22 @@ def favicon(request: HttpRequest) -> HttpResponse:
     return redirect(static("img/icons/favicon.ico"), permanent=True)
 
 
+# Descriptions des pages légales et « À propos » (ticket #17, apps/core/urls.py).
+ABOUT = {
+    "seo": {
+        "description": "Sugu : petites annonces gratuites pour vendre et acheter près de chez "
+        "vous, au Mali. Comment ça marche, et nos conseils pour acheter en sécurité."
+    }
+}
+LEGAL = {"seo": {"description": "Mentions légales de Sugu : éditeur, hébergeur, contact."}}
+PRIVACY = {
+    "seo": {
+        "description": "Ce que Sugu enregistre, qui le voit, combien de temps, et vos droits. "
+        "Pas de publicité ni de pisteur."
+    }
+}
+
+
 # Pages privées ou sans intérêt pour un moteur de recherche (référencement, 2026-10-15). L'admin
 # n'y figure pas : son adresse est secrète (ticket #15). La recherche libre reste explorable
 # (ses liens mènent aux annonces) mais porte « noindex ».

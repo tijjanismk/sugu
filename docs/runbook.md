@@ -30,12 +30,25 @@ sans Cloudflare, R2 ni Brevo (ticket #15). À refaire avant chaque changement du
 3. Vérifier : https://localhost:8443 (certificat local de Caddy), `check --deploy` dans le
    conteneur `web`, `seed --categories-only`, un dépôt d'annonce avec photo, les emails
    dans Mailpit (http://localhost:8025)
-4. Arrêter : même commande avec `down` (ajouter `-v` pour repartir d'une base vide)
+4. Sauvegarde et restauration (ticket #17), avec le bucket S3 local du service `s3` :
+   ajouter à `.env.repetition` `BACKUP_S3_ENDPOINT_URL=http://s3:9000`,
+   `BACKUP_ACCESS_KEY_ID=repetition` et `BACKUP_SECRET_ACCESS_KEY=repetition-secret`, créer le
+   bucket (`exec web python -c "import django; django.setup(); from apps.core import backups;
+   backups.client().create_bucket(Bucket=backups.bucket())"`), puis avec
+   `COMPOSE="docker compose -p sugu-repetition --env-file .env.repetition -f compose.prod.yml -f compose.repetition.yml"` :
+   `scripts/backup.sh`, abîmer des données, `scripts/restore.sh quotidien/sugu-<date>.dump`
+5. Arrêter : même commande avec `down` (ajouter `-v` pour repartir d'une base vide)
 
 Ce que la répétition du 2026-10-15 a trouvé et corrigé : `collectstatic` lancé avec les
 réglages de développement (pas de manifeste : 500 partout en production), la source
 Tailwind `input.css` qui faisait échouer `collectstatic`, et la coupure du trafic hors
 Cloudflare qui ne s'appliquait pas (ordre des directives Caddy).
+
+Sauvegarde et restauration essayées le 2026-10-15 (ticket #17) : `backup.sh` (88 Ko, copie
+locale et bucket), 5 annonces effacées, `restore.sh` depuis le bucket puis depuis la copie
+locale : 13 annonces retrouvées, tables au rôle `sugu`, extension `unaccent` et recherche
+fonctionnelles, site coupé une vingtaine de secondes. Une sauvegarde abîmée s'arrête à
+l'étape 1, site intact (la base `sugu_restauration` vide reste, effacée au prochain essai).
 
 ## Premier déploiement
 
@@ -146,30 +159,84 @@ Si la version incluait une migration non réversible, restaurer la sauvegarde
 
 ## Sauvegardes
 
-- `scripts/backup.sh` : `pg_dump` compressé envoyé sur R2 (bucket `sugu-backups`)
-- Cron sur le VPS, tous les jours à 03:00 :
-  `0 3 * * * /home/deploy/sugu/scripts/backup.sh >> /home/deploy/backup.log 2>&1`
-- Conservation : 30 jours (règle de cycle de vie sur le bucket)
-- Les photos sont déjà sur R2 : activer le versioning du bucket
-- Tester une restauration une fois par trimestre (noter la date ici : —)
+Ticket #17. `scripts/backup.sh` fait un `pg_dump` (format « custom », en superutilisateur dans
+le conteneur `db`), en garde une copie sur le serveur dans `sauvegardes/` (7 jours, lisible par
+root seul, jamais dans git ni dans l'image) et l'envoie sur le bucket de sauvegarde par
+`manage.py sauvegarde_envoyer`. Sans bucket configuré, seule la copie du serveur existe, et
+`check --deploy` le signale (`sugu.W004`).
+
+- Bucket R2 **privé** `sugu-backups`, distinct de celui des photos, avec son propre jeton
+  d'API (« Object Read & Write », limité à ce bucket). Variables de `.env` :
+  `BACKUP_S3_ENDPOINT_URL` (`https://<id du compte>.r2.cloudflarestorage.com`),
+  `BACKUP_ACCESS_KEY_ID`, `BACKUP_SECRET_ACCESS_KEY`, `BACKUP_BUCKET` (`sugu-backups` par défaut)
+- Règles de cycle de vie du bucket (Cloudflare, R2, bucket, « Settings », « Object lifecycle
+  rules ») : préfixe `quotidien/` supprimé après 30 jours, préfixe `mensuel/` (sauvegarde du
+  1er du mois) après 365 jours. Le serveur n'efface jamais rien dans le bucket
+- Cron, tous les jours à 3 h (`/etc/cron.d/sugu-sauvegarde`, serveur partagé) :
+  ```
+  COMPOSE=docker compose -p sugu -f compose.prod.yml -f compose.serveur-partage.yml
+  0 3 * * * root /opt/sugu/scripts/backup.sh >> /var/log/sugu-sauvegarde.log 2>&1
+  ```
+  Sur un serveur dédié, sans la ligne `COMPOSE` (par défaut `compose.prod.yml` seul)
+- Lister ce qu'il y a dans le bucket :
+  `docker compose -f compose.prod.yml exec web python manage.py sauvegarde_lister`
+- Photos sur R2 : activer le versioning du bucket des photos
+- Restauration testée : le 2026-10-15 à la répétition générale (bucket S3 local), à refaire
+  une fois par trimestre et noter la date ici
 
 ## Restauration
 
 ```bash
-docker compose -f compose.prod.yml stop web
-docker compose -f compose.prod.yml exec -T db psql -U sugu -d postgres \
-  -c "DROP DATABASE sugu; CREATE DATABASE sugu;"
-gunzip -c sugu-AAAA-MM-JJ.sql.gz | docker compose -f compose.prod.yml exec -T db psql -U sugu sugu
-docker compose -f compose.prod.yml start web
+scripts/restore.sh sauvegardes/sugu-2026-10-15-030000.dump   # copie du serveur
+scripts/restore.sh quotidien/sugu-2026-10-15.dump            # bucket (sauvegarde_lister)
 ```
+
+(préfixer de `COMPOSE="docker compose -p sugu -f compose.prod.yml -f compose.serveur-partage.yml"`
+sur le serveur partagé). Le script restaure d'abord dans une base à part, site en ligne : une
+sauvegarde illisible s'arrête là sans rien toucher. Puis il coupe `web` quelques secondes, met la
+base actuelle de côté sous `sugu_avant_<date>`, met la base restaurée à sa place et redémarre
+`web`, qui applique les migrations plus récentes que la sauvegarde. Après vérification du site :
+`docker compose -f compose.prod.yml exec db dropdb -U postgres sugu_avant_<date>`.
+
+Retour en arrière si la restauration ne convient pas : arrêter `web`, renommer les bases dans
+l'autre sens (`ALTER DATABASE … RENAME TO …` dans `psql -U postgres`), redémarrer `web`.
 
 ## Supervision
 
-- Disponibilité : UptimeRobot (gratuit), vérification de https://sugu.ml
-  toutes les 5 min
-- Erreurs : Sentry (offre gratuite), DSN dans `.env`
+- Disponibilité : UptimeRobot (offre gratuite, compte à créer par l'éditeur). Moniteur
+  « Keyword » sur `https://<domaine>/sante/`, mot-clé `ok`, toutes les 5 min, alerte par email.
+  `/sante/` interroge aussi la base : une base arrêtée déclenche l'alerte
+- Erreurs : Sentry (offre gratuite « Developer », compte à créer par l'éditeur ; choisir la
+  région de données **EU** à la création de l'organisation). Projet « Django », puis
+  `SENTRY_DSN=…` dans `.env` et redémarrage de `web`. Rien n'est envoyé sans DSN. Aucune
+  donnée personnelle ne part (utilisateur, IP, cookies, corps des requêtes, variables locales,
+  jetons des liens : `apps/core/sentry.py`). Vérifier l'envoi avec
+  `docker compose -f compose.prod.yml exec web python -c "import django, sentry_sdk; django.setup(); sentry_sdk.capture_message('Essai Sugu'); sentry_sdk.flush()"`
+- Sauvegardes : `tail /var/log/sugu-sauvegarde.log` ; une ligne « Envoyée : » par jour
 - Logs : `docker compose -f compose.prod.yml logs -f web`
 - Espace disque : `df -h` ; alerte si > 80 %
+
+## Pages légales
+
+Ticket #17 : « À propos » (`/a-propos/`), mentions légales (`/mentions-legales/`) et politique
+de confidentialité (`/confidentialite/`), liées dans le pied de page de toutes les pages de
+navigation et depuis l'inscription. Gabarits dans `templates/legal/`.
+
+L'éditeur (particulier ou société, pas encore décidé au 2026-10-15) remplace chaque
+« [À COMPLÉTER … » ; tant qu'il en reste, `check --deploy` le signale (`sugu.W003`) :
+
+- `_publisher.html` : identité de l'éditeur (particulier : prénom, nom, adresse ; société :
+  raison sociale, forme juridique, capital, siège, RCCM, NIF), directeur de la publication,
+  email et téléphone de contact. Repris par les deux pages
+- `legal_notice.html` : hébergeur (aujourd'hui Hostinger pour le serveur de test : reprendre
+  ses coordonnées dans ses propres mentions légales), récépissé de déclaration à l'APDP
+- `privacy.html` : pays des serveurs et autorisation de transfert de l'APDP le cas échéant,
+  durée de conservation des annonces retirées et des messages
+
+Déclaration à l'APDP (Autorité de protection des données à caractère personnel, loi
+n° 2013-015 du 21 mai 2013) : formalité de l'éditeur avant l'ouverture au public. Faire relire
+les trois pages par un juriste au Mali. La politique décrit ce que fait le code : la mettre à
+jour à chaque nouvelle donnée collectée ou nouveau prestataire.
 
 ## Incidents courants
 

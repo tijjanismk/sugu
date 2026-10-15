@@ -16,4 +16,7 @@
       {% element button tags="prominent,signup" type="submit" %}Créer mon compte{% endelement %}
     {% endslot %}
   {% endelement %}
+  {# Information avant la collecte (ticket #17). #}
+  {% url "core:privacy" as privacy_url %}
+  {% element p %}Vos données : <a href="{{ privacy_url }}">ce que Sugu enregistre, qui le voit, et vos droits</a>.{% endelement %}
 {% endblock content %}

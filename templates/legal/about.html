@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}À propos de Sugu{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  <article class="sg-prose">
+    <h1>À propos de Sugu</h1>
+    <p class="sg-prose__updated">Le marché du quartier, dans la poche.</p>
+
+    <p>Sugu, ce sont des petites annonces gratuites pour vendre et acheter près de chez vous, au Mali : téléphones, meubles, vêtements, motos, tout ce qui a encore de la valeur pour quelqu'un.</p>
+
+    <h2>Comment ça marche</h2>
+    <ol>
+      <li><a href="{% url 'listings:create' %}">Déposez une annonce</a> : une photo, un prix, quelques mots. C'est gratuit.</li>
+      <li>Les acheteurs vous écrivent depuis l'annonce, par la messagerie de Sugu, ou vous appellent si vous avez indiqué votre numéro.</li>
+      <li>Vous vous retrouvez pour voir l'objet, et vous payez en main propre.</li>
+    </ol>
+
+    <h2>Acheter et vendre en sécurité</h2>
+    <ul>
+      <li>Rencontrez-vous dans un lieu public, de jour.</li>
+      <li>Voyez et essayez l'objet avant de payer.</li>
+      <li>Ne payez jamais d'avance, même par mobile money, un objet que vous n'avez pas vu.</li>
+      <li>Ne communiquez jamais un code reçu par SMS : personne n'en a besoin pour vous payer.</li>
+      <li>Un prix bien trop bas cache souvent une arnaque.</li>
+    </ul>
+
+    <h2>Léger, et sans pisteur</h2>
+    <p>Sugu est fait pour les téléphones d'entrée de gamme et les connexions lentes : des pages légères, des photos compressées, et une application à installer depuis le navigateur. Pas de publicité, pas de mesure d'audience : <a href="{% url 'core:privacy' %}">ce que nous faisons de vos données</a>.</p>
+
+    <h2>Nous écrire</h2>
+    <p>Une question, une idée, une annonce à signaler : nos coordonnées sont dans les <a href="{% url 'core:legal_notice' %}#contact">mentions légales</a>.</p>
+  </article>
+{% endblock %}

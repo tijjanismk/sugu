@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 
 from . import views
 
@@ -14,4 +15,20 @@ urlpatterns = [
     path("hors-ligne/", views.offline, name="offline"),
     path("favicon.ico", views.favicon, name="favicon"),
     path("robots.txt", views.robots_txt, name="robots"),
+    # Pages légales et « À propos » (ticket #17), liées dans le pied de page.
+    path(
+        "a-propos/",
+        TemplateView.as_view(template_name="legal/about.html", extra_context=views.ABOUT),
+        name="about",
+    ),
+    path(
+        "mentions-legales/",
+        TemplateView.as_view(template_name="legal/legal_notice.html", extra_context=views.LEGAL),
+        name="legal_notice",
+    ),
+    path(
+        "confidentialite/",
+        TemplateView.as_view(template_name="legal/privacy.html", extra_context=views.PRIVACY),
+        name="privacy",
+    ),
 ]

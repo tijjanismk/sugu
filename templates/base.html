@@ -44,6 +44,7 @@
   <main id="main" class="{% block main_class %}mx-auto max-w-page{% endblock %}">
     {% include "components/messages.html" %}
     {% block content %}{% endblock %}
+    {% block footer %}{% include "components/footer.html" %}{% endblock %}
   </main>
   {% block bottomnav %}{% include "components/bottom_nav.html" %}{% endblock %}
   <script src="{% static 'js/htmx.min.js' %}" defer></script>

@@ -178,9 +178,16 @@ Par ordre de probabilité pour un site d'annonces :
 
 ### Surveillance et reprise
 
-- Sentry pour les erreurs, UptimeRobot pour la disponibilité (ticket #17).
-- Sauvegarde quotidienne de la base vers R2, restauration testée une fois par
-  trimestre (`docs/runbook.md`).
+- Sentry pour les erreurs, UptimeRobot pour la disponibilité (ticket #17). Sentry ne reçoit
+  aucune donnée personnelle : ni utilisateur, ni IP, ni cookies, ni corps des requêtes, ni
+  variables locales, et les jetons des liens (confirmation d'email, mot de passe oublié, retour
+  de Google) sont effacés des adresses avant l'envoi (`apps/core/sentry.py`). Rien côté
+  navigateur : la CSP ne change pas.
+- Sauvegarde quotidienne de la base (`scripts/backup.sh`) : copie de 7 jours sur le serveur
+  (dossier lisible par root seul, exclu de git et de l'image) et bucket R2 privé, avec un jeton
+  limité à ce bucket et distinct de celui des photos. Le serveur peut écrire mais n'efface rien
+  dans le bucket (règles de cycle de vie : 30 jours, un an pour les mensuelles). Restauration
+  testée une fois par trimestre (`docs/runbook.md`) ; elle garde la base remplacée de côté.
 - Les journaux ne contiennent jamais de mot de passe, de jeton ni de numéro de
   téléphone complet. Pas de journal d'accès Gunicorn ni Caddy : les adresses de
   confirmation d'email et de mot de passe oublié contiennent des jetons.
@@ -197,7 +204,12 @@ Par ordre de probabilité pour un site d'annonces :
   « Compte supprimé », email, nom, téléphone et ville effacés, favoris et adresses email
   supprimés, compte désactivé et sessions invalidées ; plus personne ne peut lui écrire.
   Les photos des annonces retirées restent sur le disque (noms non devinables) ; leur
-  effacement après un délai est à décider avec les mentions légales (ticket #17).
+  effacement après un délai est à décider par l'éditeur : la durée est à compléter dans la
+  politique de confidentialité (`templates/legal/privacy.html`, ticket #17).
+- Pages légales (ticket #17) : mentions légales, politique de confidentialité (loi malienne
+  n° 2013-015, APDP) et « À propos », liées dans le pied de page et depuis l'inscription. La
+  politique décrit ce que fait le code : la mettre à jour avec chaque nouvelle donnée ou
+  nouveau prestataire. `check --deploy` signale les informations encore à compléter.
 
 ### Revue
 
@@ -216,5 +228,6 @@ Par ordre de probabilité pour un site d'annonces :
    redéployer.
 3. Comprendre l'étendue dans les journaux ; restaurer une sauvegarde si des données
    ont été altérées.
-4. Prévenir les utilisateurs concernés, honnêtement et vite.
+4. Prévenir les utilisateurs concernés, honnêtement et vite, et l'APDP si des données
+   personnelles ont fuité (engagement de la politique de confidentialité).
 5. Écrire un post-mortem dans `docs/` : ce qui s'est passé, pourquoi, ce qui change.

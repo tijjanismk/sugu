@@ -171,6 +171,15 @@ VERIFIED_EMAIL_REQUIRED = env.bool("VERIFIED_EMAIL_REQUIRED", default=True)
 # Référencement : balise de vérification de Google Search Console (2026-10-15).
 GOOGLE_SITE_VERIFICATION = env("GOOGLE_SITE_VERIFICATION", default="")
 
+# Sauvegardes de la base (ticket #17, apps/core/backups.py) : bucket privé et jeton à part,
+# distincts de ceux des photos.
+BACKUP_STORAGE = {
+    "bucket": env("BACKUP_BUCKET", default="sugu-backups"),
+    "endpoint_url": env("BACKUP_S3_ENDPOINT_URL", default=""),
+    "access_key": env("BACKUP_ACCESS_KEY_ID", default=""),
+    "secret_key": env("BACKUP_SECRET_ACCESS_KEY", default=""),
+}
+
 # Admin : adresse secrète en production (ADMIN_URL, ticket #15) ; /admin/ en développement.
 ADMIN_URL = env("ADMIN_URL", default="admin/")
 

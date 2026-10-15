@@ -16,6 +16,7 @@ dependencies = [
   "pillow>=12.3",
   "gunicorn>=26.2",
   "argon2-cffi>=25.1",
+  "sentry-sdk[django]>=2.40",
 ]
 
 [dependency-groups]
