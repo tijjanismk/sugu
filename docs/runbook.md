@@ -67,6 +67,41 @@ Cloudflare qui ne s'appliquait pas (ordre des directives Caddy).
     consentement publié ; puis `GOOGLE_CLIENT_ID` et `GOOGLE_CLIENT_SECRET` dans `.env`. Sans
     ces deux variables, le bouton « Continuer avec Google » n'apparaît pas.
 
+## Serveur partagé (KVM 2 Hostinger, avec GardienTV)
+
+Mise en ligne de test décidée le 2026-10-15 : Sugu sur le VPS qui héberge déjà GardienTV,
+à l'adresse `https://sugu.gardientv.tech`, en attendant son propre serveur et `sugu.ml`.
+
+- Le Caddy de l'hôte (systemd, `/etc/caddy/Caddyfile`) tient 80/443 et le HTTPS pour tous les
+  sites ; Sugu tourne dans `/opt/sugu` (projet Docker `sugu`) et son Caddy n'écoute que sur
+  `127.0.0.1:8081` (`compose.serveur-partage.yml`). GardienTV n'est pas touché.
+- Pas de Cloudflare : le Caddy de l'hôte écrase `CF-Connecting-IP` avec l'IP du visiteur, que
+  Django utilise pour les limites de débit. Photos sur le disque du serveur (volume `media`).
+- Emails capturés par Mailpit, pas livrés : `ssh -L 8025:127.0.0.1:8025 root@45.9.188.18`
+  puis http://localhost:8025. Brevo plus tard : changer `EMAIL_URL` dans `/opt/sugu/.env`.
+- DNS : enregistrement A `sugu` → `45.9.188.18` dans la zone de gardientv.tech.
+
+Bloc ajouté au Caddyfile de l'hôte (sauvegarde du fichier, `caddy validate`, puis
+`systemctl reload caddy`) :
+
+```
+sugu.gardientv.tech {
+	reverse_proxy 127.0.0.1:8081 {
+		header_up CF-Connecting-IP {remote_host}
+	}
+}
+```
+
+Commandes (dans `/opt/sugu`) :
+
+```bash
+git pull
+docker compose -p sugu -f compose.prod.yml -f compose.serveur-partage.yml up -d --build
+docker compose -p sugu -f compose.prod.yml -f compose.serveur-partage.yml exec web python manage.py createsuperuser
+```
+
+L'adresse de l'admin est dans `/opt/sugu/.env` (`ADMIN_URL`).
+
 ## Déploiement d'une nouvelle version
 
 ```bash

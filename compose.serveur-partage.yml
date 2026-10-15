@@ -1,0 +1,19 @@
+# Serveur partagé (ticket #15) : Sugu à côté d'autres sites sur le même VPS (KVM 2 Hostinger,
+# avec GardienTV). Le Caddy de l'hôte tient 80/443 et le HTTPS, et transmet le domaine de Sugu
+# au Caddy de Sugu, en HTTP sur 127.0.0.1:8081 (bloc à ajouter : docs/runbook.md). Pas de
+# Cloudflare devant : le Caddy de l'hôte fournit l'IP du visiteur dans CF-Connecting-IP.
+#   docker compose -p sugu -f compose.prod.yml -f compose.serveur-partage.yml up -d --build
+services:
+  caddy:
+    environment:
+      SITE_ADDRESS: ":80"
+      # Seul le Caddy de l'hôte peut joindre ce port (127.0.0.1), à travers le réseau Docker.
+      EDGE_RANGES: private_ranges
+    ports: !override ["127.0.0.1:8081:80"]
+
+  # Emails capturés sur le serveur, pas livrés, en attendant Brevo. Lecture par tunnel SSH :
+  # ssh -L 8025:127.0.0.1:8025 root@<serveur> puis http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.27
+    restart: unless-stopped
+    ports: ["127.0.0.1:8025:8025"]
