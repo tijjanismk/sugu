@@ -93,6 +93,10 @@ Mise en ligne de test décidée le 2026-10-15 : Sugu sur le VPS qui héberge dé
 - Emails capturés par Mailpit, pas livrés : `ssh -L 8025:127.0.0.1:8025 root@45.9.188.18`
   puis http://localhost:8025. Brevo plus tard : changer `EMAIL_URL` dans `/opt/sugu/.env`.
 - DNS : enregistrement A `sugu` → `45.9.188.18` dans la zone de gardientv.tech.
+- Sauvegardes vers R2 (bucket privé `sugu-backups`) et Sentry (organisation en région EU)
+  branchés le 2026-10-15 : première sauvegarde envoyée, relue depuis le bucket, identique à la
+  copie du serveur. Après toute modification de `/opt/sugu/.env` : `up -d web` (un `restart`
+  ne relit pas le fichier).
 
 Bloc ajouté au Caddyfile de l'hôte (sauvegarde du fichier, `caddy validate`, puis
 `systemctl reload caddy`) :
@@ -181,6 +185,7 @@ root seul, jamais dans git ni dans l'image) et l'envoie sur le bucket de sauvega
 - Lister ce qu'il y a dans le bucket :
   `docker compose -f compose.prod.yml exec web python manage.py sauvegarde_lister`
 - Photos sur R2 : activer le versioning du bucket des photos
+- Bucket R2 en service sur le serveur de test depuis le 2026-10-15 (envoi et relecture vérifiés)
 - Restauration testée : le 2026-10-15 à la répétition générale (bucket S3 local), à refaire
   une fois par trimestre et noter la date ici
 
@@ -208,7 +213,8 @@ l'autre sens (`ALTER DATABASE … RENAME TO …` dans `psql -U postgres`), redé
   `/sante/` interroge aussi la base : une base arrêtée déclenche l'alerte
 - Erreurs : Sentry (offre gratuite « Developer », compte à créer par l'éditeur ; choisir la
   région de données **EU** à la création de l'organisation). Projet « Django », puis
-  `SENTRY_DSN=…` dans `.env` et redémarrage de `web`. Rien n'est envoyé sans DSN. Aucune
+  `SENTRY_DSN=…` dans `.env` et `up -d web`. Dans Sentry, « Settings », « Security & Privacy » :
+  cocher « Prevent Storing of IP Addresses ». Rien n'est envoyé sans DSN. Aucune
   donnée personnelle ne part (utilisateur, IP, cookies, corps des requêtes, variables locales,
   jetons des liens : `apps/core/sentry.py`). Vérifier l'envoi avec
   `docker compose -f compose.prod.yml exec web python -c "import django, sentry_sdk; django.setup(); sentry_sdk.capture_message('Essai Sugu'); sentry_sdk.flush()"`
