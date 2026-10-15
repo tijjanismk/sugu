@@ -1,40 +1,76 @@
+# Production (ticket #15, docs/runbook.md). Variables : fichier ENV_FILE (.env par défaut).
 services:
   web:
     build: .
-    env_file: .env
+    env_file: ${ENV_FILE:-.env}
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     expose: ["8000"]
+    volumes:
+      # Photos sur le disque tant que R2 n'est pas configuré (servies par Caddy sous /media/).
+      - media:/app/media
+    healthcheck:
+      # /sante/ comme si la requête venait de Caddy en HTTPS (sinon redirection vers HTTPS).
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import os, urllib.request as u;
+          host = os.environ['ALLOWED_HOSTS'].split(',')[0];
+          u.urlopen(u.Request('http://127.0.0.1:8000/sante/',
+          headers={'Host': host, 'X-Forwarded-Proto': 'https'}), timeout=3)
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
 
   db:
     image: postgres:18
     restart: unless-stopped
     environment:
       POSTGRES_DB: sugu
-      POSTGRES_USER: sugu
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Superutilisateur réservé à l'administration ; l'application utilise le rôle « sugu »
+      # (non superutilisateur), créé au premier démarrage par docker/postgres/init.
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manquant}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?APP_DB_PASSWORD manquant}
     volumes:
       # PostgreSQL 18+ : le volume se monte sur /var/lib/postgresql
       # (et non plus /var/lib/postgresql/data comme pour les versions <= 17)
       - pgdata:/var/lib/postgresql
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sugu"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sugu"]
       interval: 10s
       retries: 5
+    # Aucun port publié : la base n'est joignable que depuis le réseau Docker.
 
   caddy:
     image: caddy:2.11
     restart: unless-stopped
     ports: ["80:80", "443:443"]
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-sugu.ml, www.sugu.ml}
+      # Plages IP de Cloudflare (https://www.cloudflare.com/ips/, relevées le 2026-10-15) :
+      # seules autorisées à joindre le serveur, voir Caddyfile.
+      EDGE_RANGES: >-
+        ${EDGE_RANGES:-173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22
+        141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22
+        198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22
+        2400:cb00::/32 2606:4700::/32 2803:f800::/32 2405:b500::/32 2405:8100::/32
+        2a06:98c0::/29 2c0f:f248::/32}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - media:/srv/media:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on: [web]
 
 volumes:
   pgdata:
+  media:
   caddy_data:
   caddy_config:

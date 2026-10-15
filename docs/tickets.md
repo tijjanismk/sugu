@@ -224,6 +224,13 @@ Critères d'acceptation :
 - Un dépôt d'annonce avec photo fonctionne en prod
 - Tag `v0.1.0`
 
+Avancement (2026-10-15) : partie locale faite (décision du propriétaire : « local d'abord ») —
+image et pile durcies, CSP, admin secrète, `check --deploy` testé, répétition générale de
+la pile de production sur le poste (`compose.repetition.yml`) : HTTPS, coupure hors
+Cloudflare, rôle PostgreSQL sans privilège, dépôt avec photo et emails vérifiés. Emails par
+Brevo. Restent : choix du serveur et du domaine, Cloudflare, R2, Brevo en vrai, premier
+déploiement, tag `v0.1.0`.
+
 ## #16 — Tests de bout en bout ✅ (fait le 2026-10-14, sur `main`)
 
 Les trois parcours Playwright et le job `e2e` dans la CI.

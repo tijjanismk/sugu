@@ -1,4 +1,40 @@
-sugu.ml, www.sugu.ml {
-    encode zstd gzip
-    reverse_proxy web:8000
+# Sugu derrière Cloudflare (ticket #15, docs/security.md, « Débit et robots »).
+{
+	admin off
+	servers {
+		# L'IP du visiteur est celle que Cloudflare transmet, et seulement s'il s'agit de lui.
+		trusted_proxies static {$EDGE_RANGES}
+		client_ip_headers CF-Connecting-IP
+	}
+}
+
+{$SITE_ADDRESS} {
+	@direct not remote_ip {$EDGE_RANGES}
+
+	# « route » garde l'ordre écrit : sans lui, Caddy range « abort » après « handle » et la
+	# coupure ne s'appliquerait jamais (vu à la répétition locale).
+	route {
+		# Docker ouvre 80 et 443 sans passer par ufw : on coupe ici toute connexion qui ne vient
+		# pas de Cloudflare. Sinon on pourrait forger CF-Connecting-IP et échapper aux limites de
+		# débit, ou contourner la protection de Cloudflare.
+		abort @direct
+
+		encode zstd gzip
+		header -Server
+
+		# Photos sur le disque quand R2 n'est pas configuré.
+		handle_path /media/* {
+			root * /srv/media
+			header X-Content-Type-Options nosniff
+			file_server
+		}
+
+		handle {
+			reverse_proxy web:8000 {
+				# Django lit l'IP du visiteur dans cet en-tête : on le réécrit avec la valeur
+				# vérifiée par Caddy, jamais celle envoyée par le client.
+				header_up CF-Connecting-IP {client_ip}
+			}
+		}
+	}
 }

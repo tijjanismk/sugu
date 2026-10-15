@@ -66,8 +66,10 @@ Par ordre de probabilité pour un site d'annonces :
   3 inscriptions par IP par heure. Mis en œuvre par la limitation intégrée d'allauth
   (`ACCOUNT_RATE_LIMITS`), compteurs dans le cache en base (`django_cache`). En production,
   l'IP du visiteur est lue dans `CF-Connecting-IP` (`ALLAUTH_TRUSTED_CLIENT_IP_HEADER`) :
-  cet en-tête n'est fiable que si le serveur refuse le trafic web qui ne vient pas de
-  Cloudflare (ticket #15). Point à surveiller : les opérateurs mobiles partagent souvent une
+  cet en-tête n'est fiable que parce que Caddy coupe toute connexion qui ne vient pas de
+  Cloudflare et réécrit l'en-tête avec l'IP qu'il a vérifiée (`Caddyfile`, ticket #15 ;
+  Docker ouvre 80 et 443 sans passer par `ufw`, le pare-feu seul ne suffit pas). Coupure
+  vérifiée à la répétition locale. Point à surveiller : les opérateurs mobiles partagent souvent une
   même IP entre de nombreux abonnés ; relever la limite par IP si des inscriptions
   légitimes sont bloquées.
 - Réinitialisation par email avec lien valable une heure (`PASSWORD_RESET_TIMEOUT`), sans
@@ -119,10 +121,16 @@ Par ordre de probabilité pour un site d'annonces :
 - HTTPS partout : Caddy termine le TLS, Cloudflare en mode « Full (strict) ».
 - `prod.py` : `SECURE_SSL_REDIRECT`, cookies `Secure`, HSTS, `nosniff`, politique
   de référent stricte, protection contre l'inclusion dans un cadre.
-- Une Content-Security-Policy stricte reste à ajouter (ticket #15 ; Django 6 l'intègre) :
-  le service worker est en place (ticket #14). Déjà prêt : aucun `hx-on` ni filtre htmx
-  (`static/js/conversation.js`) ; restent le script de thème en ligne de `base.html` et de
-  la page hors-ligne (nonce ou empreinte) et la balise `<style>` d'indicateurs de htmx.
+- Content-Security-Policy stricte (ticket #15, `SECURE_CSP` de Django 6, active dans tous
+  les environnements) : nos fichiers seulement, pas de `unsafe-inline` ni `unsafe-eval` ;
+  les deux scripts de thème en ligne portent un nonce ; htmx sans styles injectés ni eval
+  (`htmx-config`) ; images du domaine R2 et `blob:` (aperçus des photos) ;
+  `form-action` ouvert à accounts.google.com pour la connexion Google ; `frame-ancestors
+  'none'`. Testé (`apps/core/tests/test_deploy.py`).
+- Admin à une adresse secrète (`ADMIN_URL`, obligatoire en production) ; une adresse
+  courte ou devinable fait échouer `check --deploy` (`apps/core/checks.py`, sugu.W001).
+- `check --deploy --fail-level WARNING` sans avertissement, testé en CI avec les réglages
+  de production ; `EMAIL_URL` obligatoire (Django 6.1 refuse l'email console en production).
 - Service worker (ticket #14) : il ne met jamais une page en cache (messages, téléphone,
   jeton CSRF) ; seuls la charte publique et la page hors-ligne, identique pour tous et sans
   cookie, sont précachés. Servi à la racine, `Cache-Control: no-cache`.
@@ -160,7 +168,11 @@ Par ordre de probabilité pour un site d'annonces :
   `ufw` n'ouvre que 22, 80 et 443, mises à jour de sécurité automatiques.
 - L'application tourne en utilisateur non privilégié dans son conteneur (`USER app`
   du Dockerfile) ; la base n'est pas exposée hors du réseau Docker.
-- L'utilisateur PostgreSQL de l'application n'est pas superutilisateur.
+- L'utilisateur PostgreSQL de l'application n'est pas superutilisateur : rôle « sugu »,
+  propriétaire de sa base, créé au premier démarrage par `docker/postgres/init` ; le
+  superutilisateur « postgres » ne sert qu'à l'administration (vérifié à la répétition).
+- L'image ne contient ni `.env` ni environnement local (`.dockerignore`) ; le binaire
+  Tailwind téléchargé au build est vérifié par son empreinte sha256.
 
 ### Surveillance et reprise
 
@@ -168,7 +180,8 @@ Par ordre de probabilité pour un site d'annonces :
 - Sauvegarde quotidienne de la base vers R2, restauration testée une fois par
   trimestre (`docs/runbook.md`).
 - Les journaux ne contiennent jamais de mot de passe, de jeton ni de numéro de
-  téléphone complet.
+  téléphone complet. Pas de journal d'accès Gunicorn ni Caddy : les adresses de
+  confirmation d'email et de mot de passe oublié contiennent des jetons.
 
 ### Protection des utilisateurs entre eux
 

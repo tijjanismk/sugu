@@ -4,6 +4,9 @@ from .base import *  # noqa: F403
 from .base import env
 
 DEBUG = False
+# Admin à une adresse impossible à deviner (ticket #15) : obligatoire, vérifiée par
+# `check --deploy` (apps/core/checks.py).
+ADMIN_URL = env("ADMIN_URL")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS]
 
@@ -18,8 +21,9 @@ SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
-# EMAIL_URL=smtp://user:password@host:587 (django-environ) traduit en MAILERS (Django 6.1).
-_email = env.email_url("EMAIL_URL", default="consolemail://")
+# EMAIL_URL=smtp+tls://login:clé@smtp-relay.brevo.com:587 (django-environ) traduit en MAILERS
+# (Django 6.1). Obligatoire : sans email, ni mot de passe oublié ni avertissement de message.
+_email = env.email_url("EMAIL_URL")
 _email_options = {
     "host": _email.get("EMAIL_HOST"),
     "port": _email.get("EMAIL_PORT"),
