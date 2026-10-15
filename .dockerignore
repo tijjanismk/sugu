@@ -1,0 +1,29 @@
+# Ce qui n'entre jamais dans l'image (ticket #15) : secrets, environnements, fichiers générés,
+# données locales, outils et documents inutiles à l'exécution.
+.git
+.github
+.claude
+.env
+.env.*
+.venv
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.ruff_cache
+.coverage
+htmlcov
+test-results
+media
+staticfiles
+static/css/app.css
+tailwindcss
+tailwindcss.exe
+tests
+design
+docs
+compose*.yml
+Caddyfile
+docker
+scripts
+*.md
+!README.md

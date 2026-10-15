@@ -13,21 +13,54 @@ Le staging est un deuxième `docker compose` sur le même VPS (projet
 `sugu-staging`, fichier `.env.staging`). Il coûte 0 € de plus et évite de
 tester en production. À mettre en place après le premier déploiement.
 
+## Répétition générale en local
+
+La vraie pile de production (image, Caddy, PostgreSQL sans superutilisateur) sur le poste,
+sans Cloudflare, R2 ni Brevo (ticket #15). À refaire avant chaque changement du
+`Dockerfile`, de `compose.prod.yml` ou du `Caddyfile`.
+
+1. Créer `.env.repetition` (ignoré par git) avec des valeurs aléatoires : `ENV_FILE`,
+   `DJANGO_SETTINGS_MODULE=config.settings.prod`, `SECRET_KEY`, `ALLOWED_HOSTS=localhost`,
+   `ADMIN_URL`, `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `DATABASE_URL` (rôle `sugu`) et
+   `EMAIL_URL=smtp://mailpit:1025`
+2. Lancer :
+   ```bash
+   docker compose -p sugu-repetition --env-file .env.repetition -f compose.prod.yml -f compose.repetition.yml up -d --build
+   ```
+3. Vérifier : https://localhost:8443 (certificat local de Caddy), `check --deploy` dans le
+   conteneur `web`, `seed --categories-only`, un dépôt d'annonce avec photo, les emails
+   dans Mailpit (http://localhost:8025)
+4. Arrêter : même commande avec `down` (ajouter `-v` pour repartir d'une base vide)
+
+Ce que la répétition du 2026-10-15 a trouvé et corrigé : `collectstatic` lancé avec les
+réglages de développement (pas de manifeste : 500 partout en production), la source
+Tailwind `input.css` qui faisait échouer `collectstatic`, et la coupure du trafic hors
+Cloudflare qui ne s'appliquait pas (ordre des directives Caddy).
+
 ## Premier déploiement
 
 1. VPS Hetzner (CX22, Ubuntu LTS la plus récente proposée, 24.04 ou 26.04). Créer un utilisateur `deploy` avec sudo,
    désactiver la connexion root par mot de passe, activer `ufw` (22, 80, 443)
 2. Installer Docker : https://docs.docker.com/engine/install/ubuntu/
 3. `git clone https://github.com/<toi>/sugu.git && cd sugu`
-4. `cp .env.example .env` et renseigner toutes les valeurs
+4. `cp .env.example .env` et renseigner toutes les valeurs (`ADMIN_URL` aléatoire,
+   mots de passe de la base aléatoires)
 5. DNS Cloudflare : A record `sugu.ml` → IP du VPS, proxy activé (orange) ;
-   SSL/TLS en mode « Full (strict) »
-6. `docker compose -f compose.prod.yml up -d --build`
-7. `docker compose -f compose.prod.yml exec web /opt/venv/bin/python manage.py migrate`
-8. `... manage.py createsuperuser` puis `... manage.py seed --categories-only`
-9. Vérifier https://sugu.ml, l'admin, et le dépôt d'une annonce avec photo
-   (test R2)
-10. Connexion avec Google (ADR 0002), facultative : dans la console Google Cloud, créer un
+   SSL/TLS en mode « Full (strict) ». Le serveur refuse tout ce qui ne passe pas par
+   Cloudflare (`Caddyfile`) : sans le proxy orange, le site ne répond pas. Plages IP de
+   Cloudflare dans `compose.prod.yml` (`EDGE_RANGES`), à comparer de temps en temps avec
+   https://www.cloudflare.com/ips/
+6. R2 : bucket `sugu-prod`, jeton d'API limité à ce bucket, domaine public
+   `photos.sugu.ml` ; renseigner les variables `AWS_*` de `.env`
+7. Brevo : compte, domaine `sugu.ml` authentifié (enregistrements DKIM et SPF ajoutés chez
+   Cloudflare), clé SMTP ; `EMAIL_URL` dans `.env`
+8. `docker compose -f compose.prod.yml up -d --build` (les migrations passent au démarrage
+   du conteneur `web`)
+9. `docker compose -f compose.prod.yml exec web python manage.py createsuperuser` puis
+   `... seed --categories-only`, et `... check --deploy`
+10. Vérifier https://sugu.ml, l'admin à son adresse secrète, un dépôt d'annonce avec photo
+    (photo servie par `photos.sugu.ml`) et un email de mot de passe oublié
+11. Connexion avec Google (ADR 0002), facultative : dans la console Google Cloud, créer un
     identifiant OAuth « Application Web », adresse de retour autorisée
     `https://sugu.ml/comptes/google/login/callback/` (et
     `http://localhost:8000/comptes/google/login/callback/` pour le développement), écran de
@@ -39,8 +72,9 @@ tester en production. À mettre en place après le premier déploiement.
 ```bash
 git fetch --tags && git checkout vX.Y.Z
 docker compose -f compose.prod.yml up -d --build web
-docker compose -f compose.prod.yml exec web /opt/venv/bin/python manage.py migrate
 ```
+
+Les migrations passent au démarrage du conteneur `web`.
 
 Interruption : quelques secondes pendant le redémarrage du conteneur `web`.
 Acceptable à ce stade ; un déploiement sans coupure sera un sujet de V2.

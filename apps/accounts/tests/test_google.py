@@ -225,3 +225,10 @@ def test_suppression_delie_le_compte_google(client, google):
     client.logout()
     _google_answers(client)  # même compte Google : un nouveau compte, pas l'ancien anonymisé
     assert _logged_in_user(client) != user
+
+
+@pytest.mark.parametrize("method", ["get", "post"])
+def test_sans_identifiants_404_et_non_500(client, method):
+    response = getattr(client, method)(reverse("google_login"))
+
+    assert response.status_code == 404

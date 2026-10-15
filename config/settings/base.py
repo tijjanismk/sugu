@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import environ
+from django.utils.csp import CSP
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -58,6 +60,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
+                "django.template.context_processors.csp",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.core.context_processors.navigation",
@@ -137,6 +140,30 @@ ACCOUNT_RATE_LIMITS = {
     # Suppression de compte (ticket #13) : le mot de passe ne se devine pas par essais.
     "account_delete": "5/h/user",
 }
+
+# Politique de sécurité du contenu (ticket #15, docs/security.md) : nos fichiers seulement.
+# Les deux scripts en ligne (thème, avant le CSS) portent un nonce ; aucun style en ligne
+# (htmx n'injecte pas ses styles d'indicateur, voir base.html). Photos : domaine R2 en
+# production ; blob: pour les aperçus du sélecteur de photos. Le formulaire « Continuer avec
+# Google » redirige vers accounts.google.com, que form-action doit autoriser.
+PHOTOS_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default="")
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    "script-src": [CSP.SELF, CSP.NONCE],
+    "style-src": [CSP.SELF],
+    "img-src": [CSP.SELF, "blob:"] + ([f"https://{PHOTOS_DOMAIN}"] if PHOTOS_DOMAIN else []),
+    "font-src": [CSP.SELF],
+    "connect-src": [CSP.SELF],
+    "manifest-src": [CSP.SELF],
+    "worker-src": [CSP.SELF],
+    "form-action": [CSP.SELF, "https://accounts.google.com"],
+    "frame-ancestors": [CSP.NONE],
+    "base-uri": [CSP.SELF],
+    "object-src": [CSP.NONE],
+}
+
+# Admin : adresse secrète en production (ADMIN_URL, ticket #15) ; /admin/ en développement.
+ADMIN_URL = env("ADMIN_URL", default="admin/")
 
 # Connexion avec Google (ticket #3, ADR 0002). Sans identifiants, le bouton est masqué.
 GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID", default="")

@@ -65,8 +65,9 @@ def service_worker(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def offline(request: HttpRequest) -> HttpResponse:
-    """Page hors-ligne, identique pour tous (voir templates/core/offline.html)."""
-    return HttpResponse(render_to_string("core/offline.html"))
+    """Page hors-ligne, identique pour tous (voir templates/core/offline.html). Rendue avec la
+    requête pour le nonce CSP de son script ; le gabarit n'utilise rien d'autre."""
+    return render(request, "core/offline.html")
 
 
 @require_GET

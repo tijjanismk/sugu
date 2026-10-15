@@ -1,0 +1,15 @@
+# Répétition générale de la mise en production sur le poste (ticket #15, docs/runbook.md) :
+# la vraie pile (image, Caddy, PostgreSQL sans superutilisateur) sans Cloudflare, R2 ni Brevo.
+#   docker compose -p sugu-repetition --env-file .env.repetition \
+#     -f compose.prod.yml -f compose.repetition.yml up -d --build
+# Site : https://localhost:8443 (certificat local de Caddy) ; emails : http://localhost:8025
+services:
+  caddy:
+    environment:
+      SITE_ADDRESS: localhost
+      EDGE_RANGES: private_ranges  # le poste, à travers le réseau Docker
+    ports: !override ["8443:443"]
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports: ["8025:8025"]

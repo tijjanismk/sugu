@@ -2,7 +2,8 @@
 {% comment %}
   Page hors-ligne (ticket #14), mise en cache par le service worker et affichée quand une page
   ne se charge pas faute de réseau. Elle est la même pour tous : ni utilisateur, ni jeton CSRF,
-  ni messages. Elle n'hérite donc pas de base.html.
+  ni messages. Elle n'hérite donc pas de base.html. Le nonce de son script (CSP) est rejoué
+  avec l'en-tête de la réponse mise en cache : ils restent accordés.
 {% endcomment %}
 <html lang="fr" data-theme="light">
 <head>
@@ -10,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Pas de connexion · Sugu</title>
   <meta name="robots" content="noindex">
-  <script>(function(){var t;try{t=localStorage.getItem("sugu-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
+  <script nonce="{{ csp_nonce }}">(function(){var t;try{t=localStorage.getItem("sugu-theme")}catch(e){}if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)})();</script>
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>

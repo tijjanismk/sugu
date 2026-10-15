@@ -83,8 +83,10 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 - Ajout au #12 : email de nouveau message (`apps/messaging/notifications.py`), au premier
   non lu d'une conversation, pas pendant un échange en direct, sans le texte du message,
   désactivable au profil ; envoi dans la requête (pas de file en V1)
-- Tâche en cours : aucune ; prochaine : #15 Mise en production (serveur, DNS, R2 :
-  décisions et accès du propriétaire nécessaires)
+- Tâche en cours : #15 Mise en production — partie locale faite le 2026-10-15 (pile
+  durcie, CSP, admin secrète, répétition `compose.repetition.yml` réussie) ; restent le
+  serveur et le domaine (« local d'abord, on verra après »), Cloudflare, R2, Brevo
+  (choisi pour les emails), premier déploiement, tag `v0.1.0`
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
