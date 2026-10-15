@@ -300,6 +300,11 @@ Précisions du 2026-10-15 :
   (`sugu.W003`). Pied de page sur les pages de navigation, lien depuis l'inscription
 - Comptes à créer par le propriétaire : Cloudflare R2, Sentry, UptimeRobot
 
+Avancement (2026-10-15, serveur de test) : bucket R2 `sugu-backups` en service, première
+sauvegarde envoyée et relue depuis le bucket (identique à la copie du serveur, `sugu.W004`
+disparu) ; Sentry branché (région EU), message d'essai envoyé. Restent : moniteur UptimeRobot,
+contenu des pages légales (`sugu.W003`), déclaration APDP.
+
 Critères d'acceptation :
 - Une sauvegarde apparaît dans R2
 - Une restauration a été testée une fois

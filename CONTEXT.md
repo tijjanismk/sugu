@@ -98,8 +98,9 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   par Mailpit en attendant Brevo ; tag `v0.1.0` après le dépôt d'essai du propriétaire
 - Tâche en cours : #17 Exploitation et conformité — sauvegardes (`scripts/backup.sh`,
   `scripts/restore.sh`, copie sur le serveur + bucket R2), Sentry sans donnée personnelle,
-  pages légales liées dans le pied de page. Côté propriétaire : comptes Cloudflare R2,
-  Sentry et UptimeRobot, identité de l'éditeur et déclaration APDP (runbook)
+  pages légales liées dans le pied de page. R2 et Sentry branchés sur le serveur de test le
+  2026-10-15 (première sauvegarde dans le bucket). Côté propriétaire : moniteur UptimeRobot,
+  identité de l'éditeur et déclaration APDP (runbook)
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
