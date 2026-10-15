@@ -25,6 +25,9 @@ def _check_deploy(**overrides):
         "DATABASE_URL": "postgres://sugu:secret@db:5432/sugu",
         "EMAIL_URL": "smtp+tls://login:cle@smtp-relay.brevo.com:587",
         "ADMIN_URL": secrets.token_urlsafe(16) + "/",
+        "BACKUP_S3_ENDPOINT_URL": "https://compte.r2.cloudflarestorage.com",
+        "BACKUP_ACCESS_KEY_ID": "cle",
+        "BACKUP_SECRET_ACCESS_KEY": "secret",
         "PYTHONUTF8": "1",  # messages accentués lisibles sous Windows aussi
         **overrides,
     }
@@ -42,7 +45,11 @@ def _check_deploy(**overrides):
 def test_check_deploy_sans_avertissement():
     result = _check_deploy()
 
-    assert result.returncode == 0, result.stdout + result.stderr
+    # Seul avertissement admis : les pages légales que l'éditeur doit compléter (sugu.W003,
+    # ticket #17). Il disparaît quand elles le sont.
+    output = result.stdout + result.stderr
+    found = set(re.findall(r"\(([\w.]+\.[WE]\d+)\)", output))
+    assert result.returncode == 0 or found == {"sugu.W003"}, output
 
 
 def test_check_deploy_refuse_ladmin_a_ladresse_par_defaut():

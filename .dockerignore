@@ -14,6 +14,7 @@
 htmlcov
 test-results
 media
+sauvegardes
 staticfiles
 static/css/app.css
 tailwindcss

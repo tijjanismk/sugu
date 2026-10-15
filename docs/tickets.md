@@ -285,6 +285,21 @@ Critères d'acceptation :
 Script de sauvegarde + cron, UptimeRobot, Sentry, mentions légales, politique
 de confidentialité, page « à propos ».
 
+Précisions du 2026-10-15 :
+- Sauvegarde quotidienne (`scripts/backup.sh`) : `pg_dump` au format custom, copie de 7 jours
+  sur le serveur, envoi sur un bucket R2 privé et distinct de celui des photos
+  (`manage.py sauvegarde_envoyer`) ; préfixes `quotidien/` (30 jours) et `mensuel/` (un an)
+  avec règles de cycle de vie, le serveur n'efface rien dans le bucket. `check --deploy`
+  signale un bucket non configuré (`sugu.W004`)
+- Restauration (`scripts/restore.sh`) : d'abord dans une base à part, site en ligne, puis
+  échange des bases ; l'ancienne est gardée sous `sugu_avant_<date>`
+- Sentry côté serveur seulement, sans donnée personnelle (ni utilisateur, ni IP, ni corps des
+  requêtes, ni variables locales, jetons des liens effacés) ; région EU
+- Pages légales avec des emplacements « à compléter » : l'éditeur (particulier ou société)
+  n'est pas encore décidé ; loi malienne n° 2013-015 et APDP ; `check --deploy` les signale
+  (`sugu.W003`). Pied de page sur les pages de navigation, lien depuis l'inscription
+- Comptes à créer par le propriétaire : Cloudflare R2, Sentry, UptimeRobot
+
 Critères d'acceptation :
 - Une sauvegarde apparaît dans R2
 - Une restauration a été testée une fois

@@ -1,0 +1,11 @@
+{% comment %}
+  Pied de page (ticket #17) : pages légales, liées depuis toutes les pages de navigation. Les
+  parcours (dépôt, modification, conversation, confirmation) le retirent (bloc « footer » vide).
+{% endcomment %}<footer class="sg-footer">
+  <nav aria-label="Informations sur Sugu">
+    <a href="{% url 'core:about' %}">À propos</a>
+    <a href="{% url 'core:legal_notice' %}">Mentions légales</a>
+    <a href="{% url 'core:privacy' %}">Confidentialité</a>
+  </nav>
+  <p>© {% now "Y" %} Sugu</p>
+</footer>

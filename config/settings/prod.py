@@ -68,3 +68,9 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 # Cloudflare fournit l'IP du visiteur dans CF-Connecting-IP. Ne se fier à cet en-tête que si
 # le serveur n'accepte le trafic web que depuis Cloudflare (ticket #15, docs/security.md).
 ALLAUTH_TRUSTED_CLIENT_IP_HEADER = "CF-Connecting-IP"
+
+# Erreurs vers Sentry (ticket #17), sans donnée personnelle : voir apps/core/sentry.py.
+if env("SENTRY_DSN", default=""):
+    from apps.core import sentry
+
+    sentry.init(env("SENTRY_DSN"), environment=env("SENTRY_ENVIRONMENT", default="production"))

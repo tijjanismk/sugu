@@ -31,6 +31,8 @@ humaine et trace les choix.
 | pillow             | 12.3.0  |
 | gunicorn           | 26.2.0  |
 | argon2-cffi        | 25.1.0  |
+| sentry-sdk[django] | 2.72.0 (2026-10-12 ; ticket #17, erreurs de production, sans donnée personnelle) |
+| boto3              | 1.43.111 (déjà là par django-storages[s3] ; sauvegardes, ticket #17) |
 | pytest             | 9.1.1   |
 | pytest-django      | 4.14.0  |
 | pytest-cov         | 7.1.0   |

@@ -93,17 +93,20 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 - Ajout au #12 : email de nouveau message (`apps/messaging/notifications.py`), au premier
   non lu d'une conversation, pas pendant un échange en direct, sans le texte du message,
   désactivable au profil ; envoi dans la requête (pas de file en V1)
-- Tâche en cours : #15 Mise en production — partie locale faite le 2026-10-15 (pile
-  durcie, CSP, admin secrète, répétition `compose.repetition.yml` réussie) ; restent le
-  serveur et le domaine (« local d'abord, on verra après »), Cloudflare, R2, Brevo
-  (choisi pour les emails), premier déploiement, tag `v0.1.0`
+- #15 Mise en production : en ligne depuis le 2026-10-15 sur le KVM 2 Hostinger, à côté de
+  GardienTV, à https://sugu.gardientv.tech (runbook, « Serveur partagé ») ; emails capturés
+  par Mailpit en attendant Brevo ; tag `v0.1.0` après le dépôt d'essai du propriétaire
+- Tâche en cours : #17 Exploitation et conformité — sauvegardes (`scripts/backup.sh`,
+  `scripts/restore.sh`, copie sur le serveur + bucket R2), Sentry sans donnée personnelle,
+  pages légales liées dans le pied de page. Côté propriétaire : comptes Cloudflare R2,
+  Sentry et UptimeRobot, identité de l'éditeur et déclaration APDP (runbook)
 - Points ouverts : le Dockerfile et compose.prod.yml n'ont pas encore été construits en vrai
   (ticket #15) ; le job `e2e` n'a pas encore tourné sur `main` (ticket #16) ; sur le poste de
   dev, un PostgreSQL Windows occupe déjà le port 5432 (lancer la base Docker sur un autre
   port) ; `EMAIL_URL` obligatoire en production (#15) pour les emails ;
   installation PWA à confirmer sur un vrai téléphone en HTTPS (#15) ; le navigateur intégré
   de Claude refuse les service workers (vérifier dans Chrome) ; ajouts de design des #8 à
-  #14 (dont l'icône d'application) à reporter dans l'artefact de design ; pas de synonymes dans la
+  #17 (dont l'icône d'application, le pied de page et les pages légales) à reporter dans l'artefact de design ; pas de synonymes dans la
   recherche ; photos HEIC refusées sans JavaScript ; idées V2 notées le 2026-10-14 : prix
   anormaux, annonces recopiées par d'autres sites ; revenus : aucun en V1, liste ordonnée des
   sources rangée dans la section V2 de `docs/tickets.md` (mise en avant par mobile money
