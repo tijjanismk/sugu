@@ -8,8 +8,14 @@ pytestmark = pytest.mark.e2e
 
 def test_page_hors_ligne_sans_reseau(page, context, base_url):
     page.goto(base_url)
-    # Le service worker prend la main sur la page dès son activation (clients.claim).
-    page.wait_for_function("navigator.serviceWorker && navigator.serviceWorker.controller")
+    # Le service worker prend la main sur la page dès son activation (clients.claim). Pas de
+    # wait_for_function : il évalue une chaîne dans la page, ce que la CSP interdit (ticket #15).
+    for _ in range(50):
+        if page.evaluate("() => Boolean(navigator.serviceWorker?.controller)"):
+            break
+        page.wait_for_timeout(200)
+    else:
+        pytest.fail("Le service worker n'a pas pris la main sur la page en 10 s.")
 
     context.set_offline(True)
     try:
