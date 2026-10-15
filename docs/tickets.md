@@ -195,7 +195,7 @@ Critères d'acceptation :
 - Téléphone masqué aux visiteurs (test)
 - Suppression de compte anonymise annonces et messages sans les détruire
 
-## #14 — PWA ✅ (fait le 2026-10-14)
+## #14 — PWA ✅ (fait le 2026-10-14, bannière d'installation le 2026-10-15)
 
 `manifest.json`, icônes, service worker cachant les fichiers statiques et une
 page hors-ligne.
@@ -211,6 +211,17 @@ Critères d'acceptation :
   sur `main` ; le navigateur intégré de Claude n'accepte pas les service workers)
 - Audit Lighthouse PWA sans erreur bloquante (cette catégorie a disparu de Lighthouse 12 :
   remplacée par les critères d'installation ci-dessus)
+
+Ajout du 2026-10-15 : **bannière « Installer l'application »** sur l'accueil, seulement dans
+le navigateur (jamais dans l'application installée). Android et Chrome : bouton « Installer »
+qui ouvre la vraie demande d'installation du navigateur, rien si le navigateur ne la propose
+pas. iPhone et Safari (pas de bouton possible) : la marche à suivre (Partager, puis « Sur
+l'écran d'accueil »). « Plus tard » la masque 30 jours (mémorisé dans le téléphone).
+
+Critères ajoutés :
+- La bannière n'apparaît ni dans l'application installée ni si le navigateur ne propose pas
+  l'installation (hors iPhone)
+- « Plus tard » la masque 30 jours
 
 ## #15 — Mise en production
 

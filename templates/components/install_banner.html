@@ -1,0 +1,17 @@
+{% comment %}
+  Bannière « Installer l'application » (ticket #14), sur le modèle de l'Alert info du design.
+  Masquée par défaut (classe hidden) : static/js/install.js l'affiche seulement dans le
+  navigateur, quand l'installation est possible (Android, Chrome) ou sur iPhone (marche à
+  suivre). Jamais dans l'application installée.
+{% endcomment %}<div class="sg-alert sg-alert--info hidden" role="region" aria-label="Installer l'application" data-install-banner>
+  {% include "components/icon.html" with name="smartphone" %}
+  <div>
+    <strong>Sugu sur votre écran d'accueil</strong>
+    <span data-install-text>Ouvrez Sugu comme une application, d'une touche, même avec une petite connexion.</span>
+    <span class="hidden" data-install-ios>Touchez le bouton Partager, puis « Sur l'écran d'accueil ».</span>
+    <span class="mt-2 flex gap-2">
+      <button class="sg-btn sg-btn--primary" type="button" data-install-accept>Installer</button>
+      <button class="sg-btn sg-btn--quiet" type="button" data-install-later>Plus tard</button>
+    </span>
+  </div>
+</div>
