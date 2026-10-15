@@ -6,7 +6,7 @@ La carte annonce montre une photo 4:3, le prix en premier, un titre sur deux lig
 
 - La carte entière est un lien `<a class="sg-card">` vers l'annonce. Le bouton favori est un `<button>` frère, positionné dans le coin, jamais imbriqué dans le lien. Les deux sont dans un conteneur `sg-card-slot` (position relative ; la carte y garde la hauteur de la rangée de la grille).
 - Libellé du bouton : « Ajouter aux favoris : » suivi du titre, pour distinguer les cartes à la lecture d'écran. Pas de cœur sur les annonces de l'utilisateur connecté.
-- `sg-card__media` : `<img>` WebP 400 px, `width="400" height="300"`, `alt` = titre de l'annonce ; sans photo, un `<div>` avec l'icône appareil photo.
+- `sg-card__media` : `<img>` WebP 400 px, `width="400" height="300"`, `alt` = titre de l'annonce ; sans photo, un `<div>` avec l'icône appareil photo. La photo est **entière** (`object-fit: contain`), centrée sur `surface-sunken` : une photo en hauteur ou carrée laisse des bandes sur les côtés, jamais de coupe (retour du 2026-10-15).
 - `sg-card__price` : style `price`, couleur `indigo`, « 45 000 FCFA » ; prix absent : `sg-card__price--open` et « À débattre ».
 - `sg-card__title` : style `small`, deux lignes au plus, coupé par `line-clamp`.
 - `sg-card__meta` : icône épingle + « Quartier, Ville · il y a 2 h », en `ink-muted`.

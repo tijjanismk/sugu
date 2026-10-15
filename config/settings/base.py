@@ -162,6 +162,10 @@ SECURE_CSP = {
     "object-src": [CSP.NONE],
 }
 
+# Email confirmé obligatoire pour déposer et écrire à un vendeur (ticket #3, 2026-10-15,
+# apps/accounts/decorators.py). Suppose des emails réellement livrés (Brevo).
+VERIFIED_EMAIL_REQUIRED = env.bool("VERIFIED_EMAIL_REQUIRED", default=True)
+
 # Admin : adresse secrète en production (ADMIN_URL, ticket #15) ; /admin/ en développement.
 ADMIN_URL = env("ADMIN_URL", default="admin/")
 

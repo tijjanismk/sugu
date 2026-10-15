@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import urlencode
 
+from apps.accounts.decorators import verified_email_required
 from apps.core import ratelimit
 from apps.core.templatetags.sugu_format import fcfa
 
@@ -15,7 +16,7 @@ from .forms import ListingEditForm, ListingForm, PhotoAddForm, SearchForm
 from .models import Category, City, Listing, ListingStatus, Photo
 
 
-@login_required
+@verified_email_required
 def listing_create(request: HttpRequest) -> HttpResponse:
     """Dépôt d'une annonce avec ses photos (ticket #7)."""
     if request.method == "POST":

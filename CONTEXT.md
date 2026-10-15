@@ -77,6 +77,10 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   `scripts/make_icons.py` ; test hors-ligne dans `tests/e2e/test_pwa.py`)
 - Aussi fait : #16 Tests de bout en bout (trois parcours dans `tests/e2e`, verts sur `main` ;
   pas encore lancés sur le poste : Chromium de Playwright non téléchargé)
+- Retours du 2026-10-15 sur le serveur de test : photo entière sur les cartes (#8, miniature
+  non recadrée, `manage.py regenerer_miniatures`) ; email confirmé obligatoire pour déposer
+  et écrire à un vendeur (#3, `VERIFIED_EMAIL_REQUIRED`) ; emails encore capturés par
+  Mailpit sur le serveur : Brevo à configurer par le propriétaire
 - Ajout au #14 (2026-10-15) : bannière « Installer l'application » sur l'accueil
   (`static/js/install.js`), seulement dans le navigateur ; « Plus tard » = 30 jours
 - Ajout au #3 : connexion avec Google (ADR 0002, allauth `socialaccount`), bouton en tête

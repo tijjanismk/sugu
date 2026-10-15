@@ -1,13 +1,14 @@
 """Service d'images (ticket #7) : tests unitaires sur des images générées en mémoire."""
 
 import io
+import os
 
 import pytest
 from django.core.exceptions import ValidationError
 from PIL import Image
 
 from apps.listings import images
-from apps.listings.images import THUMB_SIZE, process_photo
+from apps.listings.images import process_photo
 
 from .images import GPS_IFD, exif_with_gps, image_bytes, uploaded
 
@@ -25,7 +26,7 @@ def test_une_grande_photo_donne_1200_px_et_une_miniature_400x300():
     large, thumb = _open(result.large), _open(result.thumb)
     assert (large.width, large.height) == (1200, 800)
     assert (result.width, result.height) == (1200, 800)
-    assert thumb.size == THUMB_SIZE
+    assert thumb.size == (400, 267)  # 3:2 entière dans 400×300
     assert large.format == "WEBP"
     assert thumb.format == "WEBP"
 
@@ -34,7 +35,7 @@ def test_une_photo_portrait_garde_ses_proportions():
     result = process_photo(uploaded(width=1500, height=3000))
 
     assert (result.width, result.height) == (600, 1200)
-    assert _open(result.thumb).size == THUMB_SIZE  # recadrée au format de la carte
+    assert _open(result.thumb).size == (150, 300)  # entière, jamais recadrée
 
 
 def test_une_petite_photo_n_est_pas_agrandie():
@@ -127,3 +128,38 @@ def test_une_photo_trop_lourde_est_rejetee(monkeypatch):
     with pytest.raises(ValidationError) as excinfo:
         process_photo(uploaded(width=800, height=600))
     assert excinfo.value.code == "too_large"
+
+
+# --- Régénération des miniatures (ticket #8, 2026-10-15) ----------------------------------
+
+
+@pytest.mark.django_db
+def test_regenerer_les_miniatures_garde_la_photo_entiere(
+    settings, tmp_path, django_capture_on_commit_callbacks
+):
+    from django.core.files.base import ContentFile
+    from django.core.management import call_command
+    from PIL import ImageOps
+
+    from apps.listings.models import Photo
+    from apps.listings.tests.factories import ListingFactory
+
+    settings.MEDIA_ROOT = tmp_path
+    square = Image.new("RGB", (1200, 1200), "#2b3c8e")
+    photo = Photo(listing=ListingFactory(published=True), order=0, width=1200, height=1200)
+    buffer = io.BytesIO()
+    square.save(buffer, format="WEBP")
+    photo.large.save("carre-1200.webp", ContentFile(buffer.getvalue()), save=False)
+    cropped = io.BytesIO()
+    ImageOps.fit(square, (400, 300)).save(cropped, format="WEBP")  # ancienne miniature recadrée
+    photo.thumb.save("carre-400.webp", ContentFile(cropped.getvalue()), save=False)
+    photo.save()
+    old_path = photo.thumb.path
+
+    with django_capture_on_commit_callbacks(execute=True):
+        call_command("regenerer_miniatures", stdout=io.StringIO())
+
+    photo.refresh_from_db()
+    with Image.open(photo.thumb.path) as thumb:
+        assert thumb.size == (300, 300)  # carrée, entière
+    assert not os.path.exists(old_path)

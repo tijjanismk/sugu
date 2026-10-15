@@ -74,8 +74,10 @@ Par ordre de probabilité pour un site d'annonces :
   légitimes sont bloquées.
 - Réinitialisation par email avec lien valable une heure (`PASSWORD_RESET_TIMEOUT`), sans
   révéler si l'adresse a un compte.
-- Vérification de l'email « optionnelle » (l'email de confirmation part, le compte sert
-  tout de suite) ; à passer en « obligatoire » si les faux comptes arrivent.
+- Vérification de l'email « optionnelle » à l'inscription (le compte sert tout de suite pour
+  parcourir et mettre en favori), mais **obligatoire pour déposer une annonce et écrire à un
+  vendeur** (ticket #3, 2026-10-15, `apps/accounts/decorators.py`) : sinon le lien est
+  renvoyé, avec le délai d'allauth entre deux envois. Contre les faux comptes et le spam.
 - Déconnexion uniquement par POST : un lien piégé ne déconnecte pas.
 - La session expire après 30 jours d'inactivité ; « Déconnecter mes autres appareils »
   depuis le profil (ticket #13) : `User.session_version` entre dans le hachage de session
