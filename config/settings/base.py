@@ -165,7 +165,7 @@ SECURE_CSP = {
 }
 
 # Email confirmé obligatoire pour déposer et écrire à un vendeur (ticket #3, 2026-10-15,
-# apps/accounts/decorators.py). Suppose des emails réellement livrés (Brevo).
+# apps/accounts/decorators.py). Suppose des emails réellement livrés (Resend).
 VERIFIED_EMAIL_REQUIRED = env.bool("VERIFIED_EMAIL_REQUIRED", default=True)
 
 # Référencement : balise de vérification de Google Search Console (2026-10-15).

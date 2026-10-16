@@ -52,7 +52,7 @@ Ajout du 2026-10-15 : **email confirmé obligatoire pour déposer une annonce et
 vendeur** (parcourir, chercher et mettre en favori restent ouverts). Sans confirmation : page
 « Confirmez votre adresse email », le lien est renvoyé (délai entre deux envois, allauth). Les
 comptes Google sont déjà confirmés. Réglage `VERIFIED_EMAIL_REQUIRED` (vrai par défaut).
-Suppose des emails réellement livrés (Brevo).
+Suppose des emails réellement livrés (Resend).
 
 Critères ajoutés :
 - Sans email confirmé, ni dépôt ni premier message (tests) ; avec, rien ne change
@@ -269,6 +269,10 @@ Ajout du 2026-10-15, référencement (sans publicité) : `robots.txt` (pages pri
 canonique sur chaque page, inscription à Google Search Console (par le propriétaire ;
 balise de vérification par `GOOGLE_SITE_VERIFICATION`). Au passage à sugu.ml : redirection
 301 de sugu.gardientv.tech pour garder le classement.
+
+Changement du 2026-10-16 : **emails par Resend au lieu de Brevo** (le SMS de vérification du
+compte Brevo n'arrivait pas au Mali). Rien ne change dans le code (`EMAIL_URL`) ; domaine
+authentifié en région Irlande, clé limitée à l'envoi, page de confidentialité mise à jour.
 
 ## #16 — Tests de bout en bout ✅ (fait le 2026-10-14, sur `main`)
 

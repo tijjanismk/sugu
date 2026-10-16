@@ -23,7 +23,7 @@ def _check_deploy(**overrides):
         "SECRET_KEY": secrets.token_urlsafe(50),
         "ALLOWED_HOSTS": "sugu.ml,www.sugu.ml",
         "DATABASE_URL": "postgres://sugu:secret@db:5432/sugu",
-        "EMAIL_URL": "smtp+tls://login:cle@smtp-relay.brevo.com:587",
+        "EMAIL_URL": "smtp+tls://resend:cle@smtp.resend.com:587",
         "ADMIN_URL": secrets.token_urlsafe(16) + "/",
         "BACKUP_S3_ENDPOINT_URL": "https://compte.r2.cloudflarestorage.com",
         "BACKUP_ACCESS_KEY_ID": "cle",

@@ -16,7 +16,7 @@ tester en production. À mettre en place après le premier déploiement.
 ## Répétition générale en local
 
 La vraie pile de production (image, Caddy, PostgreSQL sans superutilisateur) sur le poste,
-sans Cloudflare, R2 ni Brevo (ticket #15). À refaire avant chaque changement du
+sans Cloudflare, R2 ni Resend (ticket #15). À refaire avant chaque changement du
 `Dockerfile`, de `compose.prod.yml` ou du `Caddyfile`.
 
 1. Créer `.env.repetition` (ignoré par git) avec des valeurs aléatoires : `ENV_FILE`,
@@ -65,8 +65,11 @@ l'étape 1, site intact (la base `sugu_restauration` vide reste, effacée au pro
    https://www.cloudflare.com/ips/
 6. R2 : bucket `sugu-prod`, jeton d'API limité à ce bucket, domaine public
    `photos.sugu.ml` ; renseigner les variables `AWS_*` de `.env`
-7. Brevo : compte, domaine `sugu.ml` authentifié (enregistrements DKIM et SPF ajoutés chez
-   Cloudflare), clé SMTP ; `EMAIL_URL` dans `.env`
+7. Resend : compte, domaine `sugu.ml` ajouté en région Irlande (enregistrements DKIM, SPF et
+   DMARC proposés par Resend, ajoutés chez Cloudflare), clé API « Sending access » limitée au
+   domaine ; `EMAIL_URL=smtp+tls://resend:<clé API>@smtp.resend.com:587` dans `.env`. Brevo,
+   prévu d'abord, abandonné le 2026-10-16 : le SMS de vérification du compte n'arrivait pas
+   au Mali
 8. `docker compose -f compose.prod.yml up -d --build` (les migrations passent au démarrage
    du conteneur `web`)
 9. `docker compose -f compose.prod.yml exec web python manage.py createsuperuser` puis
@@ -90,8 +93,12 @@ Mise en ligne de test décidée le 2026-10-15 : Sugu sur le VPS qui héberge dé
   `127.0.0.1:8081` (`compose.serveur-partage.yml`). GardienTV n'est pas touché.
 - Pas de Cloudflare : le Caddy de l'hôte écrase `CF-Connecting-IP` avec l'IP du visiteur, que
   Django utilise pour les limites de débit. Photos sur le disque du serveur (volume `media`).
-- Emails capturés par Mailpit, pas livrés : `ssh -L 8025:127.0.0.1:8025 root@45.9.188.18`
-  puis http://localhost:8025. Brevo plus tard : changer `EMAIL_URL` dans `/opt/sugu/.env`.
+- Emails par Resend depuis le 2026-10-16 : domaine `sugu.gardientv.tech` en région Irlande,
+  enregistrements dans la zone DNS de gardientv.tech (TXT `resend._domainkey.sugu`, CNAME
+  `rsend.sugu` et `send.sugu`, TXT `_dmarc.sugu` : pas `_dmarc` seul, qui s'appliquerait
+  aussi à GardienTV), clé API « Sending access » limitée au domaine. Pour essayer sans rien
+  envoyer : `EMAIL_URL=smtp://mailpit`, lecture par `ssh -L 8025:127.0.0.1:8025
+  root@45.9.188.18` puis http://localhost:8025.
 - DNS : enregistrement A `sugu` → `45.9.188.18` dans la zone de gardientv.tech.
 - Sauvegardes vers R2 (bucket privé `sugu-backups`) et Sentry (organisation en région EU)
   branchés le 2026-10-15 : première sauvegarde envoyée, relue depuis le bucket, identique à la

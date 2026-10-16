@@ -21,7 +21,7 @@ SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
-# EMAIL_URL=smtp+tls://login:clé@smtp-relay.brevo.com:587 (django-environ) traduit en MAILERS
+# EMAIL_URL=smtp+tls://resend:<clé API>@smtp.resend.com:587 (django-environ) traduit en MAILERS
 # (Django 6.1). Obligatoire : sans email, ni mot de passe oublié ni avertissement de message.
 _email = env.email_url("EMAIL_URL")
 _email_options = {
