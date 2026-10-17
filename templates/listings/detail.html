@@ -98,6 +98,11 @@
 
     {# Rappel de sécurité sur chaque annonce (docs/security.md). #}
     {% include "components/alert.html" with variant="info" title="Restez prudent" body="Rencontrez le vendeur dans un lieu public et ne payez jamais avant d'avoir vu l'objet." %}
+
+    {# Signalement (ticket #49) : discret, jamais sur sa propre annonce. #}
+    {% if user.pk != listing.user_id %}
+      <p class="px-4 pb-4"><a class="sg-btn sg-btn--quiet" href="{% url 'moderation:report' listing.pk %}" rel="nofollow">{% include "components/icon.html" with name="flag" %}Signaler cette annonce</a></p>
+    {% endif %}
   </article>
 
   {# Action de la page (ticket #12) : la conversation existante s'ouvre, sinon une nouvelle. #}

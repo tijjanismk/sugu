@@ -1,0 +1,7 @@
+{% autoescape off %}Bonjour,
+
+L'annonce « {{ listing_title }} », de {{ seller }}, a été signalée par {{ count }} membres : elle est masquée en attendant votre décision.
+
+Dans l'admin, rubrique Modération > Annonces signalées : « Retirer l'annonce » si les signalements sont fondés, sinon « Classer sans suite » pour la remettre en ligne.
+
+L'équipe Sugu{% endautoescape %}

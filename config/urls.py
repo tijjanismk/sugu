@@ -12,6 +12,7 @@ urlpatterns = [
     path("", include("apps.listings.urls")),
     path("", include("apps.favorites.urls")),
     path("", include("apps.messaging.urls")),
+    path("", include("apps.moderation.urls")),
     path("", include("apps.core.urls")),
     # Référencement (ticket #15, 2026-10-15)
     path("sitemap.xml", sitemap, {"sitemaps": SITEMAPS}, name="sitemap"),

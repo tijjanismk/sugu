@@ -1,0 +1,9 @@
+{% autoescape off %}Bonjour {{ seller }},
+
+Votre annonce « {{ listing_title }} » a été signalée par plusieurs membres. Elle est masquée le temps que nous la vérifions.
+
+Si elle respecte les règles du site, elle sera remise en ligne telle quelle. Vous n'avez rien à faire.
+
+Une question : {{ contact_url }}
+
+L'équipe Sugu{% endautoescape %}

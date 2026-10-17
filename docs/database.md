@@ -96,10 +96,15 @@ Transitions de statut autorisées (`models.ALLOWED_TRANSITIONS`) :
 | De          | Vers                          |
 |-------------|-------------------------------|
 | `draft`     | `published`, `removed`        |
-| `published` | `sold`, `removed`             |
-| `reserved`  | `published`, `sold`, `removed` (V2) |
+| `published` | `sold`, `removed`, `suspended` |
+| `reserved`  | `published`, `sold`, `removed`, `suspended` (V2) |
 | `sold`      | `removed`                     |
 | `removed`   | — (définitif)                 |
+| `suspended` | `published`, `removed` (#49)  |
+
+`suspended` (« En examen », ticket #49) : annonce masquée de tous après les signalements de
+`REPORTS_TO_SUSPEND` membres différents (3) ; seule la modération la remet en ligne ou la
+retire. Le vendeur la voit dans « Mes annonces », sans pouvoir la modifier.
 
 Recherche plein texte (migrations `listings.0003` et `0005`) : extension `unaccent`,
 configuration `french_unaccent` (copie de `french` avec `unaccent` avant `french_stem`), et
@@ -181,6 +186,22 @@ Bannières de l'accueil (ticket #8, 2026-10-17), gérées dans l'admin. Contrain
 ou supprimer la bannière efface ses fichiers après validation de la transaction
 (`apps/core/banners.py`, `apps/core/signals.py`).
 
+## moderation_report
+
+| Champ        | Type            | Notes                                              |
+|--------------|-----------------|----------------------------------------------------|
+| listing_id   | FK → listing    | suppression en cascade                             |
+| reporter_id  | FK → user       | suppression en cascade                             |
+| reason       | varchar(20)     | `scam`, `prohibited`, `wrong_category`, `duplicate`, `other` |
+| details      | text (500)      | facultatif                                         |
+| status       | varchar(10)     | `open`, `upheld` (annonce retirée), `dismissed`    |
+| handled_at   | timestamptz     | date de la décision                                |
+| handled_by_id| FK → user, null | administrateur qui a décidé                        |
+
+Signalements (ticket #49). Contraintes : unique (listing_id, reporter_id)
+`report_once_per_member` ; CHECK `report_status_valid`. Index (status, listing_id) pour la
+file de modération. Le proxy `moderation.ReportedListing` (sans table) sert à l'admin.
+
 ## Évolutions prévues (hors V1)
 
 - Table `listings_reservation` pour la réservation (V2) : `listing_id`, `buyer_id`,
@@ -188,5 +209,4 @@ ou supprimer la bannière efface ses fichiers après validation de la transactio
   `expires_at`, `created_at`. Contrainte : une seule réservation `accepted` par annonce.
   Le statut `reserved` de l'annonce est dérivé de cette table.
 - `listings_listing.boosted_until` pour les mises en avant payantes
-- Table `moderation_report` (signalements)
 - Table `payments_*` si le paiement intégré est retenu

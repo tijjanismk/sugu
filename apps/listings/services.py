@@ -1,8 +1,10 @@
 import re
 from collections import Counter
 from dataclasses import dataclass
+from datetime import timedelta
 from uuid import uuid4
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.core.exceptions import PermissionDenied, ValidationError
@@ -187,6 +189,16 @@ def remove(listing: Listing) -> Listing:
     return change_status(listing, ListingStatus.REMOVED)
 
 
+def suspend(listing: Listing) -> Listing:
+    """Masque l'annonce le temps que la modération l'examine (#49)."""
+    return change_status(listing, ListingStatus.SUSPENDED)
+
+
+def reinstate(listing: Listing) -> Listing:
+    """Remet en ligne une annonce en examen (signalements classés sans suite, #49)."""
+    return change_status(listing, ListingStatus.PUBLISHED)
+
+
 @transaction.atomic
 def update_price(listing: Listing, new_price: int | None) -> Listing:
     """Change le prix. Sur une annonce publiée, une baisse mémorise le prix affiché juste avant
@@ -253,6 +265,32 @@ def _delete_files(files: list) -> None:
         file.storage.delete(file.name)
 
 
+class DailyLimitReached(ValidationError):
+    """Le compte a déjà déposé LISTINGS_PER_DAY annonces en 24 heures (#49)."""
+
+
+def daily_limit_error(user) -> DailyLimitReached | None:
+    """Limite de dépôt contre le spam (#49) : LISTINGS_PER_DAY annonces sur 24 heures
+    glissantes. Les annonces supprimées depuis comptent aussi : supprimer puis redéposer ne
+    rend pas de place. Renvoie l'erreur à afficher, ou None si le dépôt est permis."""
+    limit = settings.LISTINGS_PER_DAY
+    since = timezone.now() - timedelta(hours=24)
+    recent = list(
+        Listing.objects.filter(user=user, created_at__gte=since)
+        .order_by("-created_at")
+        .values_list("created_at", flat=True)[:limit]
+    )
+    if len(recent) < limit:
+        return None
+    when = timezone.localtime(recent[-1] + timedelta(hours=24))
+    day = "aujourd'hui" if when.date() == timezone.localdate() else "demain"
+    return DailyLimitReached(
+        f"Vous avez déposé {limit} annonces en 24 heures, c'est le maximum. "
+        f"Vous pourrez en déposer une nouvelle {day} à {when:%H} h {when:%M}.",
+        code="daily_limit",
+    )
+
+
 def create_listing(user, *, data: dict, photos: list) -> Listing:
     """Crée et publie une annonce avec ses photos (ticket #7).
 
@@ -263,11 +301,18 @@ def create_listing(user, *, data: dict, photos: list) -> Listing:
     """
     if not 1 <= len(photos) <= MAX_PHOTOS:
         raise ValidationError(f"Ajoutez de 1 à {MAX_PHOTOS} photos.")
+    if error := daily_limit_error(user):
+        raise error
     processed = _process_all(photos)
 
     written = []  # fichiers déjà écrits, à effacer si la transaction échoue
     try:
         with transaction.atomic():
+            # Deux dépôts simultanés du même compte passent l'un après l'autre : la limite
+            # quotidienne est revérifiée une fois la ligne du compte verrouillée.
+            get_user_model().objects.select_for_update().filter(pk=user.pk).first()
+            if error := daily_limit_error(user):
+                raise error
             listing = Listing.objects.create(
                 user=user,
                 title=data["title"],

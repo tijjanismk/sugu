@@ -31,6 +31,8 @@ def listing_create(request: HttpRequest) -> HttpResponse:
                 listing = services.create_listing(
                     request.user, data=form.cleaned_data, photos=form.cleaned_data["photos"]
                 )
+            except services.DailyLimitReached as exc:
+                form.add_error(None, exc)
             except ValidationError as exc:
                 form.add_error("photos", exc)
             else:
@@ -39,7 +41,9 @@ def listing_create(request: HttpRequest) -> HttpResponse:
                 return redirect(listing)
     else:
         form = ListingForm()
-    return render(request, "listings/create.html", {"form": form})
+    # Limite quotidienne déjà atteinte (#49) : on le dit avant que le formulaire soit rempli.
+    limit = None if form.is_bound else services.daily_limit_error(request.user)
+    return render(request, "listings/create.html", {"form": form, "daily_limit": limit})
 
 
 def listing_detail(request: HttpRequest, pk: int, slug: str) -> HttpResponse:

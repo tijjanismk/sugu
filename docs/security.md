@@ -151,10 +151,15 @@ Par ordre de probabilité pour un site d'annonces :
 ### Débit et robots
 
 - Limitation de débit sur inscription, connexion, dépôt d'annonce, envoi de message
-  et signalement (inscription et connexion : ticket #3 ; dépôt d'annonce : 5 par heure et
-  20 par jour par utilisateur, ticket #7, via `apps/core/ratelimit.py` ; messagerie,
+  et signalement (inscription et connexion : ticket #3 ; dépôt d'annonce : 5 par heure par
+  utilisateur, ticket #7, via `apps/core/ratelimit.py`, et 10 par compte sur 24 heures
+  comptées en base, ticket #49 : supprimer puis redéposer ne rend pas de place ; messagerie,
   ticket #12 : 10 nouvelles conversations par heure et 30 par jour, 60 messages par heure et
-  300 par jour).
+  300 par jour ; signalements, ticket #49 : 10 par heure et 30 par jour).
+- Signalements (ticket #49) : membre à l'email confirmé, une fois par annonce, jamais la
+  sienne ; le vendeur ne sait pas qui l'a signalé. Masquage automatique après 3 membres
+  différents (`REPORTS_TO_SUSPEND`), décision finale par un administrateur ; les emails de
+  modération ne contiennent ni le nom de qui signale ni sa précision.
 - Cloudflare devant le site : absorption des attaques par saturation, filtrage des
   robots, cache des fichiers statiques.
 - Si le spam d'inscriptions arrive : défi Turnstile (Cloudflare) sur le formulaire

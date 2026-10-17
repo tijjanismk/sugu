@@ -1,0 +1,11 @@
+{% autoescape off %}Bonjour,
+
+Une annonce vient d'être signalée pour la première fois sur Sugu.
+
+Annonce : « {{ listing_title }} », de {{ seller }}
+Motif : {{ reason }}
+{{ listing_url }}
+
+À examiner dans l'admin, rubrique Modération > Annonces signalées.
+
+L'équipe Sugu{% endautoescape %}
