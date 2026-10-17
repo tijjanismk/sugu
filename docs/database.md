@@ -163,6 +163,24 @@ Contrainte unique : (user_id, listing_id). « Mes favoris » trie par `created_a
 décroissant. Les cœurs d'une page sont lus en une requête (identifiants des favoris de
 l'utilisateur, processeur de contexte paresseux), quel que soit le nombre de cartes.
 
+## core_banner
+
+| Champ              | Type          | Notes                                              |
+|--------------------|---------------|----------------------------------------------------|
+| image              | varchar(255)  | `banners/<uuid>-1200.webp`                         |
+| image_small        | varchar(255)  | `banners/<uuid>-600.webp`                          |
+| width, height      | smallint      | de la version 1200 px, pour réserver l'espace      |
+| alt                | varchar(150)  | texte de la bannière, obligatoire                  |
+| link               | varchar(300)  | facultatif : chemin `/…` de Sugu ou adresse https  |
+| is_active          | boolean       |                                                    |
+| starts_at, ends_at | timestamptz   | facultatifs                                        |
+| order              | smallint      | 0 : la première                                    |
+
+Bannières de l'accueil (ticket #8, 2026-10-17), gérées dans l'admin. Contrainte
+`banner_ends_after_start` (fin après le début quand les deux sont donnés). Remplacer l'image
+ou supprimer la bannière efface ses fichiers après validation de la transaction
+(`apps/core/banners.py`, `apps/core/signals.py`).
+
 ## Évolutions prévues (hors V1)
 
 - Table `listings_reservation` pour la réservation (V2) : `listing_id`, `buyer_id`,

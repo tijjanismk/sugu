@@ -85,6 +85,8 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   canonique (#15) ; pages `/categorie/<slug>/[<ville>/]` et `/ville/<slug>/` (#9) ; Open
   Graph et schema.org `Product` sur la page annonce (#8) ; Search Console à faire par le
   propriétaire (runbook, « Référencement »)
+- Ajout au #8 (2026-10-17) : bannières images en haut de l'accueil, gérées dans l'admin
+  (`apps/core/banners.py`, modèle `core.Banner`, composant `sg-banner`), 2:1, sans JavaScript
 - Ajout au #14 (2026-10-15) : bannière « Installer l'application » sur l'accueil
   (`static/js/install.js`), seulement dans le navigateur ; « Plus tard » = 30 jours
 - Ajout au #3 : connexion avec Google (ADR 0002, allauth `socialaccount`), bouton en tête

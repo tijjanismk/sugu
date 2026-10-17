@@ -13,11 +13,11 @@ from django.views.decorators.http import require_GET
 
 from apps.listings.services import PAGE_SIZE, home_categories, latest_listings
 
-from . import pwa
+from . import banners, pwa
 
 
 def home(request: HttpRequest) -> HttpResponse:
-    """Accueil : catégories et dernières annonces, 20 par page (ticket #8).
+    """Accueil : bannières, catégories et dernières annonces, 20 par page (ticket #8).
 
     « Voir plus » demande la page suivante en htmx (en-tête HX-Request) : seul le partial
     « listing_page » est renvoyé, ajouté sous la grille. Sans JavaScript, c'est un lien ?page=N.
@@ -25,9 +25,12 @@ def home(request: HttpRequest) -> HttpResponse:
     page_obj = Paginator(latest_listings(), PAGE_SIZE).get_page(request.GET.get("page"))
     if request.htmx:
         return render(request, "core/home.html#listing_page", {"page_obj": page_obj})
-    return render(
-        request, "core/home.html", {"categories": home_categories(), "page_obj": page_obj}
-    )
+    context = {
+        "banners": banners.active_banners(),
+        "categories": home_categories(),
+        "page_obj": page_obj,
+    }
+    return render(request, "core/home.html", context)
 
 
 def health(request: HttpRequest) -> JsonResponse:

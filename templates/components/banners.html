@@ -1,0 +1,17 @@
+{% comment %}
+  Bannières de l'accueil (ticket #8, gérées dans l'admin, apps/core/banners.py). Elles
+  défilent au doigt, la suivante dépasse un peu : ni JavaScript ni défilement automatique
+  (design/README.md, « Mouvement »). Seule la première image est chargée tout de suite.
+{% endcomment %}{% if banners %}
+  <section class="sg-banners" aria-label="En ce moment sur Sugu">
+    {% for banner in banners %}
+      {% if banner.link %}<a class="sg-banner" href="{{ banner.link }}">{% else %}<div class="sg-banner">{% endif %}
+        <img src="{{ banner.image_small.url }}"
+             srcset="{{ banner.image_small.url }} 600w, {{ banner.image.url }} 1200w"
+             sizes="(min-width: 680px) 600px, calc(100vw - 64px)"
+             width="{{ banner.width }}" height="{{ banner.height }}" alt="{{ banner.alt }}"
+             {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+      {% if banner.link %}</a>{% else %}</div>{% endif %}
+    {% endfor %}
+  </section>
+{% endif %}

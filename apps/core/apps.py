@@ -6,4 +6,4 @@ class CoreConfig(AppConfig):
     verbose_name = "Socle"
 
     def ready(self):
-        from . import checks  # noqa: F401
+        from . import checks, signals  # noqa: F401

@@ -64,6 +64,7 @@ Sugu est le marché du quartier dans la poche : des particuliers qui vendent et 
 - Photos d'annonce : WebP, 1200 px pour la page, 400 px pour la carte, ratio 4:3, `width` et `height` renseignés pour réserver la place ; `loading="lazy"` au-delà des quatre premières cartes.
 - Sans photo : un aplat `surface-sunken` avec l'icône appareil photo en `ink-muted`. Jamais une image générique.
 - La photo d'index 0 est la couverture ; le dépôt le dit à l'utilisateur sur la tuile.
+- Bannières de l'accueil (`sg-banner`) : WebP 1200 et 600 px, ratio 2:1, contenues jamais recadrées, rayon `radius-lg` sur `surface-sunken` ; défilement au doigt avec la suivante qui dépasse, sans défilement automatique ; seule la première chargée tout de suite.
 
 ## Mouvement
 

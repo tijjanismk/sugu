@@ -89,6 +89,20 @@ def _webp(image: Image.Image, quality: int) -> bytes:
     return buffer.getvalue()
 
 
+def webp_file(image: Image.Image, quality: int = LARGE_QUALITY) -> ContentFile:
+    return ContentFile(_webp(image, quality))
+
+
+def open_image(uploaded) -> Image.Image:
+    """Ouvre et vérifie une image envoyée, redressée selon son EXIF puis en RGB.
+
+    Lève ValidationError si elle est refusée. Sert aux photos d'annonce et aux bannières de
+    l'accueil (apps/core/banners.py)."""
+    image = _open_verified(uploaded)
+    image = ImageOps.exif_transpose(image)  # applique l'orientation avant de jeter l'EXIF
+    return _to_rgb(image)
+
+
 def make_thumb(large: Image.Image) -> Image.Image:
     """Miniature de carte depuis la version 1200 px : la photo entière, dans 400×300."""
     return ImageOps.contain(large, THUMB_SIZE, Image.Resampling.LANCZOS)
@@ -100,9 +114,7 @@ def thumb_file(large: Image.Image) -> ContentFile:
 
 def process_photo(uploaded) -> ProcessedPhoto:
     """Valide et réencode une photo envoyée. Lève ValidationError si elle est refusée."""
-    image = _open_verified(uploaded)
-    image = ImageOps.exif_transpose(image)  # applique l'orientation avant de jeter l'EXIF
-    image = _to_rgb(image)
+    image = open_image(uploaded)
 
     large = image.copy()
     large.thumbnail((LARGE_MAX_SIZE, LARGE_MAX_SIZE), Image.Resampling.LANCZOS)  # sans agrandir

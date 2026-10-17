@@ -172,6 +172,14 @@ textarea.sg-input { min-height: 112px; padding: var(--space-3); resize: vertical
 .sg-alert--info { background: var(--indigo-soft); border-color: var(--indigo); }
 .sg-alert--info strong, .sg-alert--info .sg-icon { color: var(--indigo); }
 
+/* Bannières de l'accueil (ticket #8) : défilement au doigt, la suivante dépasse ; ni JavaScript
+   ni défilement automatique. Image 2:1 contenue (jamais recadrée) sur un aplat. */
+.sg-banners { display: flex; gap: var(--space-3); margin: var(--space-2) 0; padding: 0 var(--space-4); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--space-4); overscroll-behavior-x: contain; scrollbar-width: thin; }
+.sg-banner { flex: 0 0 calc(100% - var(--space-8)); max-width: 600px; scroll-snap-align: start; border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-sunken); }
+.sg-banner:only-child { flex-basis: 100%; }
+.sg-banner img { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: contain; }
+.sg-banner:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
 /* Squelettes */
 .sg-skel { background: var(--surface-sunken); border-radius: var(--radius-sm); animation: sg-pulse 1400ms ease-in-out infinite; }
 @keyframes sg-pulse { 50% { opacity: .55; } }

@@ -73,8 +73,8 @@ design ; les autres composants arrivent avec le ticket qui les utilise. Poids de
 5. Thème : `<html data-theme="…">` posé par un petit script inline qui lit
    `prefers-color-scheme` puis le choix enregistré dans le profil.
 
-## Composants (16)
+## Composants (17)
 
 Button, ListingCard, SearchBar, Chip, FormField, PhotoPicker, BottomNav,
 TopBar, CategoryTile, Badge, MessageBubble, ListItem, Avatar, EmptyState,
-Alert, Skeleton.
+Alert, Skeleton, Banner (bannières de l'accueil, ticket #8 : à reporter dans l'artefact).
