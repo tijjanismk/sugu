@@ -58,7 +58,7 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   `payment_methods` pour le préparer
 - Inscription par email ; l'inscription par numéro de téléphone (OTP SMS) est
   un candidat ADR futur
-- Réservation d'annonce (l'acheteur demande, le vendeur accepte) : décidée pour la V2 ;
+- Réservation d'annonce (l'acheteur demande, le vendeur accepte) : décidée pour la V2 (#48) ;
   en V1 on prévoit seulement le statut `reserved`, rien d'autre
 
 ## Ce que l'IA doit faire dans une session
@@ -110,8 +110,8 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   port) ; `EMAIL_URL` obligatoire en production (#15) pour les emails ;
   installation PWA à confirmer sur un vrai téléphone en HTTPS (#15) ; le navigateur intégré
   de Claude refuse les service workers (vérifier dans Chrome) ; ajouts de design des #8 à
-  #17 (dont l'icône d'application, le pied de page et les pages légales) à reporter dans l'artefact de design ; pas de synonymes dans la
-  recherche ; photos HEIC refusées sans JavaScript ; idées V2 notées le 2026-10-14 : prix
-  anormaux, annonces recopiées par d'autres sites ; revenus : aucun en V1, liste ordonnée des
-  sources rangée dans la section V2 de `docs/tickets.md` (mise en avant par mobile money
-  d'abord, une fois quelques centaines d'annonces actives)
+  #17 (dont l'icône d'application, le pied de page, les pages légales et les bannières) à reporter dans l'artefact de design ; pas de synonymes dans la
+  recherche ; photos HEIC refusées sans JavaScript ; V2 et V3 rangées le 2026-10-17
+  (`docs/tickets.md`) : V2 = indispensable et indépendant du domaine, signalements (#49) puis
+  réservation (#48) ; V3 = prix anormaux, robots copieurs, revenus (mise en avant par mobile
+  money d'abord, une fois quelques centaines d'annonces actives), inscription par SMS
