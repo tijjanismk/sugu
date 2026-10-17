@@ -79,8 +79,8 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   pas encore lancés sur le poste : Chromium de Playwright non téléchargé)
 - Retours du 2026-10-15 sur le serveur de test : photo entière sur les cartes (#8, miniature
   non recadrée, `manage.py regenerer_miniatures`) ; email confirmé obligatoire pour déposer
-  et écrire à un vendeur (#3, `VERIFIED_EMAIL_REQUIRED`) ; emails encore capturés par
-  Mailpit sur le serveur : Brevo à configurer par le propriétaire
+  et écrire à un vendeur (#3, `VERIFIED_EMAIL_REQUIRED`) ; emails livrés par Resend depuis
+  le 2026-10-16 (Brevo abandonné : SMS de vérification du compte jamais reçu au Mali)
 - Référencement (2026-10-15, sans publicité) : `robots.txt`, `sitemap.xml`, adresse
   canonique (#15) ; pages `/categorie/<slug>/[<ville>/]` et `/ville/<slug>/` (#9) ; Open
   Graph et schema.org `Product` sur la page annonce (#8) ; Search Console à faire par le
@@ -94,8 +94,8 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   non lu d'une conversation, pas pendant un échange en direct, sans le texte du message,
   désactivable au profil ; envoi dans la requête (pas de file en V1)
 - #15 Mise en production : en ligne depuis le 2026-10-15 sur le KVM 2 Hostinger, à côté de
-  GardienTV, à https://sugu.gardientv.tech (runbook, « Serveur partagé ») ; emails capturés
-  par Mailpit en attendant Brevo ; tag `v0.1.0` après le dépôt d'essai du propriétaire
+  GardienTV, à https://sugu.gardientv.tech (runbook, « Serveur partagé ») ; emails par
+  Resend ; tag `v0.1.0` après le dépôt d'essai du propriétaire
 - Tâche en cours : #17 Exploitation et conformité — sauvegardes (`scripts/backup.sh`,
   `scripts/restore.sh`, copie sur le serveur + bucket R2), Sentry sans donnée personnelle,
   pages légales liées dans le pied de page. R2 et Sentry branchés sur le serveur de test le

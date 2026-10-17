@@ -1,5 +1,5 @@
 # Répétition générale de la mise en production sur le poste (ticket #15, docs/runbook.md) :
-# la vraie pile (image, Caddy, PostgreSQL sans superutilisateur) sans Cloudflare, R2 ni Brevo.
+# la vraie pile (image, Caddy, PostgreSQL sans superutilisateur) sans Cloudflare, R2 ni Resend.
 #   docker compose -p sugu-repetition --env-file .env.repetition \
 #     -f compose.prod.yml -f compose.repetition.yml up -d --build
 # Site : https://localhost:8443 (certificat local de Caddy) ; emails : http://localhost:8025 ;
