@@ -331,24 +331,55 @@ Critères d'acceptation :
 
 ---
 
-## Après le minimum viable (V2, à prioriser selon les retours)
+## V2 — indispensable, indépendant du domaine (décision du 2026-10-17)
 
-- **Réservation d'une annonce** (décision du 2026-10-11) : l'acheteur demande à
-  réserver depuis l'annonce, le vendeur accepte ou refuse depuis la conversation ;
-  une fois acceptée, l'annonce passe au statut `reserved` avec un badge « Réservée »,
-  reste visible, et revient à `published` si le vendeur annule ou après 7 jours.
-  Une seule réservation active par annonce. Sans acompte ni paiement. Préparé en V1
-  par le statut `reserved` et la table `listings_reservation` (voir `docs/database.md`).
-  Échéance affichée en texte calculé par le serveur (« Réservée encore 3 j »), pas de compte à
-  rebours animé (décision du 2026-10-14 : pas d'urgence artificielle, pas de JS permanent).
-- Modération : signalements, file de modération dans l'admin
+Règle du propriétaire : la V2 ne garde que ce qui est nécessaire et fonctionne sans `sugu.ml` ;
+le reste va en V3. Numéros = issues GitHub (partagés avec les pull requests). Ordre de travail : #49 puis #48.
+
+## #49 — Signalements et modération
+
+Bouton « Signaler cette annonce » sur la page annonce (membre connecté, motif au choix :
+arnaque, objet interdit, mauvaise catégorie, déjà vendue ou en double, autre ; précision
+facultative), un signalement par membre et par annonce, jamais sur sa propre annonce. File des
+signalements dans l'admin, regroupés par annonce ; retrait de l'annonce ou classement sans
+suite ; le vendeur est prévenu par email quand son annonce est retirée. Limite d'annonces
+déposées par jour et par compte contre le spam. Table `moderation_report` (`docs/database.md`).
+
+Critères d'acceptation :
+- Un membre signale une annonce en deux touches ; un second signalement du même membre est refusé
+- Le vendeur ne peut pas signaler sa propre annonce ; un visiteur non connecté est invité à se connecter
+- L'admin voit les annonces signalées, les plus signalées d'abord, et les traite en une action
+- Au-delà de la limite quotidienne, le dépôt est refusé avec un message clair
+- Tests « un autre utilisateur essaie » et limite de débit
+
+## #48 — Réservation d'une annonce
+
+Décision du 2026-10-11 : l'acheteur demande à
+réserver depuis l'annonce, le vendeur accepte ou refuse depuis la conversation ;
+une fois acceptée, l'annonce passe au statut `reserved` avec un badge « Réservée »,
+reste visible, et revient à `published` si le vendeur annule ou après 7 jours.
+Une seule réservation active par annonce. Sans acompte ni paiement. Préparé en V1
+par le statut `reserved` et la table `listings_reservation` (voir `docs/database.md`).
+Échéance affichée en texte calculé par le serveur (« Réservée encore 3 j »), pas de compte à
+rebours animé (décision du 2026-10-14 : pas d'urgence artificielle, pas de JS permanent).
+
+Critères d'acceptation :
+- L'acheteur demande depuis l'annonce, le vendeur accepte ou refuse depuis la conversation
+- Badge « Réservée » et échéance en texte ; retour automatique à `published` après 7 jours
+- Une seule réservation acceptée par annonce (contrainte en base)
+- Tests « un autre utilisateur essaie » sur chaque action
+
+---
+
+## V3 — facultatif, lié au volume d'annonces ou au domaine
+
 - Prix anormaux (idée du 2026-10-14, à faire quand chaque sous-catégorie compte au moins une
   dizaine d'annonces) : prix très bas par rapport à la médiane des annonces similaires →
   signalement à la modération et rappel de prudence renforcé (arnaque) ; prix très élevé →
   simple conseil au vendeur au dépôt (« 5 fois la médiane, vérifiez »), jamais de blocage ni de
   déclassement caché ; tri par prix dans la recherche
-- Annonces recopiées par d'autres sites : robots filtrés par Cloudflare (déjà prévu) ;
-  surveiller les comptes qui déposent en masse
+- Annonces recopiées par d'autres sites : robots filtrés par Cloudflare (dépend du domaine) ;
+  la surveillance des comptes qui déposent en masse est dans le #49
 - **Sources de revenus** (liste du 2026-10-14, rien en V1 : le lancement ne vise que le volume
   d'annonces ; on commence quand il y a quelques centaines d'annonces actives), dans l'ordre :
   1. Mise en avant « À la une » pendant 7 jours (en tête de l'accueil et de la recherche, badge),
@@ -364,6 +395,7 @@ Critères d'acceptation :
   6. Badge « Vendeur vérifié » (téléphone vérifié par SMS), payant ou inclus dans le compte pro
   7. Plus tard, avec paiement intégré (ADR obligatoire) : paiement sécurisé avec commission
      (argent bloqué jusqu'à la remise) et livraison par des coursiers partenaires
-- Inscription par numéro de téléphone (OTP SMS) — ADR à écrire
+- Inscription par numéro de téléphone (OTP SMS) — ADR à écrire ; coût par SMS, et les SMS de
+  vérification arrivent mal au Mali (constaté avec Brevo le 2026-10-16)
 - Déploiement sans coupure
 - Redimensionnement asynchrone si le dépôt d'annonce devient lent
