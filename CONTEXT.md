@@ -95,7 +95,8 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   désactivable au profil ; envoi dans la requête (pas de file en V1)
 - #15 Mise en production : en ligne depuis le 2026-10-15 sur le KVM 2 Hostinger, à côté de
   GardienTV, à https://sugu.gardientv.tech (runbook, « Serveur partagé ») ; emails par
-  Resend ; tag `v0.1.0` après le dépôt d'essai du propriétaire
+  Resend ; tag `v0.1.0` le 2026-10-17 après le dépôt d'essai du propriétaire ; restent
+  `sugu.ml`, Cloudflare et Search Console
 - Tâche en cours : #17 Exploitation et conformité — sauvegardes (`scripts/backup.sh`,
   `scripts/restore.sh`, copie sur le serveur + bucket R2), Sentry sans donnée personnelle,
   pages légales liées dans le pied de page. R2 et Sentry branchés sur le serveur de test le
