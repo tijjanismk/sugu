@@ -274,6 +274,11 @@ Changement du 2026-10-16 : **emails par Resend au lieu de Brevo** (le SMS de vé
 compte Brevo n'arrivait pas au Mali). Rien ne change dans le code (`EMAIL_URL`) ; domaine
 authentifié en région Irlande, clé limitée à l'envoi, page de confidentialité mise à jour.
 
+**Tag `v0.1.0` le 2026-10-17** : dépôt d'annonce avec photo fait en production par le
+propriétaire sur le serveur de test (confirmation d'adresse reçue par Resend). Restent pour
+clore le ticket : domaine `sugu.ml`, Cloudflare, `check --deploy` sans avertissement (pages
+légales, #17), Search Console.
+
 ## #16 — Tests de bout en bout ✅ (fait le 2026-10-14, sur `main`)
 
 Les trois parcours Playwright et le job `e2e` dans la CI.
