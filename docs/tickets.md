@@ -103,7 +103,7 @@ Critères d'acceptation :
   envoi environ 10 fois plus léger en 3G ; sans JavaScript, l'envoi direct fonctionne toujours
   et le serveur garde toutes ses vérifications
 
-## #8 — Liste, page annonce et pagination ✅ (fait le 2026-10-14 ; photo entière et référencement le 2026-10-15)
+## #8 — Liste, page annonce et pagination ✅ (fait le 2026-10-14 ; photo entière et référencement le 2026-10-15 ; bannières le 2026-10-17)
 
 Accueil avec les dernières annonces, page détail, bouton « voir plus » en htmx,
 images avec dimensions fixes.
@@ -127,6 +127,13 @@ Critères d'acceptation :
   annonce (photo, prix, titre : aperçu quand l'annonce est partagée sur WhatsApp ou
   Facebook) et données structurées schema.org `Product` / `Offer` (prix en XOF, disponible
   ou vendue) pour des résultats enrichis ; une seule description par page
+- Bannières images en haut de l'accueil (demande du 2026-10-17, avant la V2) : gérées dans
+  l'admin (texte alternatif obligatoire, lien facultatif vers une page de Sugu ou une adresse
+  https, active, dates de début et de fin, ordre) ; image réencodée en WebP 1200 et 600 px
+  sans métadonnées, format 2:1 exigé (refusée plutôt que recadrée) ; entre la recherche et la
+  bannière « Installer l'application », qui reste ; défilement au doigt, la suivante dépasse,
+  sans JavaScript ni défilement automatique ; seule la première est chargée tout de suite ;
+  5 au plus ; rien n'est affiché sans bannière active. Composant `sg-banner` dans `design/`
 
 ## #9 — Recherche et filtres ✅ (fait le 2026-10-14 ; pages catégorie et ville le 2026-10-15)
 
@@ -277,7 +284,8 @@ authentifié en région Irlande, clé limitée à l'envoi, page de confidentiali
 **Tag `v0.1.0` le 2026-10-17** : dépôt d'annonce avec photo fait en production par le
 propriétaire sur le serveur de test (confirmation d'adresse reçue par Resend). Restent pour
 clore le ticket : domaine `sugu.ml`, Cloudflare, `check --deploy` sans avertissement (pages
-légales, #17), Search Console.
+légales, #17), Search Console (en pause jusqu'au passage à `sugu.ml`, décision du 2026-10-17 :
+`gardientv.tech` ne sera pas gardé ; l'indexation du serveur de test n'est pas gênante).
 
 ## #16 — Tests de bout en bout ✅ (fait le 2026-10-14, sur `main`)
 

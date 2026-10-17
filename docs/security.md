@@ -92,6 +92,9 @@ Par ordre de probabilité pour un site d'annonces :
 
 - Validation côté serveur de chaque champ : longueur, format, valeurs permises
   (prix positif, catégorie existante, 6 photos au plus, 8 Mo chacune).
+- Images des bannières de l'accueil (admin seulement) : même vérification et même
+  réencodage WebP que les photos d'annonce ; lien limité à un chemin de Sugu ou à une
+  adresse https (ni `javascript:` ni `//autre-site`).
 - Liens vers d'autres sites, adresses web et emails refusés dans le titre, le quartier et la
   description d'une annonce (`forms.LINK_PATTERN`, dépôt et modification) : d'autres sites
   d'annonces ne détournent pas les acheteurs ; le contact passe par Sugu.
