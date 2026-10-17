@@ -66,6 +66,11 @@ Sugu est le marché du quartier dans la poche : des particuliers qui vendent et 
 - La photo d'index 0 est la couverture ; le dépôt le dit à l'utilisateur sur la tuile.
 - Bannières de l'accueil (`sg-banner`) : WebP 1200 et 600 px, ratio 2:1, contenues jamais recadrées, rayon `radius-lg` sur `surface-sunken` ; défilement au doigt avec la suivante qui dépasse, sans défilement automatique ; seule la première chargée tout de suite.
 
+## Formulaires
+
+- Choix unique (motif d'un signalement) : boutons radio `sg-check`, comme les cases à cocher, une option par ligne de 44 px.
+- Icône `flag` (Lucide) pour « Signaler cette annonce », en bouton discret `sg-btn--quiet`.
+
 ## Mouvement
 
 - Aucune animation d'entrée. Les seuls mouvements répondent à un geste : le cœur qui se remplit, une feuille qui monte, un bouton qui s'enfonce de 1 px.

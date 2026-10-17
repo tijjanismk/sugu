@@ -33,7 +33,7 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
 ## Organisation du code
 
 - `config/` : réglages Django découpés base / dev / test / prod
-- `apps/<domaine>/` : core, accounts, listings, messaging, favorites
+- `apps/<domaine>/` : core, accounts, listings, messaging, favorites, moderation
 - La logique métier va dans `services.py`, pas dans les vues ni les modèles
 - Les vues htmx renvoient des partials dans `templates/<app>/partials/`
 - Pas de requête SQL brute sauf justification en commentaire
@@ -85,6 +85,9 @@ connexion lente, usage mobile, maintenabilité par un développeur seul.
   canonique (#15) ; pages `/categorie/<slug>/[<ville>/]` et `/ville/<slug>/` (#9) ; Open
   Graph et schema.org `Product` sur la page annonce (#8) ; Search Console à faire par le
   propriétaire (runbook, « Référencement »)
+- V2, #49 Signalements et modération (2026-10-17) : app `moderation`, masquage automatique au
+  3e membre (statut `suspended`), file « Annonces signalées » dans l'admin, 10 annonces par
+  compte sur 24 heures (`LISTINGS_PER_DAY`) ; suivant : #48 Réservation
 - Ajout au #8 (2026-10-17) : bannières images en haut de l'accueil, gérées dans l'admin
   (`apps/core/banners.py`, modèle `core.Banner`, composant `sg-banner`), 2:1, sans JavaScript
 - Ajout au #14 (2026-10-15) : bannière « Installer l'application » sur l'accueil

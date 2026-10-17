@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Signaler une annonce · Sugu{% endblock %}
+{% block topbar %}
+  <header class="sg-topbar sg-topbar--raised">
+    <a class="sg-btn sg-btn--icon" href="{{ listing.get_absolute_url }}" aria-label="Retour à l'annonce">{% include "components/icon.html" with name="back" %}</a>
+    <p class="sg-topbar__title">Signaler une annonce</p>
+  </header>
+{% endblock %}
+{% block main_class %}mx-auto max-w-content{% endblock %}
+{% block content %}
+  {% comment %}
+    Signalement (ticket #49). Lu par la modération seulement : le vendeur ne sait pas qui l'a
+    signalé. Sans JavaScript : un formulaire et un bouton.
+  {% endcomment %}
+  <form class="sg-form" method="post" novalidate>
+    {% csrf_token %}
+    <p class="body px-4 pt-4 text-ink">« {{ listing.title }} »</p>
+    <p class="small px-4 pb-2 text-ink-muted">Le vendeur ne saura pas qui a signalé son annonce. Nous la vérifions, et la retirons si elle enfreint les règles du site.</p>
+    {% include "components/field.html" with field=form.reason %}
+    {% include "components/field.html" with field=form.details %}
+    <div class="sg-sticky">
+      <button class="sg-btn sg-btn--primary sg-btn--lg sg-btn--block" type="submit">Envoyer le signalement</button>
+    </div>
+  </form>
+{% endblock %}
+{% block bottomnav %}{% endblock %}
+{% block footer %}{% endblock %}

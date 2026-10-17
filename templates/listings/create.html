@@ -16,6 +16,7 @@
     {% for error in form.non_field_errors %}
       {% include "components/alert.html" with variant="danger" body=error %}
     {% endfor %}
+    {% if daily_limit %}{% include "components/alert.html" with variant="danger" body=daily_limit.message %}{% endif %}
 
     {# Photos (design/components/PhotoPicker) : le champ fichier marche seul ; photo-picker.js #}
     {# ajoute les aperçus, le retrait, la couverture et la réduction avant l'envoi. #}

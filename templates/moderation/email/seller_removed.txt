@@ -1,0 +1,8 @@
+{% autoescape off %}Bonjour {{ seller }},
+
+Après vérification, votre annonce « {{ listing_title }} » a été retirée de Sugu.
+Motif : {{ reason }}
+
+Vos autres annonces ne sont pas concernées. Si vous pensez qu'il s'agit d'une erreur, écrivez-nous : {{ contact_url }}
+
+L'équipe Sugu{% endautoescape %}

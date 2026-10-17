@@ -127,16 +127,25 @@ class ListingStatus(models.TextChoices):
     RESERVED = "reserved", "Réservée"  # V2 (réservation) : aucune transition n'y mène en V1
     SOLD = "sold", "Vendue"
     REMOVED = "removed", "Retirée"
+    # Masquée après plusieurs signalements, en attendant la décision de la modération (#49).
+    SUSPENDED = "suspended", "En examen"
 
 
 # Passages de statut autorisés (docs/tests.md : published → sold oui, sold → published non).
-# `removed` est définitif. Les transitions vers `reserved` arriveront avec la V2.
+# `removed` est définitif. Les transitions vers `reserved` arriveront avec la V2. Une annonce
+# en examen (#49) est remise en ligne ou retirée par la modération.
 ALLOWED_TRANSITIONS = {
     ListingStatus.DRAFT: {ListingStatus.PUBLISHED, ListingStatus.REMOVED},
-    ListingStatus.PUBLISHED: {ListingStatus.SOLD, ListingStatus.REMOVED},
-    ListingStatus.RESERVED: {ListingStatus.PUBLISHED, ListingStatus.SOLD, ListingStatus.REMOVED},
+    ListingStatus.PUBLISHED: {ListingStatus.SOLD, ListingStatus.REMOVED, ListingStatus.SUSPENDED},
+    ListingStatus.RESERVED: {
+        ListingStatus.PUBLISHED,
+        ListingStatus.SOLD,
+        ListingStatus.REMOVED,
+        ListingStatus.SUSPENDED,
+    },
     ListingStatus.SOLD: {ListingStatus.REMOVED},
     ListingStatus.REMOVED: set(),
+    ListingStatus.SUSPENDED: {ListingStatus.PUBLISHED, ListingStatus.REMOVED},
 }
 
 # Statuts d'une annonce qui a été publiée : published_at est alors obligatoire. Ce sont aussi

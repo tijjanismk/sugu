@@ -110,6 +110,7 @@ ROBOTS_DISALLOW = [
     "/annonce/*/vendue/",
     "/annonce/*/supprimer/",
     "/annonce/*/photos/",
+    "/annonce/*/signaler/",
 ]
 
 

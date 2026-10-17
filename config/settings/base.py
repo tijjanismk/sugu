@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "apps.listings",
     "apps.favorites",
     "apps.messaging",
+    "apps.moderation",
 ]
 
 MIDDLEWARE = [
@@ -133,8 +134,11 @@ PASSWORD_RESET_TIMEOUT = 60 * 60
 ACCOUNT_RATE_LIMITS = {
     "login_failed": "5/15m/ip,5/15m/key",
     "signup": "3/h/ip",
-    # Actions du site (apps/core/ratelimit.py) : dépôt d'annonce par utilisateur (ticket #7).
-    "listing_create": "5/h/user,20/d/user",
+    # Actions du site (apps/core/ratelimit.py) : dépôt d'annonce par utilisateur (ticket #7) ;
+    # la limite par jour est comptée en base (LISTINGS_PER_DAY, #49).
+    "listing_create": "5/h/user",
+    # Signalements (#49) : un membre qui signale à la chaîne abuse du bouton.
+    "listing_report": "10/h/user,30/d/user",
     # Messagerie (ticket #12) : nouvelles conversations (démarchage, arnaques en série) et
     # messages (une négociation en échange quelques dizaines par heure).
     "conversation_start": "10/h/user,30/d/user",
@@ -167,6 +171,11 @@ SECURE_CSP = {
 # Email confirmé obligatoire pour déposer et écrire à un vendeur (ticket #3, 2026-10-15,
 # apps/accounts/decorators.py). Suppose des emails réellement livrés (Resend).
 VERIFIED_EMAIL_REQUIRED = env.bool("VERIFIED_EMAIL_REQUIRED", default=True)
+
+# Modération (#49, décisions du 2026-10-17) : annonces déposées par compte sur 24 heures, et
+# nombre de membres différents dont les signalements masquent une annonce en attendant l'examen.
+LISTINGS_PER_DAY = 10
+REPORTS_TO_SUSPEND = 3
 
 # Référencement : balise de vérification de Google Search Console (2026-10-15).
 GOOGLE_SITE_VERIFICATION = env("GOOGLE_SITE_VERIFICATION", default="")

@@ -336,7 +336,7 @@ Critères d'acceptation :
 Règle du propriétaire : la V2 ne garde que ce qui est nécessaire et fonctionne sans `sugu.ml` ;
 le reste va en V3. Numéros = issues GitHub (partagés avec les pull requests). Ordre de travail : #49 puis #48.
 
-## #49 — Signalements et modération
+## #49 — Signalements et modération ✅ (fait le 2026-10-17)
 
 Bouton « Signaler cette annonce » sur la page annonce (membre connecté, motif au choix :
 arnaque, objet interdit, mauvaise catégorie, déjà vendue ou en double, autre ; précision
@@ -351,6 +351,15 @@ Critères d'acceptation :
 - L'admin voit les annonces signalées, les plus signalées d'abord, et les traite en une action
 - Au-delà de la limite quotidienne, le dépôt est refusé avec un message clair
 - Tests « un autre utilisateur essaie » et limite de débit
+
+Décisions du 2026-10-17 : **annonce masquée automatiquement au 3e membre différent** qui la
+signale (statut `suspended`, « En examen » : plus de page publique, vendeur prévenu par email),
+en attendant la décision de la modération ; **10 annonces par compte sur 24 heures**. Réalisé :
+app `moderation` (`Report`, services, page « Signaler » sans JavaScript, email aux
+administrateurs au premier signalement d'une annonce), file « Annonces signalées » dans
+l'admin (les plus signalées d'abord ; « Retirer l'annonce » prévient le vendeur du motif le
+plus cité, « Classer sans suite » remet en ligne), limite de dépôt annoncée dès l'ouverture
+du formulaire.
 
 ## #48 — Réservation d'une annonce
 
