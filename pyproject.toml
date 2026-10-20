@@ -27,7 +27,7 @@ dev = [
   "factory-boy>=3.3.3",
   "playwright>=1.63",
   "pytest-playwright>=0.10",
-  "ruff==0.17.0",
+  "ruff==0.17.1",
   "pre-commit>=4.6",
 ]
 
