@@ -18,5 +18,5 @@ services:
   # Bucket S3 local à la place de R2, pour essayer sauvegarde et restauration (ticket #17).
   # Clés de test seulement : BACKUP_* de .env.repetition (docs/runbook.md).
   s3:
-    image: rclone/rclone:1.75.1
+    image: rclone/rclone:1.75.2
     command: ["serve", "s3", "/data", "--addr", ":9000", "--auth-key", "repetition,repetition-secret"]
